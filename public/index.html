@@ -516,8 +516,8 @@ function renderMatches(){
   if(activeView==='calendario'){
     v.innerHTML=`<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap">
       <span style="font-size:.78rem;color:var(--muted)">Visualização:</span>${toggleBtns}</div>
-      <div id="matches-body"></div>`;
-    renderMatchesCalendario();
+      <div id="matches-body"><div style="color:var(--muted);padding:2rem;text-align:center">⏳ Carregando calendário...</div></div>`;
+    loadSchedule().then(()=>renderMatchesCalendario());
     return;
   }
   v.innerHTML=`
@@ -615,6 +615,244 @@ function renderMatchesKO(){
     }));
   });
 }
+function setPhase(p){activePhase=p;renderMatches();}
+function setGroup(g){activeGroup=g;renderMatches();}
+function setKoRound(k){activeKoRound=k;renderMatches();}
+
+// ══════════════════════════════════════════════════════
+// CALENDÁRIO — carregado do resultados.csv
+// ══════════════════════════════════════════════════════
+// schedule: array de objetos carregados do CSV
+let schedule = [];
+let scheduleLoaded = false;
+
+async function loadSchedule() {
+  if (scheduleLoaded) return;
+  try {
+    const r = await fetch('resultados.csv');
+    if (!r.ok) throw new Error('CSV não encontrado');
+    const text = await r.text();
+    const lines = text.trim().split('\n');
+    const headers = lines[0].split(',');
+    schedule = lines.slice(1).map(line => {
+      // Handle commas inside quoted fields
+      const cols = [];
+      let cur = '', inQ = false;
+      for (let ch of line) {
+        if (ch === '"') inQ = !inQ;
+        else if (ch === ',' && !inQ) { cols.push(cur); cur = ''; }
+        else cur += ch;
+      }
+      cols.push(cur);
+      const obj = {};
+      headers.forEach((h, i) => { obj[h.trim()] = (cols[i] || '').trim(); });
+      // Normalize numeric fields
+      obj.gols_mandante  = obj.gols_mandante  !== '' ? parseInt(obj.gols_mandante)  : null;
+      obj.gols_visitante = obj.gols_visitante !== '' ? parseInt(obj.gols_visitante) : null;
+      obj.pen_mandante   = obj.pen_mandante   !== '' ? parseInt(obj.pen_mandante)   : null;
+      obj.pen_visitante  = obj.pen_visitante  !== '' ? parseInt(obj.pen_visitante)  : null;
+      return obj;
+    }).filter(o => o.id);
+    scheduleLoaded = true;
+    // Apply CSV scores to state (CSV is the source of truth)
+    applyScheduleToState();
+  } catch(e) {
+    console.warn('Não foi possível carregar resultados.csv:', e.message);
+    scheduleLoaded = true; // proceed without it
+  }
+}
+
+function applyScheduleToState() {
+  schedule.forEach(row => {
+    if (row.gols_mandante === null && row.gols_visitante === null) return; // sem resultado ainda
+
+    if (row.fase === 'grupos') {
+      const g = row.grupo;
+      if (!state.groupMatches[g]) return;
+      // Match by mandante/visitante name (strip emoji for loose match)
+      const mi = state.groupMatches[g].findIndex(m =>
+        normName(m.home) === normName(row.mandante) && normName(m.away) === normName(row.visitante)
+      );
+      if (mi !== -1) {
+        state.groupMatches[g][mi].hs = row.gols_mandante;
+        state.groupMatches[g][mi].as = row.gols_visitante;
+      }
+    }
+
+    if (row.fase === 'repescagem') {
+      const repId = row.grupo; // grupo column holds repId for rep rows
+      if (!state.repScores[repId]) state.repScores[repId] = {};
+      // Find the matching partida id by stage and teams
+      const rep = repDef.find(r => r.id === repId);
+      if (!rep) return;
+      const p = rep.partidas.find(p => p.stage === row.etapa &&
+        (normName(p.home||'') === normName(row.mandante) || row.etapa === 'FIN'));
+      if (p) {
+        state.repScores[repId][p.id] = {
+          hs: row.gols_mandante, as: row.gols_visitante,
+          hpen: row.pen_mandante, apen: row.pen_visitante,
+        };
+      }
+    }
+
+    if (row.fase === 'matamata') {
+      const roundKey = row.grupo; // grupo col holds round key
+      if (!state.knockout[roundKey]) return;
+      const idx = parseInt(row.id.split('_').pop()) - 1;
+      if (isNaN(idx) || idx < 0) return;
+      const m = state.knockout[roundKey][idx];
+      if (!m) return;
+      if (row.mandante && row.mandante !== '?') m.home = row.mandante;
+      if (row.visitante && row.visitante !== '?') m.away = row.visitante;
+      m.hs   = row.gols_mandante;
+      m.as   = row.gols_visitante;
+      m.hpen = row.pen_mandante;
+      m.apen = row.pen_visitante;
+    }
+  });
+  syncAllRepToGroups();
+  saveState();
+}
+
+function normName(n) {
+  // Remove emoji and extra spaces for loose matching
+  return (n || '').replace(/[^\w\s]/gu, '').trim().toLowerCase();
+}
+
+// Build calendar items from schedule (CSV) merged with current state
+function buildCalendarItems() {
+  const items = [];
+
+  schedule.forEach(row => {
+    let home = row.mandante, away = row.visitante;
+    let hs = row.gols_mandante, as_ = row.gols_visitante;
+    let hpen = row.pen_mandante, apen = row.pen_visitante;
+    let onSave, onClear, allowPen = false, editTeams = false, note = null;
+
+    if (row.fase === 'grupos') {
+      const g = row.grupo;
+      const mi = state.groupMatches[g]?.findIndex(m =>
+        normName(m.home) === normName(home) && normName(m.away) === normName(away)
+      ) ?? -1;
+      if (mi === -1) return;
+      const m = state.groupMatches[g][mi];
+      home = resolveTeam(m.home, g);
+      away = resolveTeam(m.away, g);
+      hs = m.hs; as_ = m.as;
+      onSave = (hs2, as2) => { m.hs=hs2; m.as=as2; syncAllRepToGroups(); saveState(); renderGroups(); renderMatches(); toast('✓ Salvo!'); };
+      onClear = () => { m.hs=null; m.as=null; syncAllRepToGroups(); saveState(); renderGroups(); renderMatches(); };
+    }
+
+    else if (row.fase === 'repescagem') {
+      const repId = row.grupo;
+      const rep = repDef.find(r => r.id === repId);
+      if (!rep) return;
+      const p = rep.partidas.find(p => p.stage === row.etapa &&
+        (row.etapa !== 'FIN' ? normName(p.home||'') === normName(home) : true));
+      if (!p) return;
+      if (p.stage === 'FIN') { const t = getRepFinalTeams(rep); home = t.home; away = t.away; }
+      const sc = state.repScores[repId]?.[p.id] || {};
+      hs = sc.hs ?? null; as_ = sc.as ?? null; hpen = sc.hpen ?? null; apen = sc.apen ?? null;
+      allowPen = true;
+      const isFin = p.stage === 'FIN';
+      note = isFin && rep.note ? rep.note : null;
+      onSave = (hs2, as2, hp, ap) => {
+        if (!state.repScores[repId]) state.repScores[repId] = {};
+        state.repScores[repId][p.id] = { hs: hs2, as: as2, hpen: hp, apen: ap };
+        syncAllRepToGroups(); saveState(); renderGroups(); renderRepescagem(); renderMatches();
+        const w = isFin ? getRepFinalWinner(rep) : null;
+        toast(w ? `✓ ${w} → Grupo ${rep.groupLetter}!` : '✓ Salvo!');
+      };
+      onClear = () => {
+        if (state.repScores[repId]) delete state.repScores[repId][p.id];
+        syncAllRepToGroups(); saveState(); renderGroups(); renderRepescagem(); renderMatches();
+      };
+    }
+
+    else if (row.fase === 'matamata') {
+      const roundKey = row.grupo;
+      if (!state.knockout[roundKey]) return;
+      const idx = parseInt(row.id.split('_').pop()) - 1;
+      const m = state.knockout[roundKey]?.[idx];
+      if (!m) return;
+      home = m.home; away = m.away;
+      hs = m.hs; as_ = m.as; hpen = m.hpen; apen = m.apen;
+      allowPen = true; editTeams = true;
+      onSave = (hs2, as2, hp, ap, h, a) => {
+        if (h) m.home = h; if (a) m.away = a;
+        m.hs=hs2; m.as=as2; m.hpen=hp; m.apen=ap;
+        saveState(); renderKnockout(); renderMatches(); toast('✓ Salvo!');
+      };
+      onClear = () => { m.hs=null; m.as=null; m.hpen=null; m.apen=null; saveState(); renderKnockout(); renderMatches(); };
+    }
+
+    else return;
+
+    const badgeMap = { grupos:'badge-grupo', repescagem:'badge-rep', matamata:'badge-ko' };
+    const labelMap = { grupos:`Grupo ${row.grupo} · ${row.etapa}`, repescagem:`${repDef.find(r=>r.id===row.grupo)?.label||row.grupo} · ${row.etapa==='SF'?'Semifinal':'Final'}`, matamata:`${row.etapa} · ${row.id.split('_').pop()}ª` };
+
+    items.push({
+      date: row.data, time: row.hora_brasilia,
+      city: row.cidade, estadio: row.estadio,
+      home, away, hs, as: as_, hpen, apen,
+      fase: row.fase,
+      badge: badgeMap[row.fase] || 'badge-grupo',
+      label: `${labelMap[row.fase] || row.etapa}`,
+      allowPen, editTeams, note,
+      onSave, onClear,
+    });
+  });
+
+  return items.sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time));
+}
+
+function formatDate(dateStr) {
+  const d = new Date(dateStr + 'T12:00:00');
+  const days = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  const months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  return { day: d.getDate(), month: months[d.getMonth()], year: d.getFullYear(), weekday: days[d.getDay()], iso: dateStr };
+}
+
+function renderMatchesCalendario() {
+  const body = document.getElementById('matches-body');
+  const items = buildCalendarItems();
+  if (items.length === 0) {
+    body.innerHTML = '<div style="color:var(--muted);padding:2rem;text-align:center">Carregando calendário...</div>';
+    return;
+  }
+  const byDate = {};
+  items.forEach(item => { if (!byDate[item.date]) byDate[item.date] = []; byDate[item.date].push(item); });
+  body.innerHTML = '';
+  const today = new Date().toISOString().slice(0, 10);
+  Object.keys(byDate).sort().forEach(dateStr => {
+    const fd = formatDate(dateStr);
+    const dayItems = byDate[dateStr];
+    const isToday = dateStr === today;
+    const dayDiv = document.createElement('div'); dayDiv.className = 'cal-day';
+    dayDiv.innerHTML = `<div class="cal-day-header">
+      <div class="cal-date-badge" style="${isToday ? 'border-color:var(--gold);background:rgba(212,160,23,.1)' : ''}">
+        <div class="cal-date-day" style="${isToday ? 'color:var(--gold)' : ''}">${fd.day}</div>
+        <div class="cal-date-month">${fd.month} ${fd.year}</div>
+      </div>
+      <div>
+        <div class="cal-date-label">${fd.weekday}${isToday ? ' <span style="color:var(--gold);font-size:.62rem">(hoje)</span>' : ''}</div>
+        <div class="cal-date-sub">${dayItems.length} partida${dayItems.length > 1 ? 's' : ''}</div>
+      </div>
+    </div>
+    <div class="cal-matches" id="cal_${dateStr.replace(/-/g,'_')}"></div>`;
+    body.appendChild(dayDiv);
+    const grid = dayDiv.querySelector('.cal-matches');
+    dayItems.forEach(item => grid.appendChild(makeMatchCard({
+      label: `${item.label}${item.city && item.city !== 'TBD' ? ' · ' + item.city : ''}${item.time ? ' · ' + item.time : ''}`,
+      badgeClass: item.badge, badgeText: item.fase.toUpperCase(),
+      home: item.home, away: item.away,
+      hs: item.hs, as: item.as, hpen: item.hpen, apen: item.apen,
+      allowPen: item.allowPen, note: item.note, editTeams: item.editTeams,
+      onSave: item.onSave, onClear: item.onClear,
+    })));
+  });
+}
+
 function setPhase(p){activePhase=p;renderMatches();}
 function setGroup(g){activeGroup=g;renderMatches();}
 function setKoRound(k){activeKoRound=k;renderMatches();}
@@ -1294,7 +1532,7 @@ function toast(msg){
 
 // INIT
 syncAllRepToGroups();
-renderMatches();
+loadSchedule().then(()=>renderMatches());
 </script>
 </body>
 </html>
