@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Copa do Mundo 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold:#D4A017; --gold2:#F5C842;
+    --dark:#0A0C10; --card:#111318; --border:#1E2230;
+    --text:#E8EAF0; --muted:#6B7280;
+    --green:#22C55E; --red:#EF4444; --yellow:#EAB308;
+    --pen:#A78BFA;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;
+    background-image:radial-gradient(ellipse at 20% 0%,rgba(212,160,23,.08) 0%,transparent 60%),
+                     radial-gradient(ellipse at 80% 100%,rgba(59,130,246,.06) 0%,transparent 60%)}
+  header{text-align:center;padding:2rem 1rem 1.2rem;border-bottom:1px solid var(--border);
+    background:linear-gradient(180deg,rgba(212,160,23,.05) 0%,transparent 100%)}
+  header .eyebrow{font-size:.68rem;letter-spacing:.25em;color:var(--gold);text-transform:uppercase;margin-bottom:.4rem}
+  header h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.2rem,6vw,4rem);letter-spacing:.05em;
+    background:linear-gradient(135deg,#F5C842 0%,#D4A017 50%,#F5C842 100%);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+  header p{color:var(--muted);font-size:.82rem;margin-top:.4rem}
+  nav.tabs{display:flex;justify-content:center;gap:.4rem;padding:1.2rem 1rem 0;flex-wrap:wrap}
+  .tab-btn{background:var(--card);border:1px solid var(--border);color:var(--muted);padding:.45rem 1.1rem;
+    border-radius:999px;font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:500;cursor:pointer;transition:all .2s}
+  .tab-btn:hover{border-color:var(--gold);color:var(--gold)}
+  .tab-btn.active{background:var(--gold);border-color:var(--gold);color:#000;font-weight:700}
+  .container{max-width:1200px;margin:0 auto;padding:1.5rem 1rem 3rem}
+  .view{display:none}.view.active{display:block}
+
+  /* GRUPOS */
+  .legend{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1rem;font-size:.73rem;color:var(--muted)}
+  .legend-item{display:flex;align-items:center;gap:.4rem}
+  .legend-dot{width:10px;height:10px;border-radius:2px}
+  .groups-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+  .group-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+  .group-header{background:linear-gradient(135deg,rgba(212,160,23,.15),rgba(212,160,23,.05));
+    padding:.65rem 1rem;font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.1em;
+    color:var(--gold);border-bottom:1px solid var(--border)}
+  .group-table{width:100%;border-collapse:collapse}
+  .group-table th{padding:.38rem .55rem;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--muted);text-align:center;font-weight:500}
+  .group-table th:first-child{text-align:left}
+  .group-table td{padding:.5rem .55rem;font-size:.8rem;text-align:center;border-top:1px solid rgba(255,255,255,.04)}
+  .group-table td:first-child{text-align:left}
+  .team-cell{display:flex;align-items:center;gap:.4rem;font-weight:500;font-size:.78rem}
+  .pts-cell{font-weight:700;color:var(--gold2)}
+  .qualify-1 td:first-child{border-left:3px solid var(--green)}
+  .qualify-2 td:first-child{border-left:3px solid #86efac}
+  .qualify-3 td:first-child{border-left:3px solid var(--yellow)}
+  .eliminate td:first-child{border-left:3px solid transparent}
+  .rep-badge{display:inline-block;font-size:.52rem;background:rgba(212,160,23,.2);color:var(--gold);
+    border-radius:3px;padding:1px 4px;vertical-align:middle;font-weight:700;margin-left:3px}
+
+  /* PARTIDAS */
+  .filter-bar{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1rem}
+  .filter-btn{background:var(--card);border:1px solid var(--border);color:var(--muted);padding:.32rem .85rem;
+    border-radius:999px;font-size:.73rem;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif}
+  .filter-btn:hover,.filter-btn.on{border-color:var(--gold);color:var(--gold)}
+  .match-section-title{font-family:'Bebas Neue',sans-serif;font-size:1.15rem;letter-spacing:.08em;color:var(--gold);
+    margin:1.1rem 0 .65rem;padding-bottom:.3rem;border-bottom:1px solid var(--border)}
+  .matches-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:.7rem}
+  .match-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:.9rem}
+  .match-card.done{border-color:rgba(34,197,94,.25)}
+  .match-card.repcard{border-color:rgba(212,160,23,.3)}
+  .match-info{font-size:.61rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.6rem}
+  .match-teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:.4rem}
+  .match-team{display:flex;align-items:center;gap:.3rem;font-size:.78rem;font-weight:600;flex-wrap:wrap}
+  .match-team.right{flex-direction:row-reverse;text-align:right;justify-content:flex-start}
+  .score-row{display:flex;align-items:center;gap:.25rem;justify-content:center}
+
+  /* score inputs */
+  .score-input{width:34px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:6px;
+    color:var(--gold2);font-family:'Bebas Neue',sans-serif;font-size:1.35rem;text-align:center;
+    padding:.1rem 0;outline:none;transition:border-color .2s}
+  .score-input:focus{border-color:var(--gold)}
+  .score-input.pen-input{color:var(--pen);border-color:rgba(167,139,250,.3);font-size:1.1rem;width:30px}
+  .score-input.pen-input:focus{border-color:var(--pen)}
+  .score-sep{color:var(--muted);font-size:.8rem}
+
+  /* penalty row */
+  .pen-row{display:flex;align-items:center;justify-content:center;gap:.4rem;margin-top:.5rem;
+    padding:.4rem .5rem;background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.2);
+    border-radius:6px;animation:fadeIn .2s ease}
+  .pen-label{font-size:.65rem;color:var(--pen);font-weight:700;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+  .pen-sep{color:rgba(167,139,250,.5);font-size:.75rem}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+
+  .btn-save{display:block;width:100%;margin-top:.6rem;background:rgba(212,160,23,.1);
+    border:1px solid rgba(212,160,23,.3);color:var(--gold);border-radius:6px;padding:.28rem;
+    font-size:.71rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
+  .btn-save:hover{background:rgba(212,160,23,.22)}
+  .btn-clear{display:block;width:100%;margin-top:.28rem;background:transparent;
+    border:1px solid rgba(239,68,68,.2);color:var(--red);border-radius:6px;padding:.22rem;
+    font-size:.67rem;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;opacity:.55}
+  .btn-clear:hover{opacity:1;background:rgba(239,68,68,.08)}
+  .rep-winner-select{width:100%;margin-top:.6rem;background:rgba(255,255,255,.05);
+    border:1px solid rgba(212,160,23,.4);border-radius:6px;color:var(--gold2);padding:.35rem .5rem;
+    font-size:.76rem;font-family:'DM Sans',sans-serif;cursor:pointer;outline:none}
+  .rep-winner-select option{background:#1a1d24;color:var(--text)}
+  .rep-result{margin-top:.5rem;font-size:.75rem;color:var(--green)}
+
+  /* MATA-MATA */
+  .bracket-outer{overflow-x:auto;padding:1rem 0}
+  .bracket{display:flex;gap:1.2rem;min-width:980px;align-items:stretch}
+  .bracket-round{flex:1;display:flex;flex-direction:column}
+  .round-title{font-family:'Bebas Neue',sans-serif;font-size:.82rem;letter-spacing:.1em;color:var(--muted);
+    text-align:center;margin-bottom:.55rem;padding-bottom:.35rem;border-bottom:1px solid var(--border)}
+  .bracket-matches{flex:1;display:flex;flex-direction:column;justify-content:space-around;gap:.5rem}
+  .bracket-match{background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden;cursor:pointer;transition:border-color .15s}
+  .bracket-match:hover{border-color:rgba(212,160,23,.4)}
+  .bracket-team{display:flex;align-items:center;justify-content:space-between;padding:.38rem .55rem;font-size:.73rem;font-weight:500}
+  .bracket-team:first-child{border-bottom:1px solid var(--border)}
+  .bracket-team.winner{color:var(--gold2);font-weight:700;background:rgba(245,200,66,.06)}
+  .bracket-score-k{font-family:'Bebas Neue',sans-serif;font-size:.92rem;color:var(--gold);min-width:14px;text-align:right}
+  .bracket-pen{font-size:.68rem;color:var(--pen);margin-left:4px}
+
+  /* STATS */
+  .stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;margin-bottom:1.5rem}
+  .stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.1rem}
+  .stat-label{font-size:.67rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.3rem}
+  .stat-value{font-family:'Bebas Neue',sans-serif;font-size:1.85rem;color:var(--gold2)}
+  .stat-sub{font-size:.72rem;color:var(--muted);margin-top:.12rem}
+  .section-title{font-family:'Bebas Neue',sans-serif;font-size:1.15rem;letter-spacing:.08em;color:var(--text);margin-bottom:.75rem}
+  .scorers-table{width:100%;border-collapse:collapse}
+  .scorers-table th{padding:.42rem .65rem;font-size:.61rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;border-bottom:1px solid var(--border)}
+  .scorers-table td{padding:.52rem .65rem;font-size:.8rem;border-bottom:1px solid rgba(255,255,255,.04)}
+  .rank-badge{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;font-size:.63rem;font-weight:700}
+  .rank-1{background:var(--gold);color:#000}.rank-2{background:#9CA3AF;color:#000}
+  .rank-3{background:#B45309;color:#fff}.rank-n{background:var(--border);color:var(--muted)}
+  .goals-input{width:44px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:4px;
+    color:var(--gold2);font-weight:700;text-align:center;padding:2px 4px;font-size:.86rem;outline:none;font-family:'DM Sans',sans-serif}
+
+  .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(120px);
+    background:var(--green);color:#000;padding:.52rem 1.2rem;border-radius:999px;
+    font-size:.78rem;font-weight:600;transition:transform .3s;z-index:9999;pointer-events:none}
+  .toast.show{transform:translateX(-50%) translateY(0)}
+
+  /* KNOCKOUT EDIT MODAL */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem}
+  .modal{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.5rem;width:100%;max-width:440px}
+  .modal h3{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.06em;color:var(--gold);margin-bottom:1rem}
+  .modal-row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:.5rem;margin-bottom:.5rem}
+  .modal-team{font-size:.82rem;font-weight:600}
+  .modal-team.right{text-align:right}
+  .modal-score-row{display:flex;align-items:center;gap:.3rem;justify-content:center}
+  .modal-pen-row{display:flex;align-items:center;gap:.4rem;justify-content:center;margin-top:.5rem;
+    padding:.4rem;background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.25);border-radius:6px}
+  .modal-label{font-size:.65rem;color:var(--muted);margin-bottom:.25rem;text-align:center}
+  .modal-btns{display:flex;gap:.5rem;margin-top:1rem}
+  .modal-btn{flex:1;padding:.5rem;border-radius:7px;font-size:.8rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;border:none}
+  .modal-btn.save{background:var(--gold);color:#000}
+  .modal-btn.cancel{background:rgba(255,255,255,.05);color:var(--muted);border:1px solid var(--border)}
+  .modal-btn.clear{background:rgba(239,68,68,.1);color:var(--red);border:1px solid rgba(239,68,68,.2)}
+  .modal-input{width:48px;background:rgba(255,255,255,.07);border:1px solid var(--border);border-radius:6px;
+    color:var(--gold2);font-family:'Bebas Neue',sans-serif;font-size:1.6rem;text-align:center;padding:.1rem 0;outline:none}
+  .modal-input:focus{border-color:var(--gold)}
+  .modal-input.pen{color:var(--pen);font-size:1.3rem;width:40px;border-color:rgba(167,139,250,.3)}
+  .modal-input.pen:focus{border-color:var(--pen)}
+  .pen-note{font-size:.65rem;color:var(--pen);text-align:center;margin-top:.3rem}
+
+  @media(max-width:600px){.groups-grid,.matches-grid,.stats-grid{grid-template-columns:1fr}.bracket{min-width:700px}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">⚽ Edição Especial</div>
+  <h1>Copa do Mundo 2026</h1>
+  <p>EUA · Canadá · México &nbsp;|&nbsp; 11 Jun – 19 Jul 2026</p>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active"  onclick="switchTab(this,'grupos')">🏆 Grupos</button>
+  <button class="tab-btn"         onclick="switchTab(this,'partidas')">📋 Partidas</button>
+  <button class="tab-btn"         onclick="switchTab(this,'repescagem')">🔁 Repescagem</button>
+  <button class="tab-btn"         onclick="switchTab(this,'matamata')">⚔️ Mata-Mata</button>
+  <button class="tab-btn"         onclick="switchTab(this,'stats')">📊 Estatísticas</button>
+</nav>
+
+<div class="container">
+  <div id="view-grupos"     class="view active"></div>
+  <div id="view-partidas"   class="view"></div>
+  <div id="view-repescagem" class="view"></div>
+  <div id="view-matamata"   class="view"></div>
+  <div id="view-stats"      class="view"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div id="modal-root"></div>
+
+<script>
+// ===================== DADOS =====================
+const groupsBase = {
+  A:['México 🇲🇽','África do Sul 🇿🇦','Coreia do Sul 🇰🇷','Repescagem Europa 4'],
+  B:['Canadá 🇨🇦','Suíça 🇨🇭','Catar 🇶🇦','Repescagem Europa 1'],
+  C:['Brasil 🇧🇷','Marrocos 🇲🇦','Escócia 🏴󠁧󠁢󠁳󠁣󠁴󠁿','Haiti 🇭🇹'],
+  D:['EUA 🇺🇸','Paraguai 🇵🇾','Austrália 🇦🇺','Repescagem Europa 3'],
+  E:['Alemanha 🇩🇪','Costa do Marfim 🇨🇮','Equador 🇪🇨','Curaçao 🇨🇼'],
+  F:['Países Baixos 🇳🇱','Japão 🇯🇵','Tunísia 🇹🇳','Repescagem Europa 2'],
+  G:['Bélgica 🇧🇪','Egito 🇪🇬','Irã 🇮🇷','Nova Zelândia 🇳🇿'],
+  H:['Espanha 🇪🇸','Uruguai 🇺🇾','Arábia Saudita 🇸🇦','Cabo Verde 🇨🇻'],
+  I:['França 🇫🇷','Senegal 🇸🇳','Noruega 🇳🇴','Repescagem Mundial B'],
+  J:['Argentina 🇦🇷','Áustria 🇦🇹','Argélia 🇩🇿','Jordânia 🇯🇴'],
+  K:['Portugal 🇵🇹','Colômbia 🇨🇴','Uzbequistão 🇺🇿','Repescagem Mundial A'],
+  L:['Inglaterra 🇬🇧','Croácia 🇭🇷','Panamá 🇵🇦','Gana 🇬🇭'],
+};
+
+const repescagens = [
+  {
+    id:'rep_eu_1', label:'Repescagem Europa 1', groupLetter:'B', slotIndex:3, tipo:'europeia',
+    semifinais:[
+      {id:'sf1a',home:'Itália 🇮🇹',away:'Irlanda do Norte 🏴',hs:null,as:null},
+      {id:'sf1b',home:'País de Gales 🏴',away:'Bósnia 🇧🇦',hs:null,as:null},
+    ],
+    final:{home:'?',away:'?',hs:null,as:null,hpen:null,apen:null},
+    candidates:['Itália 🇮🇹','Irlanda do Norte 🏴','País de Gales 🏴','Bósnia 🇧🇦'],
+  },
+  {
+    id:'rep_eu_2', label:'Repescagem Europa 2', groupLetter:'F', slotIndex:3, tipo:'europeia',
+    semifinais:[
+      {id:'sf2a',home:'Ucrânia 🇺🇦',away:'Suécia 🇸🇪',hs:null,as:null},
+      {id:'sf2b',home:'Polônia 🇵🇱',away:'Albânia 🇦🇱',hs:null,as:null},
+    ],
+    final:{home:'?',away:'?',hs:null,as:null,hpen:null,apen:null},
+    candidates:['Ucrânia 🇺🇦','Suécia 🇸🇪','Polônia 🇵🇱','Albânia 🇦🇱'],
+  },
+  {
+    id:'rep_eu_3', label:'Repescagem Europa 3', groupLetter:'D', slotIndex:3, tipo:'europeia',
+    semifinais:[
+      {id:'sf3a',home:'Turquia 🇹🇷',away:'Romênia 🇷🇴',hs:null,as:null},
+      {id:'sf3b',home:'Eslováquia 🇸🇰',away:'Kosovo 🇽🇰',hs:null,as:null},
+    ],
+    final:{home:'?',away:'?',hs:null,as:null,hpen:null,apen:null},
+    candidates:['Turquia 🇹🇷','Romênia 🇷🇴','Eslováquia 🇸🇰','Kosovo 🇽🇰'],
+  },
+  {
+    id:'rep_eu_4', label:'Repescagem Europa 4', groupLetter:'A', slotIndex:3, tipo:'europeia',
+    semifinais:[
+      {id:'sf4a',home:'Dinamarca 🇩🇰',away:'Macedônia do Norte 🇲🇰',hs:null,as:null},
+      {id:'sf4b',home:'República Tcheca 🇨🇿',away:'Irlanda 🇮🇪',hs:null,as:null},
+    ],
+    final:{home:'?',away:'?',hs:null,as:null,hpen:null,apen:null},
+    candidates:['Dinamarca 🇩🇰','Macedônia do Norte 🇲🇰','República Tcheca 🇨🇿','Irlanda 🇮🇪'],
+  },
+  {
+    id:'rep_ic1', label:'Repescagem Mundial A', groupLetter:'K', slotIndex:3, tipo:'mundial',
+    note:'RD Congo entra direto na final (melhor ranking FIFA)',
+    semifinais:[
+      {id:'sfm1',home:'Nova Caledônia 🇳🇨',away:'Jamaica 🇯🇲',hs:null,as:null},
+    ],
+    final:{home:'RD Congo 🇨🇩',away:'?',hs:null,as:null,hpen:null,apen:null},
+    candidates:['RD Congo 🇨🇩','Nova Caledônia 🇳🇨','Jamaica 🇯🇲'],
+  },
+  {
+    id:'rep_ic2', label:'Repescagem Mundial B', groupLetter:'I', slotIndex:3, tipo:'mundial',
+    note:'Iraque entra direto na final (melhor ranking FIFA)',
+    semifinais:[
+      {id:'sfm2',home:'Bolívia 🇧🇴',away:'Suriname 🇸🇷',hs:null,as:null},
+    ],
+    final:{home:'Iraque 🇮🇶',away:'?',hs:null,as:null,hpen:null,apen:null},
+    candidates:['Iraque 🇮🇶','Bolívia 🇧🇴','Suriname 🇸🇷'],
+  },
+];
+
+function isRepSlot(n){return n&&n.startsWith('Repescagem')}
+
+function makeGroupMatches(t){
+  return [
+    {home:t[0],away:t[1],hs:null,as:null},
+    {home:t[2],away:t[3],hs:null,as:null},
+    {home:t[0],away:t[2],hs:null,as:null},
+    {home:t[1],away:t[3],hs:null,as:null},
+    {home:t[0],away:t[3],hs:null,as:null},
+    {home:t[1],away:t[2],hs:null,as:null},
+  ];
+}
+
+// ===================== STATE =====================
+const state = {
+  repWinners:{},
+  repStates:{},
+  groupMatches:{},
+  // knockout match: {home, away, hs, as, hpen, apen}  (pen only when hs===as)
+  knockout:{
+    r32: Array(16).fill(0).map(()=>({home:'?',away:'?',hs:null,as:null,hpen:null,apen:null})),
+    r16: Array(8).fill(0).map(()=>({home:'?',away:'?',hs:null,as:null,hpen:null,apen:null})),
+    qf:  Array(4).fill(0).map(()=>({home:'?',away:'?',hs:null,as:null,hpen:null,apen:null})),
+    sf:  Array(2).fill(0).map(()=>({home:'?',away:'?',hs:null,as:null,hpen:null,apen:null})),
+    final:[{home:'?',away:'?',hs:null,as:null,hpen:null,apen:null}],
+  },
+  scorers:[
+    {name:'Kylian Mbappé',  team:'França 🇫🇷',    goals:0},
+    {name:'Erling Haaland', team:'Noruega 🇳🇴',   goals:0},
+    {name:'Vinicius Jr.',   team:'Brasil 🇧🇷',     goals:0},
+    {name:'Jude Bellingham',team:'Inglaterra 🇬🇧', goals:0},
+    {name:'Lionel Messi',   team:'Argentina 🇦🇷',  goals:0},
+    {name:'Pedri',          team:'Espanha 🇪🇸',    goals:0},
+    {name:'Lamine Yamal',   team:'Espanha 🇪🇸',    goals:0},
+    {name:'Rodrygo',        team:'Brasil 🇧🇷',     goals:0},
+  ]
+};
+
+Object.keys(groupsBase).forEach(g=>{state.groupMatches[g]=makeGroupMatches(groupsBase[g])});
+
+function saveState(){
+  try{localStorage.setItem('copa2026v4',JSON.stringify({
+    repWinners:state.repWinners,repStates:state.repStates,
+    groupMatches:state.groupMatches,knockout:state.knockout,scorers:state.scorers
+  }));}catch(e){}
+}
+(function loadState(){
+  try{
+    const s=JSON.parse(localStorage.getItem('copa2026v4')||'null');
+    if(!s)return;
+    if(s.repWinners)  Object.assign(state.repWinners,s.repWinners);
+    if(s.repStates)   Object.assign(state.repStates,s.repStates);
+    if(s.groupMatches)Object.assign(state.groupMatches,s.groupMatches);
+    if(s.knockout)    Object.assign(state.knockout,s.knockout);
+    if(s.scorers)     state.scorers=s.scorers;
+  }catch(e){}
+})();
+
+function resolveTeam(name,g){
+  if(!isRepSlot(name))return name;
+  const rep=repescagens.find(r=>r.groupLetter===g);
+  return(rep&&state.repWinners[rep.id])?state.repWinners[rep.id]:name;
+}
+function getGroupTeams(g){return groupsBase[g].map(t=>resolveTeam(t,g))}
+
+// ===================== WINNER HELPER =====================
+// For knockout/repescagem: who wins? (pens if draw)
+function getWinner(m){
+  if(m.hs===null||m.as===null)return null;
+  if(m.hs>m.as)return m.home;
+  if(m.as>m.hs)return m.away;
+  // draw → pens
+  if(m.hpen!==null&&m.apen!==null){
+    return m.hpen>m.apen?m.home:m.away;
+  }
+  return null; // draw but no pens yet
+}
+
+// ===================== STANDINGS =====================
+function calcStandings(g){
+  const tbl={};
+  getGroupTeams(g).forEach(t=>{tbl[t]={pts:0,pj:0,v:0,e:0,d:0,gp:0,gc:0,sg:0}});
+  state.groupMatches[g].forEach(m=>{
+    const hk=resolveTeam(m.home,g),ak=resolveTeam(m.away,g);
+    if(m.hs===null||m.as===null)return;
+    if(!tbl[hk])tbl[hk]={pts:0,pj:0,v:0,e:0,d:0,gp:0,gc:0,sg:0};
+    if(!tbl[ak])tbl[ak]={pts:0,pj:0,v:0,e:0,d:0,gp:0,gc:0,sg:0};
+    tbl[hk].pj++;tbl[ak].pj++;
+    tbl[hk].gp+=m.hs;tbl[hk].gc+=m.as;
+    tbl[ak].gp+=m.as;tbl[ak].gc+=m.hs;
+    tbl[hk].sg+=m.hs-m.as;tbl[ak].sg+=m.as-m.hs;
+    if(m.hs>m.as){tbl[hk].pts+=3;tbl[hk].v++;tbl[ak].d++;}
+    else if(m.hs<m.as){tbl[ak].pts+=3;tbl[ak].v++;tbl[hk].d++;}
+    else{tbl[hk].pts++;tbl[ak].pts++;tbl[hk].e++;tbl[ak].e++;}
+  });
+  return Object.entries(tbl).map(([name,s])=>({name,...s}))
+    .sort((a,b)=>b.pts-a.pts||b.sg-a.sg||b.gp-a.gp);
+}
+
+// ===================== RENDER GRUPOS =====================
+function renderGroups(){
+  const c=document.getElementById('view-grupos');
+  c.innerHTML=`<div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>1º Lugar</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#86efac"></div>2º Lugar</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--yellow)"></div>3º (possível classificação)</div>
+  </div><div class="groups-grid" id="gg"></div>`;
+  const gg=document.getElementById('gg');
+  Object.keys(groupsBase).forEach(g=>{
+    const st=calcStandings(g);
+    const div=document.createElement('div');
+    div.className='group-card';
+    div.innerHTML=`<div class="group-header">⚽ Grupo ${g}</div>
+      <table class="group-table">
+        <thead><tr><th>Seleção</th><th>PJ</th><th>V</th><th>E</th><th>D</th><th>GF</th><th>GC</th><th>SG</th><th>PTS</th></tr></thead>
+        <tbody>${st.map((t,i)=>{
+          const cls=i===0?'qualify-1':i===1?'qualify-2':i===2?'qualify-3':'eliminate';
+          const ir=isRepSlot(t.name);
+          return`<tr class="${cls}"><td><div class="team-cell">${t.name}${ir?'<span class="rep-badge">REP</span>':''}</div></td>
+            <td>${t.pj}</td><td>${t.v}</td><td>${t.e}</td><td>${t.d}</td><td>${t.gp}</td><td>${t.gc}</td>
+            <td style="color:${t.sg>0?'var(--green)':t.sg<0?'var(--red)':'var(--muted)'}">${t.sg>0?'+':''}${t.sg}</td>
+            <td class="pts-cell">${t.pts}</td></tr>`;
+        }).join('')}</tbody>
+      </table>`;
+    gg.appendChild(div);
+  });
+}
+
+// ===================== RENDER PARTIDAS =====================
+let activeFilter='todos';
+function renderMatches(){
+  const v=document.getElementById('view-partidas');
+  const letters=activeFilter==='todos'?Object.keys(groupsBase):[activeFilter];
+  const filterBtns=['todos',...Object.keys(groupsBase)].map(g=>
+    `<button class="filter-btn${activeFilter===g?' on':''}" onclick="setFilter('${g}')">${g==='todos'?'Todos':'Grupo '+g}</button>`
+  ).join('');
+  let html=`<div class="filter-bar">${filterBtns}</div>`;
+  letters.forEach(g=>{html+=`<div class="match-section-title">Grupo ${g}</div><div class="matches-grid" id="mg_${g}"></div>`;});
+  v.innerHTML=html;
+  letters.forEach(g=>{
+    const grid=document.getElementById('mg_'+g);
+    const rounds=['Rodada 1','Rodada 1','Rodada 2','Rodada 2','Rodada 3','Rodada 3'];
+    state.groupMatches[g].forEach((m,mi)=>{
+      const done=m.hs!==null&&m.as!==null;
+      const card=document.createElement('div');
+      card.className=`match-card${done?' done':''}`;
+      const hName=resolveTeam(m.home,g),aName=resolveTeam(m.away,g);
+      card.innerHTML=`
+        <div class="match-info">Grupo ${g} · ${rounds[mi]}</div>
+        <div class="match-teams">
+          <div class="match-team">${hName}${isRepSlot(m.home)?'<span class="rep-badge">REP</span>':''}</div>
+          <div class="score-row">
+            <input class="score-input" type="number" min="0" max="30" value="${m.hs!==null?m.hs:''}" placeholder="–">
+            <span class="score-sep">×</span>
+            <input class="score-input" type="number" min="0" max="30" value="${m.as!==null?m.as:''}" placeholder="–">
+          </div>
+          <div class="match-team right">${aName}${isRepSlot(m.away)?'<span class="rep-badge">REP</span>':''}</div>
+        </div>
+        <button class="btn-save">💾 Salvar</button>
+        ${done?`<button class="btn-clear">✕ Limpar resultado</button>`:''}`;
+      const[i1,i2]=card.querySelectorAll('.score-input');
+      card.querySelector('.btn-save').onclick=()=>{
+        m.hs=i1.value!==''?parseInt(i1.value):null;
+        m.as=i2.value!==''?parseInt(i2.value):null;
+        saveState();renderGroups();renderMatches();toast('✓ Resultado salvo!');
+      };
+      const cl=card.querySelector('.btn-clear');
+      if(cl)cl.onclick=()=>{m.hs=null;m.as=null;saveState();renderGroups();renderMatches();};
+      grid.appendChild(card);
+    });
+  });
+}
+function setFilter(g){activeFilter=g;renderMatches();}
+
+// ===================== RENDER REPESCAGEM =====================
+function renderRepescagem(){
+  const v=document.getElementById('view-repescagem');
+  v.innerHTML=`<p style="color:var(--muted);font-size:.81rem;margin-bottom:1.5rem">
+    Semifinais: <strong style="color:var(--text)">26 de março de 2026</strong> · Finais: <strong style="color:var(--text)">31 de março de 2026</strong>.
+    Em caso de empate na final, preencha também o marcador de pênaltis.
+  </p><div id="rep-grid"></div>`;
+  const grid=document.getElementById('rep-grid');
+  const europeias=repescagens.filter(r=>r.tipo==='europeia');
+  const mundiais=repescagens.filter(r=>r.tipo==='mundial');
+  function sec(list,title){
+    const s=document.createElement('div');
+    s.innerHTML=`<div class="match-section-title">${title}</div>`;
+    const g=document.createElement('div');
+    g.style.cssText='display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1rem;margin-bottom:1.5rem';
+    list.forEach(rep=>renderRepCard(rep,g));
+    s.appendChild(g);grid.appendChild(s);
+  }
+  sec(europeias,'🇪🇺 Repescagem Europeia — 4 vagas');
+  sec(mundiais,'🌍 Repescagem Mundial — 2 vagas');
+}
+
+function renderRepCard(rep,container){
+  const winner=state.repWinners[rep.id]||'';
+  if(!state.repStates[rep.id])state.repStates[rep.id]={
+    semifinais:rep.semifinais.map(s=>({...s})),
+    final:{...rep.final}
+  };
+  const rs=state.repStates[rep.id];
+  const card=document.createElement('div');
+  card.className='match-card repcard';
+
+  // Build SF rows
+  let html=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.7rem">
+    <div class="match-info" style="margin:0">${rep.label}</div>
+    <span style="font-size:.68rem;color:var(--gold);background:rgba(212,160,23,.12);padding:2px 8px;border-radius:999px">→ Grupo ${rep.groupLetter}</span>
+  </div>`;
+  if(rep.note)html+=`<div style="font-size:.7rem;color:var(--muted);margin-bottom:.6rem;padding:.3rem .5rem;background:rgba(255,255,255,.03);border-radius:4px">ℹ️ ${rep.note}</div>`;
+
+  rep.semifinais.forEach((sf,si)=>{
+    const saved=rs.semifinais[si]||sf;
+    const hW=saved.hs!==null&&saved.as!==null&&saved.hs>saved.as;
+    const aW=saved.hs!==null&&saved.as!==null&&saved.as>saved.hs;
+    const isDraw=saved.hs!==null&&saved.as!==null&&saved.hs===saved.as;
+    html+=`<div style="display:flex;align-items:center;gap:.35rem;padding:.4rem 0;border-bottom:1px solid var(--border)">
+      <span style="font-size:.65rem;color:var(--muted);min-width:18px;font-weight:600">SF</span>
+      <span style="flex:1;font-size:.74rem;font-weight:${hW?700:500};color:${hW?'var(--gold2)':'var(--text)'}">${sf.home}</span>
+      <input class="score-input sf-h" type="number" min="0" style="width:30px;font-size:1.1rem" value="${saved.hs!==null?saved.hs:''}" placeholder="–" data-si="${si}">
+      <span class="score-sep">×</span>
+      <input class="score-input sf-a" type="number" min="0" style="width:30px;font-size:1.1rem" value="${saved.as!==null?saved.as:''}" placeholder="–" data-si="${si}">
+      <span style="flex:1;font-size:.74rem;font-weight:${aW?700:500};color:${aW?'var(--gold2)':'var(--text)'};text-align:right">${sf.away}</span>
+    </div>
+    ${isDraw?`<div class="pen-row" style="margin:.3rem 0">
+      <span class="pen-label">🥅 Pên.</span>
+      <input class="score-input pen-input sf-hpen" type="number" min="0" style="width:30px;font-size:1rem" value="${saved.hpen!==null?saved.hpen:''}" placeholder="–" data-si="${si}">
+      <span class="pen-sep">×</span>
+      <input class="score-input pen-input sf-apen" type="number" min="0" style="width:30px;font-size:1rem" value="${saved.apen!==null?saved.apen:''}" placeholder="–" data-si="${si}">
+    </div>`:''}`;
+  });
+
+  // Final row
+  const fin=rs.final;
+  const fhW=fin.hs!==null&&fin.as!==null&&fin.hs>fin.as;
+  const faW=fin.hs!==null&&fin.as!==null&&fin.as>fin.hs;
+  const finDraw=fin.hs!==null&&fin.as!==null&&fin.hs===fin.as;
+  const awayLabel=fin.away==='?'?`<em style="color:var(--muted);font-size:.7rem">aguardando SF</em>`:fin.away;
+  html+=`<div style="display:flex;align-items:center;gap:.35rem;padding:.5rem 0;margin-top:.15rem;border-top:1px solid rgba(212,160,23,.2)">
+    <span style="font-size:.65rem;color:var(--gold);min-width:18px;font-weight:700">FIN</span>
+    <span style="flex:1;font-size:.78rem;font-weight:${fhW?700:500};color:${fhW?'var(--gold2)':'var(--text)'}">${fin.home}</span>
+    <input class="score-input fin-h" type="number" min="0" style="width:30px;font-size:1.1rem" value="${fin.hs!==null?fin.hs:''}" placeholder="–">
+    <span class="score-sep">×</span>
+    <input class="score-input fin-a" type="number" min="0" style="width:30px;font-size:1.1rem" value="${fin.as!==null?fin.as:''}" placeholder="–">
+    <span style="flex:1;font-size:.78rem;font-weight:${faW?700:500};color:${faW?'var(--gold2)':'var(--text)'};text-align:right">${awayLabel}</span>
+  </div>
+  ${finDraw?`<div class="pen-row">
+    <span class="pen-label">🥅 Pênaltis</span>
+    <input class="score-input pen-input fin-hpen" type="number" min="0" style="width:30px;font-size:1rem" value="${fin.hpen!==null?fin.hpen:''}" placeholder="–">
+    <span class="pen-sep">×</span>
+    <input class="score-input pen-input fin-apen" type="number" min="0" style="width:30px;font-size:1rem" value="${fin.apen!==null?fin.apen:''}" placeholder="–">
+  </div>`:''}
+  <button class="btn-save" style="margin-top:.7rem">💾 Salvar & Definir Classificado</button>
+  ${winner?`<div class="rep-result">✓ Classificado para Grupo ${rep.groupLetter}: <strong>${winner}</strong></div>`:''}`;
+
+  card.innerHTML=html;
+
+  // Auto-show pen row on draw (live)
+  function attachPenToggle(hInp, aInp, container, penClass){
+    function check(){
+      const hv=hInp.value.trim(),av=aInp.value.trim();
+      const existing=container.querySelector('.'+penClass);
+      if(hv!==''&&av!==''&&parseInt(hv)===parseInt(av)){
+        if(!existing){
+          const pr=document.createElement('div');
+          pr.className='pen-row '+penClass;
+          pr.style.marginTop='.3rem';
+          pr.innerHTML=`<span class="pen-label">🥅 Pên.</span>
+            <input class="score-input pen-input" type="number" min="0" placeholder="–">
+            <span class="pen-sep">×</span>
+            <input class="score-input pen-input" type="number" min="0" placeholder="–">`;
+          hInp.closest('div').insertAdjacentElement('afterend',pr);
+        }
+      } else {
+        if(existing)existing.remove();
+      }
+    }
+    hInp.addEventListener('input',check);
+    aInp.addEventListener('input',check);
+  }
+
+  // SF pen toggles
+  card.querySelectorAll('.sf-h').forEach((h,si)=>{
+    const a=card.querySelectorAll('.sf-a')[si];
+    attachPenToggle(h,a,card,`dyn-sf-pen-${rep.id}-${si}`);
+  });
+
+  // Fin pen toggle
+  const fh=card.querySelector('.fin-h'),fa=card.querySelector('.fin-a');
+  attachPenToggle(fh,fa,card,`dyn-fin-pen-${rep.id}`);
+
+  card.querySelector('.btn-save').addEventListener('click',()=>{
+    // Read SF scores
+    card.querySelectorAll('.sf-h').forEach((inp,si)=>{
+      rs.semifinais[si].hs=inp.value!==''?parseInt(inp.value):null;
+    });
+    card.querySelectorAll('.sf-a').forEach((inp,si)=>{
+      rs.semifinais[si].as=inp.value!==''?parseInt(inp.value):null;
+    });
+    // SF pens
+    card.querySelectorAll('.sf-hpen').forEach((inp,si)=>{
+      rs.semifinais[si].hpen=inp.value!==''?parseInt(inp.value):null;
+    });
+    card.querySelectorAll('.sf-apen').forEach((inp,si)=>{
+      rs.semifinais[si].apen=inp.value!==''?parseInt(inp.value):null;
+    });
+    // Compute SF winners → update final
+    if(rep.tipo==='europeia'){
+      rs.final.home=getWinner(rs.semifinais[0])||'?';
+      rs.final.away=getWinner(rs.semifinais[1])||'?';
+    } else {
+      rs.final.home=rep.final.home;
+      rs.final.away=getWinner(rs.semifinais[0])||'?';
+    }
+    // Read final score
+    rs.final.hs=card.querySelector('.fin-h').value!==''?parseInt(card.querySelector('.fin-h').value):null;
+    rs.final.as=card.querySelector('.fin-a').value!==''?parseInt(card.querySelector('.fin-a').value):null;
+    const fhpen=card.querySelector('.fin-hpen'),fapen=card.querySelector('.fin-apen');
+    rs.final.hpen=fhpen&&fhpen.value!==''?parseInt(fhpen.value):null;
+    rs.final.apen=fapen&&fapen.value!==''?parseInt(fapen.value):null;
+    // Overall winner
+    const classif=getWinner(rs.final)||'';
+    if(classif)state.repWinners[rep.id]=classif;
+    else delete state.repWinners[rep.id];
+    // Update group placeholder
+    const placeholder=groupsBase[rep.groupLetter][rep.slotIndex];
+    const newName=classif||placeholder;
+    state.groupMatches[rep.groupLetter].forEach(m=>{
+      if(isRepSlot(m.home))m.home=newName;
+      if(isRepSlot(m.away))m.away=newName;
+    });
+    saveState();renderGroups();renderRepescagem();
+    toast(classif?`✓ ${classif} classificado para o Grupo ${rep.groupLetter}!`:'✓ Resultados salvos!');
+  });
+
+  container.appendChild(card);
+}
+
+// ===================== RENDER MATA-MATA =====================
+function renderKnockout(){
+  const v=document.getElementById('view-matamata');
+  v.innerHTML=`<p style="color:var(--muted);font-size:.8rem;margin-bottom:.8rem">
+    Clique em uma partida para editar os times e o placar. Em caso de empate, o campo de pênaltis aparece automaticamente.
+  </p><div class="bracket-outer"><div class="bracket" id="brk"></div></div>`;
+  const brk=document.getElementById('brk');
+  const rounds=[
+    {key:'r32',label:'Rodada de 32',  matches:state.knockout.r32},
+    {key:'r16',label:'Oitavas',        matches:state.knockout.r16},
+    {key:'qf', label:'Quartas',        matches:state.knockout.qf},
+    {key:'sf', label:'Semifinal',      matches:state.knockout.sf},
+    {key:'final',label:'🏆 Final',     matches:state.knockout.final},
+  ];
+  rounds.forEach(round=>{
+    const col=document.createElement('div');
+    col.className='bracket-round';
+    col.innerHTML=`<div class="round-title">${round.label}</div>`;
+    const wrap=document.createElement('div');
+    wrap.className='bracket-matches';
+    round.matches.forEach((m,mi)=>{
+      const w=getWinner(m);
+      const hWin=w===m.home,aWin=w===m.away;
+      const isDraw=m.hs!==null&&m.as!==null&&m.hs===m.as;
+      const el=document.createElement('div');
+      el.className='bracket-match';
+      const hPenStr=isDraw&&m.hpen!==null?`<span class="bracket-pen">(${m.hpen})</span>`:'';
+      const aPenStr=isDraw&&m.apen!==null?`<span class="bracket-pen">(${m.apen})</span>`:'';
+      el.innerHTML=`
+        <div class="bracket-team${hWin?' winner':''}">
+          <span>${m.home}</span>
+          <span style="display:flex;align-items:center;gap:2px">
+            <span class="bracket-score-k">${m.hs!==null?m.hs:''}</span>${hPenStr}
+          </span>
+        </div>
+        <div class="bracket-team${aWin?' winner':''}">
+          <span>${m.away}</span>
+          <span style="display:flex;align-items:center;gap:2px">
+            <span class="bracket-score-k">${m.as!==null?m.as:''}</span>${aPenStr}
+          </span>
+        </div>`;
+      el.onclick=()=>openKnockoutModal(round.key,mi);
+      wrap.appendChild(el);
+    });
+    col.appendChild(wrap);brk.appendChild(col);
+  });
+}
+
+function openKnockoutModal(key,mi){
+  const m=state.knockout[key][mi];
+  const isDraw=m.hs!==null&&m.as!==null&&m.hs===m.as;
+  const root=document.getElementById('modal-root');
+  root.innerHTML=`<div class="modal-overlay" id="modal-overlay">
+    <div class="modal">
+      <h3>⚽ Editar Partida</h3>
+      <div style="display:flex;gap:.5rem;margin-bottom:.8rem">
+        <input id="m-home" style="flex:1;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:.4rem .6rem;font-size:.8rem;outline:none;font-family:'DM Sans',sans-serif" value="${m.home}" placeholder="Time 1">
+        <input id="m-away" style="flex:1;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:.4rem .6rem;font-size:.8rem;outline:none;font-family:'DM Sans',sans-serif" value="${m.away}" placeholder="Time 2">
+      </div>
+      <div class="modal-label">Placar (tempo normal)</div>
+      <div class="modal-row">
+        <div class="modal-team" id="m-lbl-h">${m.home}</div>
+        <div class="modal-score-row">
+          <input class="modal-input" id="m-hs" type="number" min="0" value="${m.hs!==null?m.hs:''}" placeholder="–">
+          <span style="color:var(--muted)">×</span>
+          <input class="modal-input" id="m-as" type="number" min="0" value="${m.as!==null?m.as:''}" placeholder="–">
+        </div>
+        <div class="modal-team right" id="m-lbl-a">${m.away}</div>
+      </div>
+      <div id="pen-section" style="${isDraw?'':'display:none'}">
+        <div class="modal-label" style="margin-top:.6rem">Pênaltis</div>
+        <div class="modal-pen-row">
+          <input class="modal-input pen" id="m-hpen" type="number" min="0" value="${m.hpen!==null?m.hpen:''}" placeholder="–">
+          <span style="color:var(--pen);font-size:.8rem">×</span>
+          <input class="modal-input pen" id="m-apen" type="number" min="0" value="${m.apen!==null?m.apen:''}" placeholder="–">
+        </div>
+        <div class="pen-note">🟣 Pênaltis só quando o placar estiver empatado</div>
+      </div>
+      <div class="modal-btns">
+        <button class="modal-btn save" id="m-save">💾 Salvar</button>
+        <button class="modal-btn clear" id="m-clear">✕ Limpar</button>
+        <button class="modal-btn cancel" id="m-cancel">Cancelar</button>
+      </div>
+    </div>
+  </div>`;
+
+  // Live team label update
+  document.getElementById('m-home').addEventListener('input',e=>document.getElementById('m-lbl-h').textContent=e.target.value||'Time 1');
+  document.getElementById('m-away').addEventListener('input',e=>document.getElementById('m-lbl-a').textContent=e.target.value||'Time 2');
+
+  // Show/hide pen section on draw
+  function checkDraw(){
+    const hv=document.getElementById('m-hs').value;
+    const av=document.getElementById('m-as').value;
+    const draw=hv!==''&&av!==''&&parseInt(hv)===parseInt(av);
+    document.getElementById('pen-section').style.display=draw?'':'none';
+    if(!draw){document.getElementById('m-hpen').value='';document.getElementById('m-apen').value='';}
+  }
+  document.getElementById('m-hs').addEventListener('input',checkDraw);
+  document.getElementById('m-as').addEventListener('input',checkDraw);
+
+  document.getElementById('m-save').onclick=()=>{
+    m.home=document.getElementById('m-home').value||m.home;
+    m.away=document.getElementById('m-away').value||m.away;
+    const hs=document.getElementById('m-hs').value;
+    const as=document.getElementById('m-as').value;
+    m.hs=hs!==''?parseInt(hs):null;
+    m.as=as!==''?parseInt(as):null;
+    const hpen=document.getElementById('m-hpen').value;
+    const apen=document.getElementById('m-apen').value;
+    const isDraw2=m.hs!==null&&m.as!==null&&m.hs===m.as;
+    m.hpen=isDraw2&&hpen!==''?parseInt(hpen):null;
+    m.apen=isDraw2&&apen!==''?parseInt(apen):null;
+    saveState();renderKnockout();root.innerHTML='';toast('✓ Placar salvo!');
+  };
+  document.getElementById('m-clear').onclick=()=>{
+    m.hs=null;m.as=null;m.hpen=null;m.apen=null;
+    saveState();renderKnockout();root.innerHTML='';
+  };
+  document.getElementById('m-cancel').onclick=()=>root.innerHTML='';
+  document.getElementById('modal-overlay').addEventListener('click',e=>{if(e.target===e.currentTarget)root.innerHTML='';});
+}
+
+// ===================== RENDER STATS =====================
+function renderStats(){
+  let goals=0,total=0,played=0;
+  Object.keys(state.groupMatches).forEach(g=>state.groupMatches[g].forEach(m=>{
+    total++;if(m.hs!==null&&m.as!==null){played++;goals+=m.hs+m.as;}
+  }));
+  document.getElementById('view-stats').innerHTML=`
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">⚽ Total de Gols</div><div class="stat-value">${goals}</div><div class="stat-sub">fase de grupos</div></div>
+      <div class="stat-card"><div class="stat-label">📈 Média / Partida</div><div class="stat-value">${played>0?(goals/played).toFixed(2):'—'}</div><div class="stat-sub">gols por jogo</div></div>
+      <div class="stat-card"><div class="stat-label">🎮 Partidas Jogadas</div><div class="stat-value">${played}</div><div class="stat-sub">de ${total} na fase de grupos</div></div>
+      <div class="stat-card"><div class="stat-label">🌍 Seleções</div><div class="stat-value">48</div><div class="stat-sub">12 grupos · 104 partidas</div></div>
+    </div>
+    <div class="section-title">🥅 Artilheiros</div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden">
+      <table class="scorers-table">
+        <thead><tr><th>#</th><th>Jogador</th><th>Seleção</th><th>Gols</th></tr></thead>
+        <tbody>${[...state.scorers].sort((a,b)=>b.goals-a.goals).map((s,i)=>`
+          <tr>
+            <td><span class="rank-badge ${i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-n'}">${i+1}</span></td>
+            <td style="font-weight:600">${s.name}</td><td>${s.team}</td>
+            <td><input class="goals-input" type="number" min="0" value="${s.goals}" onchange="updScorer('${s.name}',this.value)"></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+function updScorer(name,val){
+  const s=state.scorers.find(x=>x.name===name);
+  if(s){s.goals=parseInt(val)||0;saveState();toast('✓ Artilheiro atualizado!');}
+}
+
+// ===================== NAV =====================
+function switchTab(btn,tab){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+tab).classList.add('active');
+  if(tab==='grupos')renderGroups();
+  if(tab==='partidas')renderMatches();
+  if(tab==='repescagem')renderRepescagem();
+  if(tab==='matamata')renderKnockout();
+  if(tab==='stats')renderStats();
+}
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+renderGroups();
+</script>
+</body>
+</html>
