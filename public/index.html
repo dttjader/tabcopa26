@@ -303,7 +303,8 @@ const repDef=[
 ];
 const koRounds=[
   {key:'r32',label:'Rodada de 32'},{key:'r16',label:'Oitavas de Final'},
-  {key:'qf',label:'Quartas de Final'},{key:'sf',label:'Semifinal'},{key:'final',label:'🏆 Final'},
+  {key:'qf',label:'Quartas de Final'},{key:'sf',label:'Semifinal'},
+  {key:'3p',label:'🥉 3º Lugar'},{key:'final',label:'🏆 Final'},
 ];
 const POSICOES=['G','D','M','A'];
 const POS_LABELS={G:'Goleiro',D:'Defensor',M:'Meio-campo',A:'Atacante'};
@@ -329,6 +330,7 @@ const state={
     r16:Array(8).fill(0).map(()=>({home:'?',away:'?',hs:null,as:null,hpen:null,apen:null})),
     qf: Array(4).fill(0).map(()=>({home:'?',away:'?',hs:null,as:null,hpen:null,apen:null})),
     sf: Array(2).fill(0).map(()=>({home:'?',away:'?',hs:null,as:null,hpen:null,apen:null})),
+    '3p':[{home:'?',away:'?',hs:null,as:null,hpen:null,apen:null}],
     final:[{home:'?',away:'?',hs:null,as:null,hpen:null,apen:null}],
   },
   // jogadores: [{id,nome,pais,numero,posicao,gols,assistencias,amarelos,vermelhos}]
@@ -698,7 +700,9 @@ function applyScheduleToState() {
     if (row.fase === 'matamata') {
       const roundKey = row.grupo; // grupo col holds round key
       if (!state.knockout[roundKey]) return;
-      const idx = parseInt(row.id.split('_').pop()) - 1;
+      // id format: KO_R32_1, KO_3P_1, KO_FIN_1 — index is last numeric segment minus 1
+      const lastPart = row.id.split('_').pop();
+      const idx = parseInt(lastPart) - 1;
       if (isNaN(idx) || idx < 0) return;
       const m = state.knockout[roundKey][idx];
       if (!m) return;
@@ -772,7 +776,8 @@ function buildCalendarItems() {
     else if (row.fase === 'matamata') {
       const roundKey = row.grupo;
       if (!state.knockout[roundKey]) return;
-      const idx = parseInt(row.id.split('_').pop()) - 1;
+      const lastPart = row.id.split('_').pop();
+      const idx = parseInt(lastPart) - 1;
       const m = state.knockout[roundKey]?.[idx];
       if (!m) return;
       home = m.home; away = m.away;
@@ -789,7 +794,8 @@ function buildCalendarItems() {
     else return;
 
     const badgeMap = { grupos:'badge-grupo', repescagem:'badge-rep', matamata:'badge-ko' };
-    const labelMap = { grupos:`Grupo ${row.grupo} · ${row.etapa}`, repescagem:`${repDef.find(r=>r.id===row.grupo)?.label||row.grupo} · ${row.etapa==='SF'?'Semifinal':'Final'}`, matamata:`${row.etapa} · ${row.id.split('_').pop()}ª` };
+    const _idxNum = parseInt(row.id.split('_').pop());
+    const labelMap = { grupos:`Grupo ${row.grupo} · ${row.etapa}`, repescagem:`${repDef.find(r=>r.id===row.grupo)?.label||row.grupo} · ${row.etapa==='SF'?'Semifinal':'Final'}`, matamata:row.etapa };
 
     items.push({
       date: row.data, time: row.hora_brasilia,
