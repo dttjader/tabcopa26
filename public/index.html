@@ -341,18 +341,26 @@ Object.keys(groupsBase).forEach(g=>{state.groupMatches[g]=makeGroupMatches(group
 repDef.forEach(r=>{state.repScores[r.id]={}});
 
 function saveState(){
-  try{localStorage.setItem('copa2026v6',JSON.stringify({
+  try{localStorage.setItem('copa2026v7',JSON.stringify({
     groupMatches:state.groupMatches,repScores:state.repScores,
     knockout:state.knockout,jogadores:state.jogadores,_nextId:state._nextId,
   }));}catch(e){}
 }
 (function loadState(){
   try{
-    const s=JSON.parse(localStorage.getItem('copa2026v6')||'null');
+    const s=JSON.parse(localStorage.getItem('copa2026v7')||'null');
     if(!s)return;
     if(s.groupMatches) Object.assign(state.groupMatches,s.groupMatches);
     if(s.repScores)    Object.assign(state.repScores,s.repScores);
-    if(s.knockout)     Object.assign(state.knockout,s.knockout);
+    if(s.knockout){
+      // Merge saved rounds into state, preserving new rounds (like '3p') not in old saves
+      Object.keys(s.knockout).forEach(k=>{
+        if(state.knockout[k]) Object.assign(state.knockout[k], s.knockout[k].map ? {} : s.knockout[k]);
+        if(Array.isArray(s.knockout[k]) && Array.isArray(state.knockout[k])){
+          s.knockout[k].forEach((m,i)=>{ if(state.knockout[k][i]) Object.assign(state.knockout[k][i],m); });
+        }
+      });
+    }
     if(s.jogadores)    state.jogadores=s.jogadores;
     if(s._nextId)      state._nextId=s._nextId;
   }catch(e){}
@@ -425,14 +433,6 @@ function calcGlobalStats(){
       played++;goals+=m.hs+m.as;
       if(m.hpen!==null&&m.apen!==null)goals+=m.hpen+m.apen;
     }
-  }));
-  repDef.forEach(rep=>rep.partidas.forEach(p=>{
-    const sc=state.repScores[rep.id]?.[p.id];
-    if(!sc)return;
-    const t=p.stage==='FIN'?getRepFinalTeams(rep):{home:p.home,away:p.away};
-    matches++;played++;
-    goals+=(sc.hs||0)+(sc.as||0);
-    if(sc.hpen!==null&&sc.apen!==null)goals+=sc.hpen+sc.apen;
   }));
   return{goals,matches,played};
 }
