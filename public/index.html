@@ -341,14 +341,14 @@ Object.keys(groupsBase).forEach(g=>{state.groupMatches[g]=makeGroupMatches(group
 repDef.forEach(r=>{state.repScores[r.id]={}});
 
 function saveState(){
-  try{localStorage.setItem('copa2026v7',JSON.stringify({
+  try{localStorage.setItem('copa2026v8',JSON.stringify({
     groupMatches:state.groupMatches,repScores:state.repScores,
     knockout:state.knockout,jogadores:state.jogadores,_nextId:state._nextId,
   }));}catch(e){}
 }
 (function loadState(){
   try{
-    const s=JSON.parse(localStorage.getItem('copa2026v7')||'null');
+    const s=JSON.parse(localStorage.getItem('copa2026v8')||'null');
     if(!s)return;
     if(s.groupMatches) Object.assign(state.groupMatches,s.groupMatches);
     if(s.repScores)    Object.assign(state.repScores,s.repScores);
@@ -519,7 +519,8 @@ function renderMatches(){
     v.innerHTML=`<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap">
       <span style="font-size:.78rem;color:var(--muted)">Visualização:</span>${toggleBtns}</div>
       <div id="matches-body"><div style="color:var(--muted);padding:2rem;text-align:center">⏳ Carregando calendário...</div></div>`;
-    loadSchedule().then(()=>renderMatchesCalendario());
+    if(scheduleLoaded){ renderMatchesCalendario(); }
+    else { loadSchedule().then(()=>renderMatchesCalendario()); }
     return;
   }
   v.innerHTML=`
@@ -629,13 +630,13 @@ let schedule = [];
 let scheduleLoaded = false;
 
 async function loadSchedule() {
-  if (scheduleLoaded) return;
+  if (scheduleLoaded) return Promise.resolve();
   try {
     const r = await fetch('resultados.csv');
     if (!r.ok) throw new Error('CSV não encontrado');
     const text = await r.text();
     const lines = text.trim().split('\n');
-    const headers = lines[0].split(',');
+    const headers = lines[0].split(',').map(h => h.replace(/\r/g,'').trim());
     schedule = lines.slice(1).map(line => {
       // Handle commas inside quoted fields
       const cols = [];
@@ -647,7 +648,7 @@ async function loadSchedule() {
       }
       cols.push(cur);
       const obj = {};
-      headers.forEach((h, i) => { obj[h.trim()] = (cols[i] || '').trim(); });
+      headers.forEach((h, i) => { obj[h.trim()] = (cols[i] || '').replace(/\r/g,'').trim(); });
       // Normalize numeric fields
       obj.gols_mandante  = obj.gols_mandante  !== '' ? parseInt(obj.gols_mandante)  : null;
       obj.gols_visitante = obj.gols_visitante !== '' ? parseInt(obj.gols_visitante) : null;
@@ -661,6 +662,93 @@ async function loadSchedule() {
   } catch(e) {
     console.warn('Não foi possível carregar resultados.csv:', e.message);
     scheduleLoaded = true; // proceed without it
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// CARREGAMENTO DE JOGADORES E EVENTOS (CSV)
+// ══════════════════════════════════════════════════════
+async function loadRosters() {
+  // Load jogadores.csv — source of truth for player roster
+  try {
+    const r = await fetch('jogadores.csv');
+    if (!r.ok) throw new Error('jogadores.csv não encontrado');
+    const text = await r.text();
+    const lines = text.trim().split('\n').filter(l => !l.startsWith('#'));
+    const headers = lines[0].split(',').map(h => h.replace(/\r/g,'').trim());
+    const csvPlayers = lines.slice(1).map(line => {
+      const cols = line.split(',');
+      const obj = {};
+      headers.forEach((h,i) => obj[h] = (cols[i]||'').replace(/\r/g,'').trim());
+      return obj;
+    }).filter(o => o.id);
+
+    // Merge: preserve manual edits (gols/assists/cartões) but update roster info
+    csvPlayers.forEach(cp => {
+      const existing = state.jogadores.find(j => j.csvId === cp.id);
+      if (existing) {
+        // Update roster info, keep stats
+        existing.nome    = cp.nome;
+        existing.pais    = cp.pais;
+        existing.numero  = parseInt(cp.numero) || null;
+        existing.posicao = cp.posicao;
+        existing.pais_code = cp.pais_code;
+        existing.csvId   = cp.id;
+      } else {
+        state.jogadores.push({
+          id: state._nextId++,
+          csvId: cp.id,          // e.g. "BRA10"
+          nome: cp.nome,
+          pais: cp.pais,
+          pais_code: cp.pais_code,
+          numero: parseInt(cp.numero) || null,
+          posicao: cp.posicao,
+          gols: 0, assistencias: 0, amarelos: 0, vermelhos: 0,
+          fromCsv: true,
+        });
+      }
+    });
+    saveState();
+  } catch(e) {
+    console.warn('jogadores.csv:', e.message);
+  }
+
+  // Load eventos.csv — accumulate stats per player
+  try {
+    const r = await fetch('eventos.csv');
+    if (!r.ok) throw new Error('eventos.csv não encontrado');
+    const text = await r.text();
+    const lines = text.trim().split('\n').filter(l => !l.startsWith('#') && l.trim());
+    if (lines.length < 2) return; // only header, no data
+
+    const headers = lines[0].split(',').map(h => h.replace(/\r/g,'').trim());
+
+    // Reset all CSV-sourced player stats before recomputing from events
+    state.jogadores.forEach(j => {
+      if (j.fromCsv) { j.gols=0; j.assistencias=0; j.amarelos=0; j.vermelhos=0; }
+    });
+
+    lines.slice(1).forEach(line => {
+      if (!line.trim()) return;
+      const cols = line.split(',');
+      const obj = {};
+      headers.forEach((h,i) => obj[h] = (cols[i]||'').replace(/\r/g,'').trim());
+
+      const jogId = obj.jogador_id; // e.g. "BRA10"
+      if (!jogId) return;
+
+      const jog = state.jogadores.find(j => j.csvId === jogId);
+      if (!jog) return;
+
+      jog.gols         += parseInt(obj.gols)        || 0;
+      jog.assistencias += parseInt(obj.assistencias) || 0;
+      jog.amarelos     += parseInt(obj.amarelo)      || 0;
+      jog.vermelhos    += parseInt(obj.vermelho)     || 0;
+    });
+
+    saveState();
+  } catch(e) {
+    console.warn('eventos.csv:', e.message);
   }
 }
 
@@ -993,6 +1081,11 @@ let playerSearch='';
 let playerFilterPos='';
 let playerFilterPais='';
 
+function reloadRosters(){
+  // Re-run roster loading (forces re-fetch even if already loaded)
+  loadRosters().then(()=>{ renderJogadores(); renderStats(); toast('✓ CSVs recarregados!'); });
+}
+
 function renderJogadores(){
   const v=document.getElementById('view-jogadores');
   const paisesList=[...new Set(state.jogadores.map(j=>j.pais))].filter(Boolean).sort();
@@ -1008,6 +1101,10 @@ function renderJogadores(){
         ${paisesList.map(p=>`<option value="${p}"${playerFilterPais===p?' selected':''}>${p}</option>`).join('')}
       </select>
       <button class="btn-add-player" onclick="openAddPlayer()">+ Adicionar Jogador</button>
+      <button class="btn-add-player" style="background:rgba(96,165,250,.12);border-color:rgba(96,165,250,.3);color:var(--blue)" onclick="reloadRosters()">🔄 Recarregar CSV</button>
+    </div>
+    <div style="font-size:.69rem;color:var(--muted);margin-bottom:.8rem">
+      📂 Jogadores do <code>jogadores.csv</code> — estatísticas calculadas do <code>eventos.csv</code>. Jogadores adicionados manualmente podem ser editados.
     </div>
     <div class="players-table-wrap">
       <table class="players-table">
@@ -1057,16 +1154,21 @@ function renderPlayersBody(){
   if(list.length===0){tbody.innerHTML=`<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:1.5rem">Nenhum jogador encontrado. Clique em "+ Adicionar Jogador" para começar.</td></tr>`;return;}
   tbody.innerHTML=list.map(j=>{
     const posCls=`pos-${j.posicao||'M'}`;
+    const fromCsv = !!j.fromCsv;
+    // Stats: editable only for manually-added players
+    const statCell = (val, field, cls) => fromCsv
+      ? `<td style="font-weight:600;color:var(--gold2);text-align:center">${val||0}</td>`
+      : `<td><input class="p-input num ${cls}" type="number" min="0" value="${val||0}" onchange="updatePlayer(${j.id},'${field}',this.value)"></td>`;
     return`<tr>
-      <td><input class="p-input num" type="number" min="1" max="99" value="${j.numero||''}" onchange="updatePlayer(${j.id},'numero',this.value)" placeholder="–"></td>
-      <td style="font-weight:600;white-space:nowrap">${j.nome}</td>
+      <td style="text-align:center;font-family:'Bebas Neue',sans-serif;font-size:1rem;color:var(--muted)">${j.numero||'–'}</td>
+      <td style="font-weight:600;white-space:nowrap">${j.nome}${fromCsv?`<span style="font-size:.52rem;background:rgba(96,165,250,.15);color:var(--blue);border-radius:3px;padding:1px 4px;margin-left:4px;font-weight:700">${j.csvId}</span>`:''}</td>
       <td style="white-space:nowrap">${j.pais}</td>
       <td><span class="pos-badge ${posCls}">${j.posicao||'–'}</span></td>
-      <td><input class="p-input num" type="number" min="0" value="${j.gols||0}" onchange="updatePlayer(${j.id},'gols',this.value)"></td>
-      <td><input class="p-input num assist-stat" type="number" min="0" value="${j.assistencias||0}" onchange="updatePlayer(${j.id},'assistencias',this.value)"></td>
-      <td><input class="p-input num yellow-stat" type="number" min="0" value="${j.amarelos||0}" onchange="updatePlayer(${j.id},'amarelos',this.value)"></td>
-      <td><input class="p-input num red-stat" type="number" min="0" value="${j.vermelhos||0}" onchange="updatePlayer(${j.id},'vermelhos',this.value)"></td>
-      <td><button class="btn-del-player" onclick="deletePlayer(${j.id})" title="Remover">✕</button></td>
+      ${statCell(j.gols,'gols','')}
+      ${statCell(j.assistencias,'assistencias','assist-stat')}
+      ${statCell(j.amarelos,'amarelos','yellow-stat')}
+      ${statCell(j.vermelhos,'vermelhos','red-stat')}
+      <td>${fromCsv?'':'<button class="btn-del-player" onclick="deletePlayer('+j.id+')" title="Remover">✕</button>'}</td>
     </tr>`;
   }).join('');
 }
@@ -1235,7 +1337,8 @@ function toast(msg){
 
 // INIT
 syncAllRepToGroups();
-loadSchedule().then(()=>renderMatches());
+loadSchedule().then(()=>{ scheduleLoaded=true; renderMatches(); });
+loadRosters();
 </script>
 </body>
 </html>

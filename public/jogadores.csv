@@ -1,0 +1,74 @@
+id,pais,pais_code,numero,nome,posicao
+BRA01,Brasil 🇧🇷,BRA,1,Ederson,G
+BRA03,Brasil 🇧🇷,BRA,3,Guilherme Arana,D
+BRA04,Brasil 🇧🇷,BRA,4,Marquinhos,D
+BRA05,Brasil 🇧🇷,BRA,5,Casemiro,M
+BRA06,Brasil 🇧🇷,BRA,6,Alex Sandro,D
+BRA07,Brasil 🇧🇷,BRA,7,Rodrygo,A
+BRA09,Brasil 🇧🇷,BRA,9,Gabriel Jesus,A
+BRA10,Brasil 🇧🇷,BRA,10,Neymar Jr.,A
+BRA11,Brasil 🇧🇷,BRA,11,Raphinha,A
+BRA14,Brasil 🇧🇷,BRA,14,Éder Militão,D
+BRA20,Brasil 🇧🇷,BRA,20,Endrick,A
+BRA21,Brasil 🇧🇷,BRA,21,Vinicius Jr.,A
+ARG01,Argentina 🇦🇷,ARG,1,Emiliano Martínez,G
+ARG10,Argentina 🇦🇷,ARG,10,Lionel Messi,A
+ARG11,Argentina 🇦🇷,ARG,11,Ángel Di María,A
+ARG09,Argentina 🇦🇷,ARG,9,Julián Álvarez,A
+ARG22,Argentina 🇦🇷,ARG,22,Lautaro Martínez,A
+FRA01,França 🇫🇷,FRA,1,Mike Maignan,G
+FRA09,França 🇫🇷,FRA,9,Olivier Giroud,A
+FRA10,França 🇫🇷,FRA,10,Kylian Mbappé,A
+FRA14,França 🇫🇷,FRA,14,Adrien Rabiot,M
+FRA07,França 🇫🇷,FRA,7,Antoine Griezmann,A
+ESP01,Espanha 🇪🇸,ESP,1,Unai Simón,G
+ESP09,Espanha 🇪🇸,ESP,9,Álvaro Morata,A
+ESP10,Espanha 🇪🇸,ESP,10,Pedri,M
+ESP25,Espanha 🇪🇸,ESP,25,Lamine Yamal,A
+ESP22,Espanha 🇪🇸,ESP,22,Dani Olmo,M
+ING01,Inglaterra 🇬🇧,ING,1,Jordan Pickford,G
+ING07,Inglaterra 🇬🇧,ING,7,Bukayo Saka,A
+ING09,Inglaterra 🇬🇧,ING,9,Harry Kane,A
+ING10,Inglaterra 🇬🇧,ING,10,Jude Bellingham,M
+POR01,Portugal 🇵🇹,POR,1,Diogo Costa,G
+POR07,Portugal 🇵🇹,POR,7,Cristiano Ronaldo,A
+POR10,Portugal 🇵🇹,POR,10,Bernardo Silva,M
+POR17,Portugal 🇵🇹,POR,17,Rafael Leão,A
+ALE01,Alemanha 🇩🇪,ALE,1,Manuel Neuer,G
+ALE09,Alemanha 🇩🇪,ALE,9,Kai Havertz,A
+ALE10,Alemanha 🇩🇪,ALE,10,Jamal Musiala,M
+ALE13,Alemanha 🇩🇪,ALE,13,Thomas Müller,A
+HOL01,Países Baixos 🇳🇱,HOL,1,Bart Verbruggen,G
+HOL09,Países Baixos 🇳🇱,HOL,9,Memphis Depay,A
+HOL10,Países Baixos 🇳🇱,HOL,10,Davy Klaassen,M
+HOL11,Países Baixos 🇳🇱,HOL,11,Cody Gakpo,A
+BEL01,Bélgica 🇧🇪,BEL,1,Koen Casteels,G
+BEL07,Bélgica 🇧🇪,BEL,7,Kevin De Bruyne,M
+BEL09,Bélgica 🇧🇪,BEL,9,Romelu Lukaku,A
+BEL10,Bélgica 🇧🇪,BEL,10,Eden Hazard,A
+NOR01,Noruega 🇳🇴,NOR,1,Ørjan Nyland,G
+NOR09,Noruega 🇳🇴,NOR,9,Erling Haaland,A
+NOR11,Noruega 🇳🇴,NOR,11,Martin Ødegaard,M
+MAR01,Marrocos 🇲🇦,MAR,1,Yassine Bounou,G
+MAR07,Marrocos 🇲🇦,MAR,7,Hakim Ziyech,A
+MAR10,Marrocos 🇲🇦,MAR,10,Azzedine Ounahi,M
+SEN01,Senegal 🇸🇳,SEN,1,Edouard Mendy,G
+SEN10,Senegal 🇸🇳,SEN,10,Sadio Mané,A
+JAP01,Japão 🇯🇵,JAP,1,Shuichi Gonda,G
+JAP09,Japão 🇯🇵,JAP,9,Ayase Ueda,A
+JAP10,Japão 🇯🇵,JAP,10,Takumi Minamino,M
+COL01,Colômbia 🇨🇴,COL,1,Camilo Vargas,G
+COL10,Colômbia 🇨🇴,COL,10,James Rodríguez,M
+COL09,Colômbia 🇨🇴,COL,9,Falcao,A
+URU01,Uruguai 🇺🇾,URU,1,Sergio Rochet,G
+URU09,Uruguai 🇺🇾,URU,9,Darwin Núñez,A
+URU10,Uruguai 🇺🇾,URU,10,Federico Valverde,M
+CRO01,Croácia 🇭🇷,CRO,1,Dominik Livaković,G
+CRO10,Croácia 🇭🇷,CRO,10,Luka Modrić,M
+CRO17,Croácia 🇭🇷,CRO,17,Andrej Kramarić,A
+EUA01,EUA 🇺🇸,EUA,1,Matt Turner,G
+EUA10,EUA 🇺🇸,EUA,10,Christian Pulisic,A
+EUA09,EUA 🇺🇸,EUA,9,Ricardo Pepi,A
+MEX01,México 🇲🇽,MEX,1,Guillermo Ochoa,G
+MEX10,México 🇲🇽,MEX,10,Hirving Lozano,A
+MEX09,México 🇲🇽,MEX,9,Raúl Jiménez,A
