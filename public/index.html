@@ -341,16 +341,34 @@ Object.keys(groupsBase).forEach(g=>{state.groupMatches[g]=makeGroupMatches(group
 repDef.forEach(r=>{state.repScores[r.id]={}});
 
 function saveState(){
-  try{localStorage.setItem('copa2026v8',JSON.stringify({
-    groupMatches:state.groupMatches,repScores:state.repScores,
-    knockout:state.knockout,jogadores:state.jogadores,_nextId:state._nextId,
-  }));}catch(e){}
+  try{
+    // Store only scores for groupMatches, not team names (names always derived from groupsBase)
+    const gmScores={};
+    Object.keys(state.groupMatches).forEach(g=>{
+      gmScores[g]=state.groupMatches[g].map(m=>({hs:m.hs,as:m.as}));
+    });
+    localStorage.setItem('copa2026v8',JSON.stringify({
+      gmScores,repScores:state.repScores,
+      knockout:state.knockout,jogadores:state.jogadores,_nextId:state._nextId,
+    }));
+  }catch(e){}
 }
 (function loadState(){
   try{
     const s=JSON.parse(localStorage.getItem('copa2026v8')||'null');
     if(!s)return;
-    if(s.groupMatches) Object.assign(state.groupMatches,s.groupMatches);
+    // Restore only scores (hs/as) — team names always from groupsBase
+    if(s.gmScores){
+      Object.keys(s.gmScores).forEach(g=>{
+        if(!state.groupMatches[g])return;
+        s.gmScores[g].forEach((sc,i)=>{
+          if(state.groupMatches[g][i]){
+            state.groupMatches[g][i].hs=sc.hs;
+            state.groupMatches[g][i].as=sc.as;
+          }
+        });
+      });
+    }
     if(s.repScores)    Object.assign(state.repScores,s.repScores);
     if(s.knockout){
       // Merge saved rounds into state, preserving new rounds (like '3p') not in old saves
@@ -507,7 +525,7 @@ function makeMatchCard({label,badgeClass,badgeText,home,away,hs,as,hpen,apen,all
 // ══════════════════════════════════════════════════════
 // PARTIDAS
 // ══════════════════════════════════════════════════════
-let activePhase='grupos',activeGroup='todos',activeKoRound='r32',activeView='fase';
+let activePhase='grupos',activeGroup='todos',activeKoRound='r32',activeView='fase',calShowPast=false;
 
 function renderMatches(){
   const v=document.getElementById('view-partidas');
@@ -517,8 +535,13 @@ function renderMatches(){
   </div>`;
   if(activeView==='calendario'){
     v.innerHTML=`<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap">
-      <span style="font-size:.78rem;color:var(--muted)">Visualização:</span>${toggleBtns}</div>
-      <div id="matches-body"><div style="color:var(--muted);padding:2rem;text-align:center">⏳ Carregando calendário...</div></div>`;
+      <span style="font-size:.78rem;color:var(--muted)">Visualização:</span>
+      ${toggleBtns}
+      <button onclick="calShowPast=!calShowPast;renderMatches()" style="background:${calShowPast?'rgba(212,160,23,.15)':'rgba(255,255,255,.04)'};border:1px solid ${calShowPast?'var(--gold)':'var(--border)'};color:${calShowPast?'var(--gold)':'var(--muted)'};padding:.28rem .7rem;border-radius:999px;font-size:.7rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s">
+        \${calShowPast?'🙈 Ocultar passadas':'📅 Mostrar todas'}
+      </button>
+    </div>
+    <div id="matches-body"><div style="color:var(--muted);padding:2rem;text-align:center">⏳ Carregando calendário...</div></div>`;
     if(scheduleLoaded){ renderMatchesCalendario(); }
     else { loadSchedule().then(()=>renderMatchesCalendario()); }
     return;
@@ -526,8 +549,8 @@ function renderMatches(){
   v.innerHTML=`
     <div class="phase-tabs" style="display:flex;align-items:center">
       <button class="phase-btn${activePhase==='grupos'?' on':''}"     onclick="setPhase('grupos')">⚽ Grupos</button>
-      <button class="phase-btn${activePhase==='repescagem'?' on':''}" onclick="setPhase('repescagem')">🔁 Repescagem</button>
       <button class="phase-btn${activePhase==='matamata'?' on':''}"   onclick="setPhase('matamata')">⚔️ Mata-Mata</button>
+      <button class="phase-btn${activePhase==='repescagem'?' on':''}" onclick="setPhase('repescagem')">🔁 Repescagem</button>
       ${toggleBtns}
     </div>
     <div id="matches-body"></div>`;
@@ -759,9 +782,12 @@ function applyScheduleToState() {
     if (row.fase === 'grupos') {
       const g = row.grupo;
       if (!state.groupMatches[g]) return;
-      // Match by mandante/visitante name (strip emoji for loose match)
-      const mi = state.groupMatches[g].findIndex(m =>
-        normName(m.home) === normName(row.mandante) && normName(m.away) === normName(row.visitante)
+      // Match by index: the CSV and makeGroupMatches use the same pair order.
+      // groupsBase pairs: [0,1],[2,3],[0,2],[1,3],[0,3],[1,2]
+      const base = groupsBase[g];
+      const pairs = [[0,1],[2,3],[0,2],[1,3],[0,3],[1,2]];
+      const mi = pairs.findIndex(([hi,ai]) =>
+        normName(base[hi]) === normName(row.mandante) && normName(base[ai]) === normName(row.visitante)
       );
       if (mi !== -1) {
         state.groupMatches[g][mi].hs = row.gols_mandante;
@@ -918,7 +944,15 @@ function renderMatchesCalendario() {
   items.forEach(item => { if (!byDate[item.date]) byDate[item.date] = []; byDate[item.date].push(item); });
   body.innerHTML = '';
   const today = new Date().toISOString().slice(0, 10);
-  Object.keys(byDate).sort().forEach(dateStr => {
+  const allDates = Object.keys(byDate).sort();
+  const visibleDates = calShowPast ? allDates : allDates.filter(d => d >= today);
+  if(visibleDates.length === 0 && allDates.length > 0){
+    body.innerHTML=`<div style="color:var(--muted);padding:1.5rem;text-align:center;font-size:.82rem">
+      Sem jogos futuros. <button onclick="calShowPast=true;renderMatches()" style="background:none;border:none;color:var(--gold);cursor:pointer;font-size:.82rem;text-decoration:underline">Mostrar todas as datas</button>
+    </div>`;
+    return;
+  }
+  visibleDates.forEach(dateStr => {
     const fd = formatDate(dateStr);
     const dayItems = byDate[dateStr];
     const isToday = dateStr === today;
