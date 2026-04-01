@@ -59,8 +59,11 @@ nav.tabs{display:flex;justify-content:center;gap:.35rem;padding:1rem 1rem 0;flex
 .view-toggle{display:flex;gap:.3rem;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:3px;margin-left:auto}
 .view-toggle-btn{padding:.28rem .7rem;border-radius:5px;font-size:.7rem;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;color:var(--muted);background:transparent;transition:all .15s}
 .view-toggle-btn.on{background:var(--card);color:var(--gold);border:1px solid var(--border)}
-.cal-day{margin-bottom:1.2rem}
-.cal-day-header{display:flex;align-items:center;gap:.7rem;margin-bottom:.6rem}
+.cal-day{margin-bottom:.45rem;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--card)}
+.cal-day.expanded{border-color:rgba(212,160,23,.25)}
+.cal-day.today-day{border-color:rgba(212,160,23,.4)}
+.cal-day-header{display:flex;align-items:center;gap:.7rem;padding:.6rem .85rem;cursor:pointer;user-select:none;transition:background .15s}
+.cal-day-header:hover{background:rgba(255,255,255,.03)}
 .cal-date-badge{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.35rem .7rem;text-align:center;min-width:52px}
 .cal-date-day{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--gold2);line-height:1}
 .cal-date-month{font-size:.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
@@ -525,7 +528,7 @@ function makeMatchCard({label,badgeClass,badgeText,home,away,hs,as,hpen,apen,all
 // ══════════════════════════════════════════════════════
 // PARTIDAS
 // ══════════════════════════════════════════════════════
-let activePhase='grupos',activeGroup='todos',activeKoRound='r32',activeView='fase',calShowPast=false;
+let activePhase='grupos',activeGroup='todos',activeKoRound='r32',activeView='fase';
 
 function renderMatches(){
   const v=document.getElementById('view-partidas');
@@ -534,13 +537,11 @@ function renderMatches(){
     <button class="view-toggle-btn${activeView==='calendario'?' on':''}" onclick="setView('calendario')">📅 Calendário</button>
   </div>`;
   if(activeView==='calendario'){
-    v.innerHTML=`<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap">
+    v.innerHTML=`<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.8rem;flex-wrap:wrap">
       <span style="font-size:.78rem;color:var(--muted)">Visualização:</span>
       ${toggleBtns}
-      <button onclick="calShowPast=!calShowPast;renderMatches()" style="background:${calShowPast?'rgba(212,160,23,.15)':'rgba(255,255,255,.04)'};border:1px solid ${calShowPast?'var(--gold)':'var(--border)'};color:${calShowPast?'var(--gold)':'var(--muted)'};padding:.28rem .7rem;border-radius:999px;font-size:.7rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s">
-        \${calShowPast?'🙈 Ocultar anteriores':'📅 Mostrar todas'}
-      </button>
     </div>
+    <p style="font-size:.7rem;color:var(--muted);margin-bottom:1rem">Clique em uma data para expandir ou recolher os jogos. A data de hoje abre automaticamente.</p>
     <div id="matches-body"><div style="color:var(--muted);padding:2rem;text-align:center">⏳ Carregando calendário...</div></div>`;
     if(scheduleLoaded){ renderMatchesCalendario(); }
     else { loadSchedule().then(()=>renderMatchesCalendario()); }
@@ -937,6 +938,16 @@ function formatDate(dateStr) {
   return { day: d.getDate(), month: months[d.getMonth()], year: d.getFullYear(), weekday: days[d.getDay()], iso: dateStr };
 }
 
+function toggleCalDay(dateStr) {
+  const dayDiv = document.getElementById('calday_' + dateStr.replace(/-/g,'_'));
+  if (!dayDiv) return;
+  const grid = dayDiv.querySelector('.cal-matches');
+  const arrow = dayDiv.querySelector('.cal-arrow');
+  const expanded = dayDiv.classList.toggle('expanded');
+  grid.style.display = expanded ? '' : 'none';
+  if (arrow) arrow.textContent = expanded ? '▲' : '▼';
+}
+
 function renderMatchesCalendario() {
   const body = document.getElementById('matches-body');
   const items = buildCalendarItems();
@@ -949,33 +960,43 @@ function renderMatchesCalendario() {
   body.innerHTML = '';
   const today = new Date().toISOString().slice(0, 10);
   const allDates = Object.keys(byDate).sort();
-  const visibleDates = calShowPast ? allDates : allDates.filter(d => d >= today);
-  if(visibleDates.length === 0 && allDates.length > 0){
-    body.innerHTML=`<div style="color:var(--muted);padding:1.5rem;text-align:center;font-size:.82rem">
-      Sem jogos futuros. <button onclick="calShowPast=true;renderMatches()" style="background:none;border:none;color:var(--gold);cursor:pointer;font-size:.82rem;text-decoration:underline">Mostrar todas as datas</button>
-    </div>`;
-    return;
-  }
-  visibleDates.forEach(dateStr => {
+
+  allDates.forEach(dateStr => {
     const fd = formatDate(dateStr);
     const dayItems = byDate[dateStr];
     const isToday = dateStr === today;
-    const dayDiv = document.createElement('div'); dayDiv.className = 'cal-day';
-    dayDiv.innerHTML = `<div class="cal-day-header">
-      <div class="cal-date-badge" style="${isToday ? 'border-color:var(--gold);background:rgba(212,160,23,.1)' : ''}">
-        <div class="cal-date-day" style="${isToday ? 'color:var(--gold)' : ''}">${fd.day}</div>
-        <div class="cal-date-month">${fd.month} ${fd.year}</div>
+    const isPast  = dateStr < today;
+    // Today expands by default; past and future start collapsed
+    const startExpanded = isToday;
+
+    const dayDiv = document.createElement('div');
+    dayDiv.className = 'cal-day' + (isToday ? ' today-day' : '') + (startExpanded ? ' expanded' : '');
+    dayDiv.id = 'calday_' + dateStr.replace(/-/g,'_');
+
+    // Count done matches for summary
+    const doneCount = dayItems.filter(i => i.hs !== null && i.as !== null).length;
+    const doneLabel = doneCount > 0 ? ` · <span style="color:var(--green);font-size:.65rem">${doneCount} encerrada${doneCount>1?'s':''}</span>` : '';
+    const pastLabel = isPast && !isToday ? ' <span style="color:var(--muted);font-size:.6rem">(passado)</span>' : '';
+    const todayLabel = isToday ? ' <span style="color:var(--gold);font-size:.62rem;font-weight:700">(hoje)</span>' : '';
+
+    dayDiv.innerHTML = `
+      <div class="cal-day-header" onclick="toggleCalDay('${dateStr}')">
+        <div class="cal-date-badge" style="${isToday?'border-color:var(--gold);background:rgba(212,160,23,.1)':isPast?'opacity:.6':''}">
+          <div class="cal-date-day" style="${isToday?'color:var(--gold)':isPast?'color:var(--muted)':''}">${fd.day}</div>
+          <div class="cal-date-month">${fd.month} ${fd.year}</div>
+        </div>
+        <div style="flex:1">
+          <div class="cal-date-label" style="${isPast&&!isToday?'color:var(--muted)':''}">${fd.weekday}${todayLabel}${pastLabel}</div>
+          <div class="cal-date-sub">${dayItems.length} partida${dayItems.length>1?'s':''}${doneLabel}</div>
+        </div>
+        <span class="cal-arrow" style="color:var(--muted);font-size:.65rem;margin-right:.3rem">${startExpanded?'▲':'▼'}</span>
       </div>
-      <div>
-        <div class="cal-date-label">${fd.weekday}${isToday ? ' <span style="color:var(--gold);font-size:.62rem">(hoje)</span>' : ''}</div>
-        <div class="cal-date-sub">${dayItems.length} partida${dayItems.length > 1 ? 's' : ''}</div>
-      </div>
-    </div>
-    <div class="cal-matches" id="cal_${dateStr.replace(/-/g,'_')}"></div>`;
+      <div class="cal-matches" id="cal_${dateStr.replace(/-/g,'_')}" style="${startExpanded?'':'display:none'};padding:.65rem;display:${startExpanded?'grid':'none'};grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:.65rem"></div>`;
+
     body.appendChild(dayDiv);
     const grid = dayDiv.querySelector('.cal-matches');
     dayItems.forEach(item => grid.appendChild(makeMatchCard({
-      label: `${item.label}${item.city && item.city !== 'TBD' ? ' · ' + item.city : ''}${item.time ? ' · ' + item.time : ''}`,
+      label: `${item.label}${item.city && item.city !== 'TBD' ? ' · '+item.city : ''}${item.time ? ' · '+item.time : ''}`,
       badgeClass: item.badge, badgeText: item.fase.toUpperCase(),
       home: item.home, away: item.away,
       hs: item.hs, as: item.as, hpen: item.hpen, apen: item.apen,
