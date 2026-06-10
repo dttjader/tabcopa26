@@ -849,22 +849,20 @@ function buildCalendarItems() {
     let onSave, onClear, allowPen = false, editTeams = false, note = null;
 
     if (row.fase === 'grupos') {
-      const g = row.grupo;
-      // Match by groupsBase original names (not resolved names in state which may have changed)
-      const base = groupsBase[g];
-      const pairs = [[0,1],[2,3],[0,2],[1,3],[0,3],[1,2]];
-      const mi = pairs.findIndex(([hi,ai]) =>
-        normName(base[hi]) === normName(home) && normName(base[ai]) === normName(away)
-      );
-      if (mi === -1) return;
-      const m = state.groupMatches[g][mi];
-      // Show resolved names (rep winner or original) for display
-      home = resolveTeam(base[pairs[mi][0]], g);
-      away = resolveTeam(base[pairs[mi][1]], g);
-      hs = m.hs; as_ = m.as;
-      onSave = (hs2, as2) => { m.hs=hs2; m.as=as2; syncAllRepToGroups(); saveState(); renderGroups(); renderMatches(); toast('✓ Salvo!'); };
-      onClear = () => { m.hs=null; m.as=null; syncAllRepToGroups(); saveState(); renderGroups(); renderMatches(); };
-    }
+  const g = row.grupo;
+  if (!state.groupMatches[g]) return;
+  
+  // Busca pelo ID do CSV diretamente no array de partidas
+  const idNum = parseInt(row.id.split('_').pop()) - 1;
+  const m = state.groupMatches[g][idNum];
+  if (!m) return;
+  
+  home = resolveTeam(m.home, g);
+  away = resolveTeam(m.away, g);
+  hs = m.hs; as_ = m.as;
+  onSave = (hs2, as2) => { m.hs=hs2; m.as=as2; syncAllRepToGroups(); saveState(); renderGroups(); renderMatches(); toast('✓ Salvo!'); };
+  onClear = () => { m.hs=null; m.as=null; syncAllRepToGroups(); saveState(); renderGroups(); renderMatches(); };
+      }
 
     else if (row.fase === 'repescagem') {
       const repId = row.grupo;
