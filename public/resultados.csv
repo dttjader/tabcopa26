@@ -1,5 +1,5 @@
 id,data,hora_brasilia,fase,grupo,etapa,mandante,visitante,gols_mandante,gols_visitante,pen_mandante,pen_visitante,cidade,estadio
-G_A_1,2026-06-11,16:00,grupos,A,Rodada 1,México 🇲🇽,África do Sul 🇿🇦,,,,,Cidade do México,Estádio Azteca
+G_A_1,2026-06-11,16:00,grupos,A,Rodada 1,México 🇲🇽,África do Sul 🇿🇦,1,0,,,Cidade do México,Estádio Azteca
 G_A_2,2026-06-11,23:00,grupos,A,Rodada 1,Coreia do Sul 🇰🇷,Repescagem Europa 4,,,,,Guadalajara,Estádio Akron
 G_A_3,2026-06-18,13:00,grupos,A,Rodada 2,Repescagem Europa 4,África do Sul 🇿🇦,,,,,Atlanta,Mercedes-Benz Stadium
 G_A_4,2026-06-18,22:00,grupos,A,Rodada 2,México 🇲🇽,Coreia do Sul 🇰🇷,,,,,Guadalajara,Estádio Akron
