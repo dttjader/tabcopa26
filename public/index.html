@@ -786,20 +786,20 @@ function applyScheduleToState() {
     if (row.gols_mandante === null && row.gols_visitante === null) return; // sem resultado ainda
 
     if (row.fase === 'grupos') {
-      const g = row.grupo;
-      if (!state.groupMatches[g]) return;
-      // Match by index: the CSV and makeGroupMatches use the same pair order.
-      // groupsBase pairs: [0,1],[2,3],[0,2],[1,3],[0,3],[1,2]
-      const base = groupsBase[g];
-      const pairs = [[0,1],[2,3],[0,2],[1,3],[0,3],[1,2]];
-      const mi = pairs.findIndex(([hi,ai]) =>
-        normName(base[hi]) === normName(row.mandante) && normName(base[ai]) === normName(row.visitante)
-      );
-      if (mi !== -1) {
-        state.groupMatches[g][mi].hs = row.gols_mandante;
-        state.groupMatches[g][mi].as = row.gols_visitante;
-      }
+  const g = row.grupo;
+  if (!state.groupMatches[g]) return;
+  const idNum = parseInt(row.id.split('_').pop()) - 1;
+  const m = state.groupMatches[g][idNum];
+  if (!m) return;
+  // Preenche os times a partir do CSV
+  m.home = row.mandante;
+  m.away = row.visitante;
+  // Preenche o placar se existir
+  if (row.gols_mandante !== null) {
+    m.hs = row.gols_mandante;
+    m.as = row.gols_visitante;
     }
+ }
 
     if (row.fase === 'repescagem') {
       const repId = row.grupo; // grupo column holds repId for rep rows
