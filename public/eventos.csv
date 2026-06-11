@@ -1,5 +1,6 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho
 MEX,RSA,MEX03,0,0,0,1
+MEX,RSA,MEX06,0,1,0,0
 MEX,RSA,MEX09,1,0,0,0
 MEX,RSA,MEX16,1,0,0,0
 MEX,RSA,MEX26,0,0,1,0
