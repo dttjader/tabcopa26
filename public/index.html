@@ -1384,11 +1384,6 @@ function toast(msg){
   setTimeout(()=>t.classList.remove('show'),2200);
 }
 
-// INIT
-syncAllRepToGroups();
-loadSchedule().then(()=>{ scheduleLoaded=true; renderMatches(); });
-loadRosters();
-
 function makeInfoCard(item) {
   const done = item.hs !== null && item.as !== null;
   const isDraw = done && item.hs === item.as;
@@ -1442,6 +1437,20 @@ function makeInfoCard(item) {
 
   return card;
 }
+    
+// INIT
+syncAllRepToGroups();
+renderMatches();
+renderGroups();
+renderKnockout();
+renderRepescagem();
+renderStats();
+loadSchedule().then(() => {
+  scheduleLoaded = true;
+  renderMatches();
+});
+loadRosters();
+
 </script>
 </body>
 </html>
