@@ -889,44 +889,36 @@ function buildCalendarItems() {
         syncAllRepToGroups(); saveState(); renderGroups(); renderRepescagem(); renderMatches();
       };
     }
+function buildCalendarItems() {
+  const items = [];
 
-    else if (row.fase === 'matamata') {
-      const roundKey = row.grupo;
-      if (!state.knockout[roundKey]) return;
-      const lastPart = row.id.split('_').pop();
-      const idx = parseInt(lastPart) - 1;
-      const m = state.knockout[roundKey]?.[idx];
-      if (!m) return;
-      home = m.home; away = m.away;
-      hs = m.hs; as_ = m.as; hpen = m.hpen; apen = m.apen;
-      allowPen = true; editTeams = true;
-      onSave = (hs2, as2, hp, ap, h, a) => {
-        if (h) m.home = h; if (a) m.away = a;
-        m.hs=hs2; m.as=as2; m.hpen=hp; m.apen=ap;
-        saveState(); renderKnockout(); renderMatches(); toast('✓ Salvo!');
-      };
-      onClear = () => { m.hs=null; m.as=null; m.hpen=null; m.apen=null; saveState(); renderKnockout(); renderMatches(); };
-    }
-
-    else return;
+  schedule.forEach(row => {
+    if (!row.data) return;
 
     const badgeMap = { grupos:'badge-grupo', repescagem:'badge-rep', matamata:'badge-ko' };
-    const _idxNum = parseInt(row.id.split('_').pop());
-    const labelMap = { grupos:`Grupo ${row.grupo} · ${row.etapa}`, repescagem:`${repDef.find(r=>r.id===row.grupo)?.label||row.grupo} · ${row.etapa==='SF'?'Semifinal':'Final'}`, matamata:row.etapa };
+    const faseLabel = { grupos:'Grupo '+row.grupo, repescagem:row.grupo, matamata:row.etapa };
 
     items.push({
-      date: row.data, time: row.hora_brasilia,
-      city: row.cidade, estadio: row.estadio,
-      home, away, hs, as: as_, hpen, apen,
+      id: row.id,
+      date: row.data,
+      time: row.hora_brasilia || '',
+      city: row.cidade || '',
+      estadio: row.estadio || '',
+      home: row.mandante || '?',
+      away: row.visitante || '?',
+      hs: row.gols_mandante,
+      as: row.gols_visitante,
+      hpen: row.pen_mandante,
+      apen: row.pen_visitante,
       fase: row.fase,
       badge: badgeMap[row.fase] || 'badge-grupo',
-      label: `${labelMap[row.fase] || row.etapa}`,
-      allowPen, editTeams, note,
-      onSave, onClear,
+      label: faseLabel[row.fase] || row.fase,
     });
   });
 
-  return items.sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time));
+  return items.sort((a, b) =>
+    a.date.localeCompare(b.date) || a.time.localeCompare(b.time)
+  );
 }
 
 function formatDate(dateStr) {
