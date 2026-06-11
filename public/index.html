@@ -316,14 +316,9 @@ const allCountries=Object.values(groupsBase).flat().filter(t=>!t.startsWith('Rep
   .filter((v,i,a)=>a.indexOf(v)===i).sort();
 
 function makeGroupMatches(t){
-  return[
-    {home:null,away:null,hs:null,as:null},
-    {home:null,away:null,hs:null,as:null},
-    {home:null,away:null,hs:null,as:null},
-    {home:null,away:null,hs:null,as:null},
-    {home:null,away:null,hs:null,as:null},
-    {home:null,away:null,hs:null,as:null}
-  ];
+  return[{home:t[0],away:t[1],hs:null,as:null},{home:t[2],away:t[3],hs:null,as:null},
+    {home:t[0],away:t[2],hs:null,as:null},{home:t[1],away:t[3],hs:null,as:null},
+    {home:t[0],away:t[3],hs:null,as:null},{home:t[1],away:t[2],hs:null,as:null}];
 }
 function isRepSlot(n){return n&&n.startsWith('Repescagem')}
 
