@@ -942,11 +942,16 @@ function renderMatchesCalendario() {
   const body = document.getElementById('matches-body');
   const items = buildCalendarItems();
   if (items.length === 0) {
-    body.innerHTML = '<div style="color:var(--muted);padding:2rem;text-align:center">Carregando calendário...</div>';
+    body.innerHTML = '<div style="color:var(--muted);padding:2rem;text-align:center">Nenhum jogo encontrado.</div>';
     return;
   }
+
   const byDate = {};
-  items.forEach(item => { if (!byDate[item.date]) byDate[item.date] = []; byDate[item.date].push(item); });
+  items.forEach(item => {
+    if (!byDate[item.date]) byDate[item.date] = [];
+    byDate[item.date].push(item);
+  });
+
   body.innerHTML = '';
   const today = new Date().toISOString().slice(0, 10);
   const allDates = Object.keys(byDate).sort();
@@ -956,18 +961,19 @@ function renderMatchesCalendario() {
     const dayItems = byDate[dateStr];
     const isToday = dateStr === today;
     const isPast  = dateStr < today;
-    // Today expands by default; past and future start collapsed
     const startExpanded = isToday;
+
+    const doneCount = dayItems.filter(i => i.hs !== null && i.as !== null).length;
+    const doneLabel = doneCount > 0
+      ? ` · <span style="color:var(--green);font-size:.65rem">${doneCount} encerrada${doneCount>1?'s':''}</span>`
+      : '';
+    const todayLabel = isToday
+      ? ' <span style="color:var(--gold);font-size:.62rem;font-weight:700">(hoje)</span>'
+      : '';
 
     const dayDiv = document.createElement('div');
     dayDiv.className = 'cal-day' + (isToday ? ' today-day' : '') + (startExpanded ? ' expanded' : '');
     dayDiv.id = 'calday_' + dateStr.replace(/-/g,'_');
-
-    // Count done matches for summary
-    const doneCount = dayItems.filter(i => i.hs !== null && i.as !== null).length;
-    const doneLabel = doneCount > 0 ? ` · <span style="color:var(--green);font-size:.65rem">${doneCount} encerrada${doneCount>1?'s':''}</span>` : '';
-    const pastLabel = isPast && !isToday ? ' <span style="color:var(--muted);font-size:.6rem">(passado)</span>' : '';
-    const todayLabel = isToday ? ' <span style="color:var(--gold);font-size:.62rem;font-weight:700">(hoje)</span>' : '';
 
     dayDiv.innerHTML = `
       <div class="cal-day-header" onclick="toggleCalDay('${dateStr}')">
@@ -976,25 +982,19 @@ function renderMatchesCalendario() {
           <div class="cal-date-month">${fd.month} ${fd.year}</div>
         </div>
         <div style="flex:1">
-          <div class="cal-date-label" style="${isPast&&!isToday?'color:var(--muted)':''}">${fd.weekday}${todayLabel}${pastLabel}</div>
+          <div class="cal-date-label" style="${isPast&&!isToday?'color:var(--muted)':''}">${fd.weekday}${todayLabel}</div>
           <div class="cal-date-sub">${dayItems.length} partida${dayItems.length>1?'s':''}${doneLabel}</div>
         </div>
         <span class="cal-arrow" style="color:var(--muted);font-size:.65rem;margin-right:.3rem">${startExpanded?'▲':'▼'}</span>
       </div>
-      <div class="cal-matches" id="cal_${dateStr.replace(/-/g,'_')}" style="${startExpanded?'':'display:none'};padding:.65rem;display:${startExpanded?'grid':'none'};grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:.65rem"></div>`;
+      <div class="cal-matches" style="${startExpanded?'':'display:none'};padding:.65rem;display:${startExpanded?'grid':'none'};grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:.65rem">
+      </div>`;
 
     body.appendChild(dayDiv);
     const grid = dayDiv.querySelector('.cal-matches');
-    dayItems.forEach(item => grid.appendChild(makeMatchCard({
-      label: `${item.label}${item.city && item.city !== 'TBD' ? ' · '+item.city : ''}${item.time ? ' · '+item.time : ''}`,
-      badgeClass: item.badge, badgeText: item.fase.toUpperCase(),
-      home: item.home, away: item.away,
-      hs: item.hs, as: item.as, hpen: item.hpen, apen: item.apen,
-      allowPen: item.allowPen, note: item.note, editTeams: item.editTeams,
-      onSave: item.onSave, onClear: item.onClear,
-    })));
+    dayItems.forEach(item => grid.appendChild(makeInfoCard(item)));
   });
-}
+                }
 
 
 // ══════════════════════════════════════════════════════
