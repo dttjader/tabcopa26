@@ -536,17 +536,27 @@ function renderMatches(){
     <button class="view-toggle-btn${activeView==='fase'?' on':''}" onclick="setView('fase')">≡ Por Fase</button>
     <button class="view-toggle-btn${activeView==='calendario'?' on':''}" onclick="setView('calendario')">📅 Calendário</button>
   </div>`;
+
   if(activeView==='calendario'){
-    v.innerHTML=`<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.8rem;flex-wrap:wrap">
-      <span style="font-size:.78rem;color:var(--muted)">Visualização:</span>
-      ${toggleBtns}
-    </div>
-    <p style="font-size:.7rem;color:var(--muted);margin-bottom:1rem">Clique em uma data para expandir ou recolher os jogos. A data de hoje abre automaticamente.</p>
-    <div id="matches-body"><div style="color:var(--muted);padding:2rem;text-align:center">⏳ Carregando calendário...</div></div>`;
-    if(scheduleLoaded){ renderMatchesCalendario(); }
-    else { loadSchedule().then(()=>renderMatchesCalendario()); }
+    v.innerHTML=`
+      <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.8rem;flex-wrap:wrap">
+        <span style="font-size:.78rem;color:var(--muted)">Visualização:</span>
+        ${toggleBtns}
+      </div>
+      <div id="matches-body">
+        <div style="color:var(--muted);padding:2rem;text-align:center">⏳ Carregando calendário...</div>
+      </div>`;
+    if(scheduleLoaded){
+      renderMatchesCalendario();
+    } else {
+      loadSchedule().then(()=>{
+        scheduleLoaded=true;
+        renderMatchesCalendario();
+      });
+    }
     return;
   }
+
   v.innerHTML=`
     <div class="phase-tabs" style="display:flex;align-items:center">
       <button class="phase-btn${activePhase==='grupos'?' on':''}"     onclick="setPhase('grupos')">⚽ Grupos</button>
@@ -555,10 +565,11 @@ function renderMatches(){
       ${toggleBtns}
     </div>
     <div id="matches-body"></div>`;
+
   if(activePhase==='grupos')     renderMatchesGrupos();
   if(activePhase==='repescagem') renderMatchesRep();
   if(activePhase==='matamata')   renderMatchesKO();
-}
+      }
 function setView(v){activeView=v;renderMatches();}
 function renderMatchesGrupos(){
   const body=document.getElementById('matches-body');
