@@ -33,8 +33,6 @@ nav.tabs{display:flex;justify-content:center;gap:.35rem;padding:1rem 1rem 0;flex
 .view{display:none}.view.active{display:block}
 .readonly-note{display:inline-flex;align-items:center;gap:.4rem;font-size:.71rem;color:var(--muted);
   background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:6px;padding:.28rem .65rem;margin-bottom:1rem}
-
-/* ── PARTIDAS ── */
 .phase-tabs{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1.1rem;padding-bottom:.7rem;border-bottom:1px solid var(--border)}
 .phase-btn{background:var(--card);border:1px solid var(--border);color:var(--muted);padding:.35rem .9rem;
   border-radius:8px;font-size:.76rem;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif;font-weight:500}
@@ -55,7 +53,6 @@ nav.tabs{display:flex;justify-content:center;gap:.35rem;padding:1rem 1rem 0;flex
 .badge-grupo{background:rgba(34,197,94,.12);color:var(--green)}
 .badge-rep{background:rgba(167,139,250,.12);color:var(--pen)}
 .badge-ko{background:rgba(212,160,23,.12);color:var(--gold)}
-/* ── CALENDÁRIO ── */
 .view-toggle{display:flex;gap:.3rem;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:3px;margin-left:auto}
 .view-toggle-btn{padding:.28rem .7rem;border-radius:5px;font-size:.7rem;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;color:var(--muted);background:transparent;transition:all .15s}
 .view-toggle-btn.on{background:var(--card);color:var(--gold);border:1px solid var(--border)}
@@ -69,18 +66,6 @@ nav.tabs{display:flex;justify-content:center;gap:.35rem;padding:1rem 1rem 0;flex
 .cal-date-month{font-size:.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
 .cal-date-label{font-size:.78rem;color:var(--text);font-weight:600}
 .cal-date-sub{font-size:.65rem;color:var(--muted)}
-.cal-matches{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:.65rem}
-.cal-match-row{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:.75rem .9rem;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:.5rem;cursor:pointer;transition:border-color .15s}
-.cal-match-row:hover{border-color:rgba(212,160,23,.3)}
-.cal-match-row.done{border-color:rgba(34,197,94,.25)}
-.cal-team{font-size:.78rem;font-weight:600}
-.cal-team.right{text-align:right}
-.cal-score-center{text-align:center;min-width:60px}
-.cal-score{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--gold2);letter-spacing:.05em;line-height:1}
-.cal-score.pending{color:var(--muted);font-size:.7rem;margin-top:.2rem}
-.cal-pen{font-size:.65rem;color:var(--pen);display:block}
-.cal-badge{font-size:.55rem;padding:1px 5px;border-radius:999px;font-weight:700;display:block;margin-top:.2rem}
-.cal-time{font-size:.65rem;color:var(--muted)}
 .match-teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:.35rem}
 .match-team{display:flex;align-items:center;gap:.3rem;font-size:.76rem;font-weight:600;flex-wrap:wrap;min-width:0}
 .match-team.right{flex-direction:row-reverse;text-align:right;justify-content:flex-start}
@@ -108,8 +93,6 @@ nav.tabs{display:flex;justify-content:center;gap:.35rem;padding:1rem 1rem 0;flex
 .team-edit-input{background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--text);
   font-size:.76rem;font-weight:600;outline:none;width:100%;font-family:'DM Sans',sans-serif}
 .team-edit-input.right{text-align:right}
-
-/* ── GRUPOS ── */
 .groups-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(278px,1fr));gap:1rem}
 .group-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
 .group-header{background:linear-gradient(135deg,rgba(212,160,23,.15),rgba(212,160,23,.05));
@@ -132,8 +115,6 @@ nav.tabs{display:flex;justify-content:center;gap:.35rem;padding:1rem 1rem 0;flex
 .legend-dot{width:9px;height:9px;border-radius:2px}
 .rep-badge{display:inline-block;font-size:.5rem;background:rgba(212,160,23,.2);color:var(--gold);
   border-radius:3px;padding:1px 3px;vertical-align:middle;font-weight:700;margin-left:2px}
-
-/* ── MATA-MATA ── */
 .bracket-outer{overflow-x:auto;padding:1rem 0}
 .bracket{display:flex;gap:1rem;min-width:960px;align-items:stretch}
 .bracket-round{flex:1;display:flex;flex-direction:column}
@@ -146,8 +127,6 @@ nav.tabs{display:flex;justify-content:center;gap:.35rem;padding:1rem 1rem 0;flex
 .bracket-team.winner{color:var(--gold2);font-weight:700;background:rgba(245,200,66,.06)}
 .bracket-score-k{font-family:'Bebas Neue',sans-serif;font-size:.88rem;color:var(--gold);min-width:12px;text-align:right}
 .bracket-pen{font-size:.62rem;color:var(--pen);margin-left:2px}
-
-/* ── REPESCAGEM ── */
 .rep-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:1rem}
 .rep-card{background:var(--card);border:1px solid rgba(167,139,250,.25);border-radius:12px;overflow:hidden}
 .rep-card-header{background:rgba(167,139,250,.07);padding:.55rem .9rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
@@ -163,8 +142,6 @@ nav.tabs{display:flex;justify-content:center;gap:.35rem;padding:1rem 1rem 0;flex
 .rep-winner-row{padding:.45rem .85rem;font-size:.73rem;color:var(--green);border-top:1px solid rgba(255,255,255,.06)}
 .rep-pending{padding:.45rem .85rem;font-size:.71rem;color:var(--muted);font-style:italic}
 .rep-note{padding:.3rem .85rem;font-size:.66rem;color:var(--muted);background:rgba(255,255,255,.02)}
-
-/* ── JOGADORES ── */
 .players-toolbar{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem;align-items:center}
 .players-search{flex:1;min-width:160px;background:var(--card);border:1px solid var(--border);
   border-radius:8px;color:var(--text);padding:.42rem .8rem;font-size:.8rem;font-family:'DM Sans',sans-serif;outline:none}
@@ -176,7 +153,7 @@ nav.tabs{display:flex;justify-content:center;gap:.35rem;padding:1rem 1rem 0;flex
   border-radius:8px;padding:.42rem 1rem;font-size:.76rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap}
 .btn-add-player:hover{background:rgba(212,160,23,.22)}
 .players-table-wrap{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;overflow-x:auto}
-.players-table{width:100%;border-collapse:collapse;min-width:820px}
+.players-table{width:100%;border-collapse:collapse;min-width:900px}
 .players-table th{padding:.45rem .6rem;font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;
   color:var(--muted);text-align:center;border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none}
 .players-table th:hover{color:var(--gold)}
@@ -200,8 +177,6 @@ nav.tabs{display:flex;justify-content:center;gap:.35rem;padding:1rem 1rem 0;flex
 .btn-del-player:hover{opacity:1}
 .sort-arrow{font-size:.55rem;margin-left:2px;opacity:.5}
 .sort-arrow.active{opacity:1;color:var(--gold2)}
-
-/* ── STATS ── */
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.9rem;margin-bottom:1.5rem}
 .stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem}
 .stat-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.28rem}
@@ -219,8 +194,6 @@ nav.tabs{display:flex;justify-content:center;gap:.35rem;padding:1rem 1rem 0;flex
 .rank-3{background:#B45309;color:#fff}.rank-n{background:var(--border);color:var(--muted)}
 .stats-cols{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
 @media(max-width:700px){.stats-cols{grid-template-columns:1fr}}
-
-/* MODAL jogadores */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem}
 .modal{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.4rem;width:100%;max-width:480px;max-height:90vh;overflow-y:auto}
 .modal h3{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:.06em;color:var(--gold);margin-bottom:1rem}
@@ -237,7 +210,6 @@ nav.tabs{display:flex;justify-content:center;gap:.35rem;padding:1rem 1rem 0;flex
 .modal-btn{flex:1;padding:.48rem;border-radius:7px;font-size:.78rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;border:none}
 .modal-btn.save{background:var(--gold);color:#000}
 .modal-btn.cancel{background:rgba(255,255,255,.05);color:var(--muted);border:1px solid var(--border)}
-
 .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(120px);
   background:var(--green);color:#000;padding:.5rem 1.2rem;border-radius:999px;
   font-size:.77rem;font-weight:600;transition:transform .3s;z-index:9999;pointer-events:none}
@@ -315,10 +287,20 @@ const allCountries=Object.values(groupsBase).flat().filter(t=>!t.startsWith('Rep
   .concat(repDef.flatMap(r=>r.partidas.filter(p=>p.stage==='SF').flatMap(p=>[p.home,p.away])))
   .filter((v,i,a)=>a.indexOf(v)===i).sort();
 
-function makeGroupMatches(t){
-  return[{home:t[0],away:t[1],hs:null,as:null},{home:t[2],away:t[3],hs:null,as:null},
-    {home:t[0],away:t[2],hs:null,as:null},{home:t[1],away:t[3],hs:null,as:null},
-    {home:t[0],away:t[3],hs:null,as:null},{home:t[1],away:t[2],hs:null,as:null}];
+// Calcula pontuação de um jogador
+function calcPontuacao(j){
+  return (j.gols||0)*1000 + (j.assistencias||0)*100 + (j.vermelhos||0)*(-10) + (j.amarelos||0)*(-1);
+}
+
+function makeGroupMatches(){
+  return[
+    {home:null,away:null,hs:null,as:null},
+    {home:null,away:null,hs:null,as:null},
+    {home:null,away:null,hs:null,as:null},
+    {home:null,away:null,hs:null,as:null},
+    {home:null,away:null,hs:null,as:null},
+    {home:null,away:null,hs:null,as:null}
+  ];
 }
 function isRepSlot(n){return n&&n.startsWith('Repescagem')}
 
@@ -336,21 +318,19 @@ const state={
     '3p':[{home:'?',away:'?',hs:null,as:null,hpen:null,apen:null}],
     final:[{home:'?',away:'?',hs:null,as:null,hpen:null,apen:null}],
   },
-  // jogadores: [{id,nome,pais,numero,posicao,gols,assistencias,amarelos,vermelhos}]
   jogadores:[],
   _nextId:1,
 };
-Object.keys(groupsBase).forEach(g=>{state.groupMatches[g]=makeGroupMatches(groupsBase[g])});
+Object.keys(groupsBase).forEach(g=>{state.groupMatches[g]=makeGroupMatches()});
 repDef.forEach(r=>{state.repScores[r.id]={}});
 
 function saveState(){
   try{
-    // Store only scores for groupMatches, not team names (names always derived from groupsBase)
     const gmScores={};
     Object.keys(state.groupMatches).forEach(g=>{
-      gmScores[g]=state.groupMatches[g].map(m=>({hs:m.hs,as:m.as}));
+      gmScores[g]=state.groupMatches[g].map(m=>({home:m.home,away:m.away,hs:m.hs,as:m.as}));
     });
-    localStorage.setItem('copa2026v8',JSON.stringify({
+    localStorage.setItem('copa2026v9',JSON.stringify({
       gmScores,repScores:state.repScores,
       knockout:state.knockout,jogadores:state.jogadores,_nextId:state._nextId,
     }));
@@ -358,14 +338,15 @@ function saveState(){
 }
 (function loadState(){
   try{
-    const s=JSON.parse(localStorage.getItem('copa2026v8')||'null');
+    const s=JSON.parse(localStorage.getItem('copa2026v9')||'null');
     if(!s)return;
-    // Restore only scores (hs/as) — team names always from groupsBase
     if(s.gmScores){
       Object.keys(s.gmScores).forEach(g=>{
         if(!state.groupMatches[g])return;
         s.gmScores[g].forEach((sc,i)=>{
           if(state.groupMatches[g][i]){
+            state.groupMatches[g][i].home=sc.home||null;
+            state.groupMatches[g][i].away=sc.away||null;
             state.groupMatches[g][i].hs=sc.hs;
             state.groupMatches[g][i].as=sc.as;
           }
@@ -374,10 +355,8 @@ function saveState(){
     }
     if(s.repScores)    Object.assign(state.repScores,s.repScores);
     if(s.knockout){
-      // Merge saved rounds into state, preserving new rounds (like '3p') not in old saves
       Object.keys(s.knockout).forEach(k=>{
-        if(state.knockout[k]) Object.assign(state.knockout[k], s.knockout[k].map ? {} : s.knockout[k]);
-        if(Array.isArray(s.knockout[k]) && Array.isArray(state.knockout[k])){
+        if(Array.isArray(s.knockout[k])&&Array.isArray(state.knockout[k])){
           s.knockout[k].forEach((m,i)=>{ if(state.knockout[k][i]) Object.assign(state.knockout[k][i],m); });
         }
       });
@@ -432,16 +411,14 @@ function getGroupTeams(g){return groupsBase[g].map(t=>resolveTeam(t,g))}
 function syncAllRepToGroups(){
   repDef.forEach(rep=>{
     const winner=getRepFinalWinner(rep);
-    const placeholder=groupsBase[rep.groupLetter][rep.slotIndex];
-    const name=winner||placeholder;
+    if(!winner)return;
     state.groupMatches[rep.groupLetter].forEach(m=>{
-      if(isRepSlot(m.home))m.home=name;
-      if(isRepSlot(m.away))m.away=name;
+      if(isRepSlot(m.home))m.home=winner;
+      if(isRepSlot(m.away))m.away=winner;
     });
   });
 }
 
-// Contagem global de gols/partidas (grupos + mata-mata)
 function calcGlobalStats(){
   let goals=0,matches=0,played=0;
   Object.keys(state.groupMatches).forEach(g=>state.groupMatches[g].forEach(m=>{
@@ -459,7 +436,7 @@ function calcGlobalStats(){
 }
 
 // ══════════════════════════════════════════════════════
-// MATCH CARD (reutilizável)
+// MATCH CARD (edição — abas Grupos, Mata-Mata, Repescagem)
 // ══════════════════════════════════════════════════════
 function makeMatchCard({label,badgeClass,badgeText,home,away,hs,as,hpen,apen,allowPen,note,editTeams,onSave,onClear}){
   const done=hs!==null&&as!==null;
@@ -526,6 +503,48 @@ function makeMatchCard({label,badgeClass,badgeText,home,away,hs,as,hpen,apen,all
 }
 
 // ══════════════════════════════════════════════════════
+// INFO CARD (somente leitura — calendário)
+// ══════════════════════════════════════════════════════
+function makeInfoCard(item){
+  const done=item.hs!==null&&item.as!==null;
+  const isDraw=done&&item.hs===item.as;
+  const card=document.createElement('div');
+  card.className='match-card'+(done?' done':'');
+
+  let scoreHtml;
+  if(done){
+    const penHtml=isDraw&&item.hpen!==null
+      ?`<div style="font-size:.65rem;color:var(--pen);text-align:center;margin-top:.1rem">(${item.hpen} × ${item.apen} pên.)</div>`
+      :'';
+    scoreHtml=`
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--gold2);text-align:center;letter-spacing:.05em;line-height:1">
+        ${item.hs} × ${item.as}
+      </div>${penHtml}`;
+  }else{
+    scoreHtml=`
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:1rem;color:var(--muted);text-align:center">
+        ${item.time||'A definir'}
+      </div>`;
+  }
+
+  card.innerHTML=`
+    <div class="match-info">
+      <span>${item.label}</span>
+      <span class="match-phase-badge ${item.badge}">${item.fase.toUpperCase()}</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:.4rem;margin:.4rem 0">
+      <div style="font-size:.78rem;font-weight:600;word-break:break-word">${item.home}</div>
+      <div>${scoreHtml}</div>
+      <div style="font-size:.78rem;font-weight:600;text-align:right;word-break:break-word">${item.away}</div>
+    </div>
+    ${item.estadio||item.city?`
+    <div style="font-size:.62rem;color:var(--muted);text-align:center;border-top:1px solid var(--border);padding-top:.3rem;margin-top:.3rem">
+      ${[item.estadio,item.city].filter(Boolean).join(' · ')}
+    </div>`:''}`;
+  return card;
+}
+
+// ══════════════════════════════════════════════════════
 // PARTIDAS
 // ══════════════════════════════════════════════════════
 let activePhase='grupos',activeGroup='todos',activeKoRound='r32',activeView='fase';
@@ -548,11 +567,8 @@ function renderMatches(){
       </div>`;
     if(scheduleLoaded){
       renderMatchesCalendario();
-    } else {
-      loadSchedule().then(()=>{
-        scheduleLoaded=true;
-        renderMatchesCalendario();
-      });
+    }else{
+      loadSchedule().then(()=>{scheduleLoaded=true;renderMatchesCalendario();});
     }
     return;
   }
@@ -565,12 +581,13 @@ function renderMatches(){
       ${toggleBtns}
     </div>
     <div id="matches-body"></div>`;
-
   if(activePhase==='grupos')     renderMatchesGrupos();
   if(activePhase==='repescagem') renderMatchesRep();
   if(activePhase==='matamata')   renderMatchesKO();
-      }
+}
+
 function setView(v){activeView=v;renderMatches();}
+
 function renderMatchesGrupos(){
   const body=document.getElementById('matches-body');
   const letters=Object.keys(groupsBase);
@@ -583,28 +600,28 @@ function renderMatchesGrupos(){
   body.innerHTML=html;
   shown.forEach(g=>{
     const grid=document.getElementById('mg_'+g);
-    const rounds=['Rodada 1','Rodada 1','Rodada 2','Rodada 2','Rodada 3','Rodada 3'];
-    state.groupMatches[g].forEach((m,mi)=>{
+    state.groupMatches[g].forEach((m)=>{
+      const home=m.home||'?';
+      const away=m.away||'?';
       grid.appendChild(makeMatchCard({
-        label:`Grupo ${g} · ${rounds[mi]}`,badgeClass:'badge-grupo',badgeText:'GRUPO',
-        home:resolveTeam(m.home,g),away:resolveTeam(m.away,g),
-        hs:m.hs,as:m.as,hpen:null,apen:null,allowPen:false,
-        onSave:(hs,as)=>{m.hs=hs;m.as=as;syncAllRepToGroups();saveState();renderGroups();renderMatches();toast('✓ Salvo!');},
-        onClear:()=>{m.hs=null;m.as=null;syncAllRepToGroups();saveState();renderGroups();renderMatches();}
+        label:`Grupo ${g}`,badgeClass:'badge-grupo',badgeText:'GRUPO',
+        home,away,hs:m.hs,as:m.as,hpen:null,apen:null,allowPen:false,
+        onSave:(hs,as)=>{m.hs=hs;m.as=as;saveState();renderGroups();renderMatches();toast('✓ Salvo!');},
+        onClear:()=>{m.hs=null;m.as=null;saveState();renderGroups();renderMatches();}
       }));
     });
   });
 }
+
 function renderMatchesRep(){
   const body=document.getElementById('matches-body');
   let html='';
   [['europeia','🇪🇺 Repescagem Europeia'],['mundial','🌍 Repescagem Mundial']].forEach(([tipo,title])=>{
-    const key=tipo.replace(' ','_');
-    html+=`<div class="match-section-title">${title}</div><div class="matches-grid" id="rg_${key}"></div>`;
+    html+=`<div class="match-section-title">${title}</div><div class="matches-grid" id="rg_${tipo}"></div>`;
   });
   body.innerHTML=html;
-  [['europeia','🇪🇺 Repescagem Europeia'],['mundial','🌍 Repescagem Mundial']].forEach(([tipo,title])=>{
-    const grid=document.getElementById('rg_'+tipo.replace(' ','_'));
+  [['europeia'],['mundial']].forEach(([tipo])=>{
+    const grid=document.getElementById('rg_'+tipo);
     repDef.filter(r=>r.tipo===tipo).forEach(rep=>{
       rep.partidas.forEach(p=>{
         let home=p.home,away=p.away;
@@ -631,6 +648,7 @@ function renderMatchesRep(){
     });
   });
 }
+
 function renderMatchesKO(){
   const body=document.getElementById('matches-body');
   const roundBtns=koRounds.map(r=>
@@ -653,278 +671,144 @@ function renderMatchesKO(){
     }));
   });
 }
+
 function setPhase(p){activePhase=p;renderMatches();}
 function setGroup(g){activeGroup=g;renderMatches();}
 function setKoRound(k){activeKoRound=k;renderMatches();}
 
 // ══════════════════════════════════════════════════════
-// CALENDÁRIO — carregado do resultados.csv
+// CALENDÁRIO — 100% baseado no resultados.csv
 // ══════════════════════════════════════════════════════
-// schedule: array de objetos carregados do CSV
-let schedule = [];
-let scheduleLoaded = false;
+let schedule=[];
+let scheduleLoaded=false;
 
-async function loadSchedule() {
-  if (scheduleLoaded) return Promise.resolve();
-  try {
-    const r = await fetch('resultados.csv');
-    if (!r.ok) throw new Error('CSV não encontrado');
-    const text = await r.text();
-    const lines = text.trim().split('\n');
-    const headers = lines[0].split(',').map(h => h.replace(/\r/g,'').trim());
-    schedule = lines.slice(1).map(line => {
-      // Handle commas inside quoted fields
-      const cols = [];
-      let cur = '', inQ = false;
-      for (let ch of line) {
-        if (ch === '"') inQ = !inQ;
-        else if (ch === ',' && !inQ) { cols.push(cur); cur = ''; }
-        else cur += ch;
+async function loadSchedule(){
+  if(scheduleLoaded)return;
+  try{
+    const r=await fetch('resultados.csv');
+    if(!r.ok)throw new Error('CSV não encontrado');
+    const text=await r.text();
+    const lines=text.trim().split('\n');
+    const headers=lines[0].split(',').map(h=>h.replace(/\r/g,'').trim());
+    schedule=lines.slice(1).map(line=>{
+      const cols=[];let cur='',inQ=false;
+      for(let ch of line){
+        if(ch==='"')inQ=!inQ;
+        else if(ch===','&&!inQ){cols.push(cur);cur='';}
+        else cur+=ch;
       }
       cols.push(cur);
-      const obj = {};
-      headers.forEach((h, i) => { obj[h.trim()] = (cols[i] || '').replace(/\r/g,'').trim(); });
-      // Normalize numeric fields
-      obj.gols_mandante  = obj.gols_mandante  !== '' ? parseInt(obj.gols_mandante)  : null;
-      obj.gols_visitante = obj.gols_visitante !== '' ? parseInt(obj.gols_visitante) : null;
-      obj.pen_mandante   = obj.pen_mandante   !== '' ? parseInt(obj.pen_mandante)   : null;
-      obj.pen_visitante  = obj.pen_visitante  !== '' ? parseInt(obj.pen_visitante)  : null;
+      const obj={};
+      headers.forEach((h,i)=>{obj[h.trim()]=(cols[i]||'').replace(/\r/g,'').trim();});
+      obj.gols_mandante =obj.gols_mandante !==''?parseInt(obj.gols_mandante) :null;
+      obj.gols_visitante=obj.gols_visitante!==''?parseInt(obj.gols_visitante):null;
+      obj.pen_mandante  =obj.pen_mandante  !==''?parseInt(obj.pen_mandante)  :null;
+      obj.pen_visitante =obj.pen_visitante !==''?parseInt(obj.pen_visitante) :null;
       return obj;
-    }).filter(o => o.id);
-    scheduleLoaded = true;
-    // Apply CSV scores to state (CSV is the source of truth)
+    }).filter(o=>o.id);
+    scheduleLoaded=true;
     applyScheduleToState();
-  } catch(e) {
-    console.warn('Não foi possível carregar resultados.csv:', e.message);
-    scheduleLoaded = true; // proceed without it
+  }catch(e){
+    console.warn('Não foi possível carregar resultados.csv:',e.message);
+    scheduleLoaded=true;
   }
 }
 
-// ══════════════════════════════════════════════════════
-// CARREGAMENTO DE JOGADORES E EVENTOS (CSV)
-// ══════════════════════════════════════════════════════
-async function loadRosters() {
-  // Load jogadores.csv — source of truth for player roster
-  try {
-    const r = await fetch('jogadores.csv');
-    if (!r.ok) throw new Error('jogadores.csv não encontrado');
-    const text = await r.text();
-    const lines = text.trim().split('\n').filter(l => !l.startsWith('#'));
-    const headers = lines[0].split(',').map(h => h.replace(/\r/g,'').trim());
-    const csvPlayers = lines.slice(1).map(line => {
-      const cols = line.split(',');
-      const obj = {};
-      headers.forEach((h,i) => obj[h] = (cols[i]||'').replace(/\r/g,'').trim());
-      return obj;
-    }).filter(o => o.id);
-
-    // Merge: preserve manual edits (gols/assists/cartões) but update roster info
-    csvPlayers.forEach(cp => {
-      const existing = state.jogadores.find(j => j.csvId === cp.id);
-      if (existing) {
-        // Update roster info, keep stats
-        existing.nome    = cp.nome;
-        existing.pais    = cp.pais;
-        existing.numero  = parseInt(cp.numero) || null;
-        existing.posicao = cp.posicao;
-        existing.pais_code = cp.pais_code;
-        existing.csvId   = cp.id;
-      } else {
-        state.jogadores.push({
-          id: state._nextId++,
-          csvId: cp.id,          // e.g. "BRA10"
-          nome: cp.nome,
-          pais: cp.pais,
-          pais_code: cp.pais_code,
-          numero: parseInt(cp.numero) || null,
-          posicao: cp.posicao,
-          gols: 0, assistencias: 0, amarelos: 0, vermelhos: 0,
-          fromCsv: true,
-        });
-      }
-    });
-    saveState();
-  } catch(e) {
-    console.warn('jogadores.csv:', e.message);
-  }
-
-  // Load eventos.csv — accumulate stats per player
-  try {
-    const r = await fetch('eventos.csv');
-    if (!r.ok) throw new Error('eventos.csv não encontrado');
-    const text = await r.text();
-    const lines = text.trim().split('\n').filter(l => !l.startsWith('#') && l.trim());
-    if (lines.length < 2) return; // only header, no data
-
-    const headers = lines[0].split(',').map(h => h.replace(/\r/g,'').trim());
-
-    // Reset all CSV-sourced player stats before recomputing from events
-    state.jogadores.forEach(j => {
-      if (j.fromCsv) { j.gols=0; j.assistencias=0; j.amarelos=0; j.vermelhos=0; }
-    });
-
-    lines.slice(1).forEach(line => {
-      if (!line.trim()) return;
-      const cols = line.split(',');
-      const obj = {};
-      headers.forEach((h,i) => obj[h] = (cols[i]||'').replace(/\r/g,'').trim());
-
-      const jogId = obj.jogador_id; // e.g. "BRA10"
-      if (!jogId) return;
-
-      const jog = state.jogadores.find(j => j.csvId === jogId);
-      if (!jog) return;
-
-      jog.gols         += parseInt(obj.gols)        || 0;
-      jog.assistencias += parseInt(obj.assistencias) || 0;
-      jog.amarelos     += parseInt(obj.amarelo)      || 0;
-      jog.vermelhos    += parseInt(obj.vermelho)     || 0;
-    });
-
-    saveState();
-  } catch(e) {
-    console.warn('eventos.csv:', e.message);
-  }
-}
-
-function applyScheduleToState() {
-  schedule.forEach(row => {
-    if (row.gols_mandante === null && row.gols_visitante === null) return; // sem resultado ainda
-
-       if (row.fase === 'grupos') {
-      const g = row.grupo;
-      if (!state.groupMatches[g]) return;
-      // Match by index: the CSV and makeGroupMatches use the same pair order.
-      // groupsBase pairs: [0,1],[2,3],[0,2],[1,3],[0,3],[1,2]
-      const base = groupsBase[g];
-      const pairs = [[0,1],[2,3],[0,2],[1,3],[0,3],[1,2]];
-      const mi = pairs.findIndex(([hi,ai]) =>
-        normName(base[hi]) === normName(row.mandante) && normName(base[ai]) === normName(row.visitante)
-      );
-      if (mi !== -1) {
-        state.groupMatches[g][mi].hs = row.gols_mandante;
-        state.groupMatches[g][mi].as = row.gols_visitante;
+function applyScheduleToState(){
+  schedule.forEach(row=>{
+    if(row.fase==='grupos'){
+      const g=row.grupo;
+      if(!state.groupMatches[g])return;
+      const idNum=parseInt(row.id.split('_').pop())-1;
+      const m=state.groupMatches[g][idNum];
+      if(!m)return;
+      m.home=row.mandante;
+      m.away=row.visitante;
+      if(row.gols_mandante!==null){m.hs=row.gols_mandante;m.as=row.gols_visitante;}
+    }
+    if(row.fase==='repescagem'){
+      const repId=row.grupo;
+      if(!state.repScores[repId])state.repScores[repId]={};
+      const rep=repDef.find(r=>r.id===repId);
+      if(!rep)return;
+      const p=rep.partidas.find(p=>p.stage===row.etapa);
+      if(p&&row.gols_mandante!==null){
+        state.repScores[repId][p.id]={hs:row.gols_mandante,as:row.gols_visitante,hpen:row.pen_mandante,apen:row.pen_visitante};
       }
     }
-
-    if (row.fase === 'repescagem') {
-      const repId = row.grupo; // grupo column holds repId for rep rows
-      if (!state.repScores[repId]) state.repScores[repId] = {};
-      // Find the matching partida id by stage and teams
-      const rep = repDef.find(r => r.id === repId);
-      if (!rep) return;
-      const p = rep.partidas.find(p => p.stage === row.etapa &&
-        (normName(p.home||'') === normName(row.mandante) || row.etapa === 'FIN'));
-      if (p) {
-        state.repScores[repId][p.id] = {
-          hs: row.gols_mandante, as: row.gols_visitante,
-          hpen: row.pen_mandante, apen: row.pen_visitante,
-        };
-      }
-    }
-
-    if (row.fase === 'matamata') {
-      const roundKey = row.grupo; // grupo col holds round key
-      if (!state.knockout[roundKey]) return;
-      // id format: KO_R32_1, KO_3P_1, KO_FIN_1 — index is last numeric segment minus 1
-      const lastPart = row.id.split('_').pop();
-      const idx = parseInt(lastPart) - 1;
-      if (isNaN(idx) || idx < 0) return;
-      const m = state.knockout[roundKey][idx];
-      if (!m) return;
-      if (row.mandante && row.mandante !== '?') m.home = row.mandante;
-      if (row.visitante && row.visitante !== '?') m.away = row.visitante;
-      m.hs   = row.gols_mandante;
-      m.as   = row.gols_visitante;
-      m.hpen = row.pen_mandante;
-      m.apen = row.pen_visitante;
+    if(row.fase==='matamata'){
+      const roundKey=row.grupo;
+      if(!state.knockout[roundKey])return;
+      const idx=parseInt(row.id.split('_').pop())-1;
+      if(isNaN(idx)||idx<0)return;
+      const m=state.knockout[roundKey][idx];
+      if(!m)return;
+      if(row.mandante&&row.mandante!=='?')m.home=row.mandante;
+      if(row.visitante&&row.visitante!=='?')m.away=row.visitante;
+      if(row.gols_mandante!==null){m.hs=row.gols_mandante;m.as=row.gols_visitante;m.hpen=row.pen_mandante;m.apen=row.pen_visitante;}
     }
   });
   syncAllRepToGroups();
   saveState();
 }
 
-function normName(n) {
-  // Remove emoji and extra spaces for loose matching
-  return (n || '').replace(/[^\w\s]/gu, '').trim().toLowerCase();
-}
-
-// Build calendar items from schedule (CSV) merged with current state
-function buildCalendarItems() {
+function buildCalendarItems(){
   return schedule
-    .filter(row => row.data)
-    .map(row => ({
-      id: row.id,
-      date: row.data,
-      time: row.hora_brasilia || '',
-      city: row.cidade || '',
-      estadio: row.estadio || '',
-      home: row.mandante || '?',
-      away: row.visitante || '?',
-      hs: row.gols_mandante,
-      as: row.gols_visitante,
-      hpen: row.pen_mandante,
-      apen: row.pen_visitante,
-      fase: row.fase,
-      badge: ({grupos:'badge-grupo',repescagem:'badge-rep',matamata:'badge-ko'})[row.fase] || 'badge-grupo',
-      label: ({grupos:'Grupo '+row.grupo, repescagem:row.grupo, matamata:row.etapa})[row.fase] || row.fase,
+    .filter(row=>row.data)
+    .map(row=>({
+      id:row.id,date:row.data,time:row.hora_brasilia||'',
+      city:row.cidade||'',estadio:row.estadio||'',
+      home:row.mandante||'?',away:row.visitante||'?',
+      hs:row.gols_mandante,as:row.gols_visitante,
+      hpen:row.pen_mandante,apen:row.pen_visitante,
+      fase:row.fase,
+      badge:({grupos:'badge-grupo',repescagem:'badge-rep',matamata:'badge-ko'})[row.fase]||'badge-grupo',
+      label:({grupos:'Grupo '+row.grupo,repescagem:row.grupo,matamata:row.etapa})[row.fase]||row.fase,
     }))
-    .sort((a,b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time));
-}
-function formatDate(dateStr) {
-  const d = new Date(dateStr + 'T12:00:00');
-  const days = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-  const months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-  return { day: d.getDate(), month: months[d.getMonth()], year: d.getFullYear(), weekday: days[d.getDay()], iso: dateStr };
+    .sort((a,b)=>a.date.localeCompare(b.date)||a.time.localeCompare(b.time));
 }
 
-function toggleCalDay(dateStr) {
-  const dayDiv = document.getElementById('calday_' + dateStr.replace(/-/g,'_'));
-  if (!dayDiv) return;
-  const grid = dayDiv.querySelector('.cal-matches');
-  const arrow = dayDiv.querySelector('.cal-arrow');
-  const expanded = dayDiv.classList.toggle('expanded');
-  grid.style.display = expanded ? '' : 'none';
-  if (arrow) arrow.textContent = expanded ? '▲' : '▼';
+function formatDate(dateStr){
+  const d=new Date(dateStr+'T12:00:00');
+  const days=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  const months=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  return{day:d.getDate(),month:months[d.getMonth()],year:d.getFullYear(),weekday:days[d.getDay()]};
 }
 
-function renderMatchesCalendario() {
-  const body = document.getElementById('matches-body');
-  const items = buildCalendarItems();
+function toggleCalDay(dateStr){
+  const dayDiv=document.getElementById('calday_'+dateStr.replace(/-/g,'_'));
+  if(!dayDiv)return;
+  const grid=dayDiv.querySelector('.cal-matches');
+  const arrow=dayDiv.querySelector('.cal-arrow');
+  const expanded=dayDiv.classList.toggle('expanded');
+  grid.style.display=expanded?'grid':'none';
+  if(arrow)arrow.textContent=expanded?'▲':'▼';
+}
 
-  if (items.length === 0) {
-    body.innerHTML = '<div style="color:var(--muted);padding:2rem;text-align:center">⏳ Carregando...</div>';
+function renderMatchesCalendario(){
+  const body=document.getElementById('matches-body');
+  const items=buildCalendarItems();
+  if(items.length===0){
+    body.innerHTML='<div style="color:var(--muted);padding:2rem;text-align:center">Nenhum jogo encontrado no calendário.</div>';
     return;
   }
-
-  const byDate = {};
-  items.forEach(item => {
-    if (!byDate[item.date]) byDate[item.date] = [];
-    byDate[item.date].push(item);
-  });
-
-  body.innerHTML = '';
-  const today = new Date().toISOString().slice(0,10);
-
-  Object.keys(byDate).sort().forEach(dateStr => {
-    const fd = formatDate(dateStr);
-    const dayItems = byDate[dateStr];
-    const isToday = dateStr === today;
-    const isPast  = dateStr < today;
-    const startExpanded = isToday;
-
-    const doneCount = dayItems.filter(i => i.hs !== null).length;
-    const doneLabel = doneCount > 0
-      ? ` · <span style="color:var(--green);font-size:.65rem">${doneCount} encerrada${doneCount>1?'s':''}</span>`
-      : '';
-    const todayLabel = isToday
-      ? ' <span style="color:var(--gold);font-size:.62rem;font-weight:700">(hoje)</span>'
-      : '';
-
-    const dayDiv = document.createElement('div');
-    dayDiv.className = 'cal-day' + (isToday?' today-day':'') + (startExpanded?' expanded':'');
-    dayDiv.id = 'calday_' + dateStr.replace(/-/g,'_');
-    dayDiv.innerHTML = `
+  const byDate={};
+  items.forEach(item=>{if(!byDate[item.date])byDate[item.date]=[];byDate[item.date].push(item);});
+  body.innerHTML='';
+  const today=new Date().toISOString().slice(0,10);
+  Object.keys(byDate).sort().forEach(dateStr=>{
+    const fd=formatDate(dateStr);
+    const dayItems=byDate[dateStr];
+    const isToday=dateStr===today;
+    const isPast=dateStr<today;
+    const startExpanded=isToday;
+    const doneCount=dayItems.filter(i=>i.hs!==null).length;
+    const doneLabel=doneCount>0?` · <span style="color:var(--green);font-size:.65rem">${doneCount} encerrada${doneCount>1?'s':''}</span>`:'';
+    const todayLabel=isToday?' <span style="color:var(--gold);font-size:.62rem;font-weight:700">(hoje)</span>':'';
+    const dayDiv=document.createElement('div');
+    dayDiv.className='cal-day'+(isToday?' today-day':'')+(startExpanded?' expanded':'');
+    dayDiv.id='calday_'+dateStr.replace(/-/g,'_');
+    dayDiv.innerHTML=`
       <div class="cal-day-header" onclick="toggleCalDay('${dateStr}')">
         <div class="cal-date-badge" style="${isToday?'border-color:var(--gold);background:rgba(212,160,23,.1)':isPast?'opacity:.6':''}">
           <div class="cal-date-day" style="${isToday?'color:var(--gold)':isPast?'color:var(--muted)':''}">${fd.day}</div>
@@ -937,11 +821,67 @@ function renderMatchesCalendario() {
         <span class="cal-arrow" style="color:var(--muted);font-size:.65rem;margin-right:.3rem">${startExpanded?'▲':'▼'}</span>
       </div>
       <div class="cal-matches" style="display:${startExpanded?'grid':'none'};padding:.65rem;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:.65rem"></div>`;
-
     body.appendChild(dayDiv);
-    const grid = dayDiv.querySelector('.cal-matches');
-    dayItems.forEach(item => grid.appendChild(makeInfoCard(item)));
+    const grid=dayDiv.querySelector('.cal-matches');
+    dayItems.forEach(item=>grid.appendChild(makeInfoCard(item)));
   });
+}
+
+// ══════════════════════════════════════════════════════
+// CARREGAMENTO DE JOGADORES E EVENTOS (CSV)
+// ══════════════════════════════════════════════════════
+async function loadRosters(){
+  try{
+    const r=await fetch('jogadores.csv');
+    if(!r.ok)throw new Error('jogadores.csv não encontrado');
+    const text=await r.text();
+    const lines=text.trim().split('\n').filter(l=>!l.startsWith('#'));
+    const headers=lines[0].split(',').map(h=>h.replace(/\r/g,'').trim());
+    const csvPlayers=lines.slice(1).map(line=>{
+      const cols=line.split(',');
+      const obj={};
+      headers.forEach((h,i)=>obj[h]=(cols[i]||'').replace(/\r/g,'').trim());
+      return obj;
+    }).filter(o=>o.id);
+    csvPlayers.forEach(cp=>{
+      const existing=state.jogadores.find(j=>j.csvId===cp.id);
+      if(existing){
+        existing.nome=cp.nome;existing.pais=cp.pais;
+        existing.numero=parseInt(cp.numero)||null;
+        existing.posicao=cp.posicao;existing.pais_code=cp.pais_code;
+      }else{
+        state.jogadores.push({
+          id:state._nextId++,csvId:cp.id,nome:cp.nome,pais:cp.pais,
+          pais_code:cp.pais_code,numero:parseInt(cp.numero)||null,
+          posicao:cp.posicao,gols:0,assistencias:0,amarelos:0,vermelhos:0,fromCsv:true,
+        });
+      }
+    });
+    saveState();
+  }catch(e){console.warn('jogadores.csv:',e.message);}
+
+  try{
+    const r=await fetch('eventos.csv');
+    if(!r.ok)throw new Error('eventos.csv não encontrado');
+    const text=await r.text();
+    const lines=text.trim().split('\n').filter(l=>!l.startsWith('#')&&l.trim());
+    if(lines.length<2)return;
+    const headers=lines[0].split(',').map(h=>h.replace(/\r/g,'').trim());
+    state.jogadores.forEach(j=>{if(j.fromCsv){j.gols=0;j.assistencias=0;j.amarelos=0;j.vermelhos=0;}});
+    lines.slice(1).forEach(line=>{
+      if(!line.trim())return;
+      const cols=line.split(',');
+      const obj={};
+      headers.forEach((h,i)=>obj[h]=(cols[i]||'').replace(/\r/g,'').trim());
+      const jog=state.jogadores.find(j=>j.csvId===obj.jogador_id);
+      if(!jog)return;
+      jog.gols        +=parseInt(obj.gols)        ||0;
+      jog.assistencias+=parseInt(obj.assistencias)||0;
+      jog.amarelos    +=parseInt(obj.amarelo)      ||0;
+      jog.vermelhos   +=parseInt(obj.vermelho)     ||0;
+    });
+    saveState();
+  }catch(e){console.warn('eventos.csv:',e.message);}
 }
 
 // ══════════════════════════════════════════════════════
@@ -951,8 +891,8 @@ function calcStandings(g){
   const tbl={};
   getGroupTeams(g).forEach(t=>{tbl[t]={pts:0,pj:0,v:0,e:0,d:0,gp:0,gc:0,sg:0}});
   state.groupMatches[g].forEach(m=>{
-    const hk=resolveTeam(m.home,g),ak=resolveTeam(m.away,g);
-    if(m.hs===null||m.as===null)return;
+    const hk=m.home,ak=m.away;
+    if(!hk||!ak||m.hs===null||m.as===null)return;
     if(!tbl[hk])tbl[hk]={pts:0,pj:0,v:0,e:0,d:0,gp:0,gc:0,sg:0};
     if(!tbl[ak])tbl[ak]={pts:0,pj:0,v:0,e:0,d:0,gp:0,gc:0,sg:0};
     tbl[hk].pj++;tbl[ak].pj++;
@@ -965,6 +905,7 @@ function calcStandings(g){
   return Object.entries(tbl).map(([name,s])=>({name,...s}))
     .sort((a,b)=>b.pts-a.pts||b.sg-a.sg||b.gp-a.gp);
 }
+
 function renderGroups(){
   const v=document.getElementById('view-grupos');
   v.innerHTML=`<div class="readonly-note">👁 Somente leitura — insira resultados na aba Partidas</div>
@@ -1072,14 +1013,13 @@ function renderRepescagem(){
 // ══════════════════════════════════════════════════════
 // JOGADORES
 // ══════════════════════════════════════════════════════
-let playerSort={col:'gols',dir:-1};
+let playerSort={col:'pontuacao',dir:-1};
 let playerSearch='';
 let playerFilterPos='';
 let playerFilterPais='';
 
 function reloadRosters(){
-  // Re-run roster loading (forces re-fetch even if already loaded)
-  loadRosters().then(()=>{ renderJogadores(); renderStats(); toast('✓ CSVs recarregados!'); });
+  loadRosters().then(()=>{renderJogadores();renderStats();toast('✓ CSVs recarregados!');});
 }
 
 function renderJogadores(){
@@ -1099,20 +1039,32 @@ function renderJogadores(){
       <button class="btn-add-player" onclick="openAddPlayer()">+ Adicionar Jogador</button>
       <button class="btn-add-player" style="background:rgba(96,165,250,.12);border-color:rgba(96,165,250,.3);color:var(--blue)" onclick="reloadRosters()">🔄 Recarregar CSV</button>
     </div>
-    <div style="font-size:.69rem;color:var(--muted);margin-bottom:.8rem">
-      📂 Jogadores do <code>jogadores.csv</code> — estatísticas calculadas do <code>eventos.csv</code>. Jogadores adicionados manualmente podem ser editados.
+
+    <div style="font-size:.69rem;color:var(--muted);margin-bottom:.5rem">
+      📂 Jogadores do <code>jogadores.csv</code> — estatísticas do <code>eventos.csv</code>.
     </div>
+
+    <div style="font-size:.69rem;color:var(--muted);margin-bottom:.8rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap">
+      <span>🏆 Pontuação:</span>
+      <span style="color:var(--gold2)">⚽ Gol = +1000</span>
+      <span style="color:var(--blue)">🅰️ Assist. = +100</span>
+      <span style="color:var(--red)">🟥 Vermelho = −10</span>
+      <span style="color:var(--yellow)">🟨 Amarelo = −1</span>
+    </div>
+
     <div class="players-table-wrap">
       <table class="players-table">
         <thead><tr>
-          ${thCol('#','numero','#')}
-          ${thCol('Jogador','nome','Jogador')}
-          ${thCol('País','pais','País')}
-          ${thCol('Pos','posicao','Pos')}
-          ${thCol('⚽','gols','⚽ Gols')}
-          ${thCol('🅰️','assistencias','🅰️ Assist.')}
-          ${thCol('🟨','amarelos','🟨')}
-          ${thCol('🟥','vermelhos','🟥')}
+          ${thCol('rank','pontuacao','#')}
+          ${thCol('num','numero','Nº')}
+          ${thCol('nome','nome','Jogador')}
+          ${thCol('pais','pais','País')}
+          ${thCol('pos','posicao','Pos')}
+          ${thCol('pts','pontuacao','🏆 Pts')}
+          ${thCol('gols','gols','⚽')}
+          ${thCol('ast','assistencias','🅰️')}
+          ${thCol('amar','amarelos','🟨')}
+          ${thCol('verm','vermelhos','🟥')}
           <th></th>
         </tr></thead>
         <tbody id="players-body"></tbody>
@@ -1121,6 +1073,7 @@ function renderJogadores(){
     <div style="margin-top:.6rem;font-size:.7rem;color:var(--muted)">${state.jogadores.length} jogador(es) cadastrado(s)</div>`;
   renderPlayersBody();
 }
+
 function thCol(key,sortKey,label){
   const isSort=playerSort.col===sortKey;
   const arrow=isSort?(playerSort.dir===1?'↑':'↓'):'↕';
@@ -1131,13 +1084,11 @@ function sortPlayers(col){
   else{playerSort.col=col;playerSort.dir=-1;}
   renderJogadores();
 }
+
 function renderPlayersBody(){
-  let list=[...state.jogadores];
-  if(playerSearch){
-    const q=playerSearch.toLowerCase();
-    list=list.filter(j=>j.nome.toLowerCase().includes(q)||j.pais.toLowerCase().includes(q));
-  }
-  if(playerFilterPos) list=list.filter(j=>j.posicao===playerFilterPos);
+  let list=[...state.jogadores].map(j=>({...j,pontuacao:calcPontuacao(j)}));
+  if(playerSearch){const q=playerSearch.toLowerCase();list=list.filter(j=>j.nome.toLowerCase().includes(q)||(j.pais||'').toLowerCase().includes(q));}
+  if(playerFilterPos)list=list.filter(j=>j.posicao===playerFilterPos);
   if(playerFilterPais)list=list.filter(j=>j.pais===playerFilterPais);
   const col=playerSort.col,dir=playerSort.dir;
   list.sort((a,b)=>{
@@ -1147,19 +1098,31 @@ function renderPlayersBody(){
   });
   const tbody=document.getElementById('players-body');
   if(!tbody)return;
-  if(list.length===0){tbody.innerHTML=`<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:1.5rem">Nenhum jogador encontrado. Clique em "+ Adicionar Jogador" para começar.</td></tr>`;return;}
-  tbody.innerHTML=list.map(j=>{
+  if(list.length===0){
+    tbody.innerHTML=`<tr><td colspan="11" style="text-align:center;color:var(--muted);padding:1.5rem">Nenhum jogador encontrado.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML=list.map((j,rank)=>{
     const posCls=`pos-${j.posicao||'M'}`;
-    const fromCsv = !!j.fromCsv;
-    // Stats: editable only for manually-added players
-    const statCell = (val, field, cls) => fromCsv
-      ? `<td style="font-weight:600;color:var(--gold2);text-align:center">${val||0}</td>`
-      : `<td><input class="p-input num ${cls}" type="number" min="0" value="${val||0}" onchange="updatePlayer(${j.id},'${field}',this.value)"></td>`;
+    const fromCsv=!!j.fromCsv;
+    const pts=j.pontuacao;
+    const ptsColor=pts>0?'var(--gold2)':pts<0?'var(--red)':'var(--muted)';
+    const ptsStr=pts>0?`+${pts}`:String(pts);
+    // medalha para os 3 primeiros quando ordenado por pontuação
+    const isSortingByPts=playerSort.col==='pontuacao';
+    const rankLabel=isSortingByPts
+      ?(rank===0?'🥇':rank===1?'🥈':rank===2?'🥉':`${rank+1}`)
+      :`${rank+1}`;
+    const statCell=(val,field,cls)=>fromCsv
+      ?`<td style="font-weight:600;text-align:center">${val||0}</td>`
+      :`<td><input class="p-input num ${cls}" type="number" min="0" value="${val||0}" onchange="updatePlayer(${j.id},'${field}',this.value)"></td>`;
     return`<tr>
+      <td style="text-align:center;font-size:.8rem;color:var(--muted);font-family:'Bebas Neue',sans-serif">${rankLabel}</td>
       <td style="text-align:center;font-family:'Bebas Neue',sans-serif;font-size:1rem;color:var(--muted)">${j.numero||'–'}</td>
       <td style="font-weight:600;white-space:nowrap">${j.nome}${fromCsv?`<span style="font-size:.52rem;background:rgba(96,165,250,.15);color:var(--blue);border-radius:3px;padding:1px 4px;margin-left:4px;font-weight:700">${j.csvId}</span>`:''}</td>
-      <td style="white-space:nowrap">${j.pais}</td>
+      <td style="white-space:nowrap">${j.pais||'–'}</td>
       <td><span class="pos-badge ${posCls}">${j.posicao||'–'}</span></td>
+      <td style="text-align:center;font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:${ptsColor};font-weight:700">${ptsStr}</td>
       ${statCell(j.gols,'gols','')}
       ${statCell(j.assistencias,'assistencias','assist-stat')}
       ${statCell(j.amarelos,'amarelos','yellow-stat')}
@@ -1168,11 +1131,12 @@ function renderPlayersBody(){
     </tr>`;
   }).join('');
 }
+
 function updatePlayer(id,field,val){
   const j=state.jogadores.find(x=>x.id===id);
   if(!j)return;
   j[field]=isNaN(Number(val))?val:(Number(val)||0);
-  saveState();renderStats();
+  saveState();renderJogadores();renderStats();
 }
 function deletePlayer(id){
   if(!confirm('Remover jogador?'))return;
@@ -1255,23 +1219,25 @@ function closeModal(){document.getElementById('modal-root').innerHTML='';}
 function renderStats(){
   const {goals,matches,played}=calcGlobalStats();
   const v=document.getElementById('view-stats');
-
-  // Rankings de jogadores
+  const topPts=[...state.jogadores].map(j=>({...j,pontuacao:calcPontuacao(j)})).filter(j=>j.pontuacao!==0).sort((a,b)=>b.pontuacao-a.pontuacao).slice(0,10);
   const topGols=[...state.jogadores].filter(j=>j.gols>0).sort((a,b)=>b.gols-a.gols).slice(0,10);
   const topAssist=[...state.jogadores].filter(j=>j.assistencias>0).sort((a,b)=>b.assistencias-a.assistencias).slice(0,10);
   const topAmar=[...state.jogadores].filter(j=>j.amarelos>0).sort((a,b)=>b.amarelos-a.amarelos).slice(0,10);
   const topVerm=[...state.jogadores].filter(j=>j.vermelhos>0).sort((a,b)=>b.vermelhos-a.vermelhos).slice(0,10);
 
   function rankTable(list,statKey,statLabel,color){
-    if(list.length===0)return`<div style="color:var(--muted);font-size:.78rem;padding:.6rem 0">Nenhum dado ainda. Adicione jogadores na aba Jogadores.</div>`;
+    if(list.length===0)return`<div style="color:var(--muted);font-size:.78rem;padding:.6rem 0">Nenhum dado ainda.</div>`;
     return`<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden">
       <table class="rank-table">
         <thead><tr><th>#</th><th>Jogador</th><th>País</th><th>${statLabel}</th></tr></thead>
-        <tbody>${list.map((j,i)=>`<tr>
-          <td><span class="rank-badge ${i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-n'}">${i+1}</span></td>
-          <td style="font-weight:600">${j.nome}</td><td>${j.pais}</td>
-          <td style="font-weight:700;color:${color}">${j[statKey]}</td>
-        </tr>`).join('')}
+        <tbody>${list.map((j,i)=>{
+          const val=statKey==='pontuacao'?(j[statKey]>0?`+${j[statKey]}`:String(j[statKey])):j[statKey];
+          return`<tr>
+            <td><span class="rank-badge ${i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-n'}">${i+1}</span></td>
+            <td style="font-weight:600">${j.nome}</td><td>${j.pais}</td>
+            <td style="font-weight:700;color:${color}">${val}</td>
+          </tr>`;
+        }).join('')}
         </tbody>
       </table>
     </div>`;
@@ -1282,31 +1248,22 @@ function renderStats(){
       <div class="stat-card"><div class="stat-label">⚽ Total de Gols</div><div class="stat-value">${goals}</div><div class="stat-sub">todos os jogos disputados</div></div>
       <div class="stat-card"><div class="stat-label">📈 Média / Partida</div><div class="stat-value">${played>0?(goals/played).toFixed(2):'—'}</div><div class="stat-sub">gols por jogo</div></div>
       <div class="stat-card"><div class="stat-label">🎮 Partidas Jogadas</div><div class="stat-value">${played}</div><div class="stat-sub">de ${matches} no torneio completo</div></div>
-      <div class="stat-card"><div class="stat-label">👤 Jogadores</div><div class="stat-value">${state.jogadores.length}</div><div class="stat-sub">cadastrados · ${[...new Set(state.jogadores.map(j=>j.pais))].length} países</div></div>
-      <div class="stat-card"><div class="stat-label">⚽ Gols (jogadores)</div><div class="stat-value">${state.jogadores.reduce((s,j)=>s+(j.gols||0),0)}</div><div class="stat-sub">registrados na aba Jogadores</div></div>
-      <div class="stat-card"><div class="stat-label">🟨 Cartões Amarelos</div><div class="stat-value">${state.jogadores.reduce((s,j)=>s+(j.amarelos||0),0)}</div><div class="stat-sub">total da competição</div></div>
-      <div class="stat-card"><div class="stat-label">🟥 Cartões Vermelhos</div><div class="stat-value">${state.jogadores.reduce((s,j)=>s+(j.vermelhos||0),0)}</div><div class="stat-sub">total da competição</div></div>
-      <div class="stat-card"><div class="stat-label">🅰️ Assistências</div><div class="stat-value">${state.jogadores.reduce((s,j)=>s+(j.assistencias||0),0)}</div><div class="stat-sub">total da competição</div></div>
+      <div class="stat-card"><div class="stat-label">👤 Jogadores</div><div class="stat-value">${state.jogadores.length}</div><div class="stat-sub">${[...new Set(state.jogadores.map(j=>j.pais))].length} países</div></div>
+      <div class="stat-card"><div class="stat-label">⚽ Gols (jogadores)</div><div class="stat-value">${state.jogadores.reduce((s,j)=>s+(j.gols||0),0)}</div></div>
+      <div class="stat-card"><div class="stat-label">🟨 Amarelos</div><div class="stat-value">${state.jogadores.reduce((s,j)=>s+(j.amarelos||0),0)}</div></div>
+      <div class="stat-card"><div class="stat-label">🟥 Vermelhos</div><div class="stat-value">${state.jogadores.reduce((s,j)=>s+(j.vermelhos||0),0)}</div></div>
+      <div class="stat-card"><div class="stat-label">🅰️ Assistências</div><div class="stat-value">${state.jogadores.reduce((s,j)=>s+(j.assistencias||0),0)}</div></div>
     </div>
     <div class="stats-cols">
-      <div>
-        <div class="stats-section-title">🥅 Artilheiros</div>
-        ${rankTable(topGols,'gols','Gols','var(--gold2)')}
-      </div>
-      <div>
-        <div class="stats-section-title">🅰️ Assistências</div>
-        ${rankTable(topAssist,'assistencias','Assist.','var(--blue)')}
-      </div>
+      <div><div class="stats-section-title">🏆 Ranking de Pontuação</div>${rankTable(topPts,'pontuacao','Pts','var(--gold2)')}</div>
+      <div><div class="stats-section-title">🥅 Artilheiros</div>${rankTable(topGols,'gols','Gols','var(--gold2)')}</div>
     </div>
     <div class="stats-cols" style="margin-top:1rem">
-      <div>
-        <div class="stats-section-title">🟨 Cartões Amarelos</div>
-        ${rankTable(topAmar,'amarelos','Amar.','var(--yellow)')}
-      </div>
-      <div>
-        <div class="stats-section-title">🟥 Cartões Vermelhos</div>
-        ${rankTable(topVerm,'vermelhos','Verm.','var(--red)')}
-      </div>
+      <div><div class="stats-section-title">🅰️ Assistências</div>${rankTable(topAssist,'assistencias','Assist.','var(--blue)')}</div>
+      <div><div class="stats-section-title">🟨 Cartões Amarelos</div>${rankTable(topAmar,'amarelos','Amar.','var(--yellow)')}</div>
+    </div>
+    <div class="stats-cols" style="margin-top:1rem">
+      <div><div class="stats-section-title">🟥 Cartões Vermelhos</div>${rankTable(topVerm,'vermelhos','Verm.','var(--red)')}</div>
     </div>`;
 }
 
@@ -1331,51 +1288,22 @@ function toast(msg){
   setTimeout(()=>t.classList.remove('show'),2200);
 }
 
-function makeInfoCard(item) {
-  const done = item.hs !== null && item.as !== null;
-  const isDraw = done && item.hs === item.as;
-  const hpen = isDraw && item.hpen !== null
-    ? `<div style="font-size:.65rem;color:var(--pen);text-align:center">(${item.hpen} × ${item.apen} pên.)</div>`
-    : '';
-
-  let scoreHtml;
-  if (done) {
-    scoreHtml = `
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--gold2);text-align:center;letter-spacing:.05em">
-        ${item.hs} × ${item.as}
-      </div>
-      ${hpen}`;
-  } else {
-    scoreHtml = `
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:1rem;color:var(--muted);text-align:center">
-        ${item.time || 'A definir'}
-      </div>`;
-  }
-
-  const card = document.createElement('div');
-  card.className = 'match-card' + (done ? ' done' : '');
-  card.innerHTML = `
-    <div class="match-info">
-      <span>${item.label}</span>
-      <span class="match-phase-badge ${item.badge}">${item.fase.toUpperCase()}</span>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:.4rem;margin:.5rem 0">
-      <div style="font-size:.78rem;font-weight:600">${item.home}</div>
-      <div>${scoreHtml}</div>
-      <div style="font-size:.78rem;font-weight:600;text-align:right">${item.away}</div>
-    </div>
-    ${item.estadio || item.city ? `
-    <div style="font-size:.62rem;color:var(--muted);text-align:center;border-top:1px solid var(--border);padding-top:.3rem;margin-top:.3rem">
-      ${[item.estadio, item.city].filter(Boolean).join(' · ')}
-    </div>` : ''}`;
-  return card;
-}
-    
+// ══════════════════════════════════════════════════════
 // INIT
+// ══════════════════════════════════════════════════════
 syncAllRepToGroups();
-loadSchedule().then(()=>{ scheduleLoaded=true; renderMatches(); });
-loadRosters();
-
+loadSchedule().then(()=>{
+  scheduleLoaded=true;
+  renderMatches();
+  renderGroups();
+  renderKnockout();
+  renderRepescagem();
+  renderStats();
+});
+loadRosters().then(()=>{
+  renderJogadores();
+  renderStats();
+});
 </script>
 </body>
 </html>
