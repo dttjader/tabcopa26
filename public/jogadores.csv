@@ -37,9 +37,6 @@ BEL10,Bélgica 🇧🇪,BEL,10,Eden Hazard,A
 NOR01,Noruega 🇳🇴,NOR,1,Ørjan Nyland,G
 NOR09,Noruega 🇳🇴,NOR,9,Erling Haaland,A
 NOR11,Noruega 🇳🇴,NOR,11,Martin Ødegaard,M
-MAR01,Marrocos 🇲🇦,MAR,1,Yassine Bounou,G
-MAR07,Marrocos 🇲🇦,MAR,7,Hakim Ziyech,A
-MAR10,Marrocos 🇲🇦,MAR,10,Azzedine Ounahi,M
 SEN01,Senegal 🇸🇳,SEN,1,Edouard Mendy,G
 SEN10,Senegal 🇸🇳,SEN,10,Sadio Mané,A
 JAP01,Japão 🇯🇵,JAP,1,Shuichi Gonda,G
@@ -340,3 +337,29 @@ BRA23,Brasil 🇧🇷,BRA,23,Ederson,G
 BRA24,Brasil 🇧🇷,BRA,24,Roger Ibañez,D
 BRA25,Brasil 🇧🇷,BRA,25,Igor Thiago,A
 BRA26,Brasil 🇧🇷,BRA,26,Rayan,A
+MAR01,Marrocos 🇲🇦,MAR,1,Yassine Bounou,G
+MAR02,Marrocos 🇲🇦,MAR,2,Achraf Hakimi,D
+MAR03,Marrocos 🇲🇦,MAR,3,Noussair Mazraoui,D
+MAR04,Marrocos 🇲🇦,MAR,4,Sofyan Amrabat,M
+MAR05,Marrocos 🇲🇦,MAR,5,Marwane Saadane,D
+MAR06,Marrocos 🇲🇦,MAR,6,Ayyoub Bouaddi,M
+MAR07,Marrocos 🇲🇦,MAR,7,Chemsdine Talbi,M
+MAR08,Marrocos 🇲🇦,MAR,8,Azzedine Ounahi,M
+MAR09,Marrocos 🇲🇦,MAR,9,Soufiane Rahimi,A
+MAR10,Marrocos 🇲🇦,MAR,10,Brahim Diaz,A
+MAR11,Marrocos 🇲🇦,MAR,11,Ismael Saibari,M
+MAR12,Marrocos 🇲🇦,MAR,12,Munir El Kajoui,G
+MAR13,Marrocos 🇲🇦,MAR,13,Zakaria El Ouahdi,D
+MAR14,Marrocos 🇲🇦,MAR,14,Issa Diop,D
+MAR15,Marrocos 🇲🇦,MAR,15,Samir El Mourabet,M
+MAR16,Marrocos 🇲🇦,MAR,16,Gessime Yassine,M
+MAR17,Marrocos 🇲🇦,MAR,17,Amine Sbai,A
+MAR18,Marrocos 🇲🇦,MAR,18,Chadi Riad,D
+MAR19,Marrocos 🇲🇦,MAR,19,Youssef Belammari,D
+MAR20,Marrocos 🇲🇦,MAR,20,Ayoub El Kaabi,A
+MAR21,Marrocos 🇲🇦,MAR,21,Ayoube Amaimouni,A
+MAR22,Marrocos 🇲🇦,MAR,22,Ahmed Reda Tagnaouti,G
+MAR23,Marrocos 🇲🇦,MAR,23,Bilal El Khannouss,M
+MAR24,Marrocos 🇲🇦,MAR,24,Neil El Aynaoui,M
+MAR25,Marrocos 🇲🇦,MAR,25,Redouane Halhal,D
+MAR26,Marrocos 🇲🇦,MAR,26,Anass Salah Eddine,D
