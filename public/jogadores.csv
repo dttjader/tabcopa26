@@ -1,16 +1,4 @@
 id,pais,pais_code,numero,nome,posicao
-BRA01,Brasil 🇧🇷,BRA,1,Ederson,G
-BRA03,Brasil 🇧🇷,BRA,3,Guilherme Arana,D
-BRA04,Brasil 🇧🇷,BRA,4,Marquinhos,D
-BRA05,Brasil 🇧🇷,BRA,5,Casemiro,M
-BRA06,Brasil 🇧🇷,BRA,6,Alex Sandro,D
-BRA07,Brasil 🇧🇷,BRA,7,Rodrygo,A
-BRA09,Brasil 🇧🇷,BRA,9,Gabriel Jesus,A
-BRA10,Brasil 🇧🇷,BRA,10,Neymar Jr.,A
-BRA11,Brasil 🇧🇷,BRA,11,Raphinha,A
-BRA14,Brasil 🇧🇷,BRA,14,Éder Militão,D
-BRA20,Brasil 🇧🇷,BRA,20,Endrick,A
-BRA21,Brasil 🇧🇷,BRA,21,Vinicius Jr.,A
 ARG01,Argentina 🇦🇷,ARG,1,Emiliano Martínez,G
 ARG10,Argentina 🇦🇷,ARG,10,Lionel Messi,A
 ARG11,Argentina 🇦🇷,ARG,11,Ángel Di María,A
@@ -326,3 +314,29 @@ PAR23,Paraguai 🇵🇾,PAR,23,Matias Galarza,M
 PAR24,Paraguai 🇵🇾,PAR,24,Gustavo Caballero,M
 PAR25,Paraguai 🇵🇾,PAR,25,Isidro Pitta,A
 PAR26,Paraguai 🇵🇾,PAR,26,Alexandro Maidana,D
+BRA01,Brasil 🇧🇷,BRA,1,Alisson,G
+BRA02,Brasil 🇧🇷,BRA,2,Ederson Silva,M
+BRA03,Brasil 🇧🇷,BRA,3,Gabriel Magalhães,D
+BRA04,Brasil 🇧🇷,BRA,4,Marquinhos,D
+BRA05,Brasil 🇧🇷,BRA,5,Casemiro,M
+BRA06,Brasil 🇧🇷,BRA,6,Alex Sandro,D
+BRA07,Brasil 🇧🇷,BRA,7,Vinicius Jr.,A
+BRA08,Brasil 🇧🇷,BRA,8,Bruno Guimarães,M
+BRA09,Brasil 🇧🇷,BRA,9,Matheus Cunha,A
+BRA10,Brasil 🇧🇷,BRA,10,Neymar Jr.,A
+BRA11,Brasil 🇧🇷,BRA,11,Raphinha,A
+BRA12,Brasil 🇧🇷,BRA,12,Weverton,G
+BRA13,Brasil 🇧🇷,BRA,13,Danilo,D
+BRA14,Brasil 🇧🇷,BRA,14,Bremer,D
+BRA15,Brasil 🇧🇷,BRA,15,Léo Pereira,D
+BRA16,Brasil 🇧🇷,BRA,16,Douglas Santos,D
+BRA17,Brasil 🇧🇷,BRA,17,Fabinho,M
+BRA18,Brasil 🇧🇷,BRA,18,Danilo Santos,M
+BRA19,Brasil 🇧🇷,BRA,19,Endrick,A
+BRA20,Brasil 🇧🇷,BRA,20,Lucas Paquetá,M
+BRA21,Brasil 🇧🇷,BRA,21,Luiz Henrique,A
+BRA22,Brasil 🇧🇷,BRA,22,Gabriel Martinelli,A
+BRA23,Brasil 🇧🇷,BRA,23,Ederson,G
+BRA24,Brasil 🇧🇷,BRA,24,Roger Ibañez,D
+BRA25,Brasil 🇧🇷,BRA,25,Igor Thiago,A
+BRA26,Brasil 🇧🇷,BRA,26,Rayan,A
