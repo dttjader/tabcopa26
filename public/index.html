@@ -289,7 +289,7 @@ const allCountries=Object.values(groupsBase).flat().filter(t=>!t.startsWith('Rep
 
 // Calcula pontuação de um jogador
 function calcPontuacao(j){
-  return (j.gols||0)*1000 + (j.assistencias||0)*100 + (j.vermelhos||0)*(-10) + (j.amarelos||0)*(-1);
+  return (j.gols||0)*1000 + (j.assistencias||0)*100 + (j.vermelhos||0)*(-10) + (j.amarelos||0)*(-1) + (j.golsContra||0)*(-100);
 }
 
 function makeGroupMatches(){
@@ -867,7 +867,7 @@ async function loadRosters(){
     const lines=text.trim().split('\n').filter(l=>!l.startsWith('#')&&l.trim());
     if(lines.length<2)return;
     const headers=lines[0].split(',').map(h=>h.replace(/\r/g,'').trim());
-    state.jogadores.forEach(j=>{if(j.fromCsv){j.gols=0;j.assistencias=0;j.amarelos=0;j.vermelhos=0;}});
+    state.jogadores.forEach(j=>{if(j.fromCsv){j.gols=0;j.assistencias=0;j.amarelos=0;j.vermelhos=0;j.golsContra=0;}});
     lines.slice(1).forEach(line=>{
       if(!line.trim())return;
       const cols=line.split(',');
@@ -879,6 +879,7 @@ async function loadRosters(){
       jog.assistencias+=parseInt(obj.assistencias)||0;
       jog.amarelos    +=parseInt(obj.amarelo)      ||0;
       jog.vermelhos   +=parseInt(obj.vermelho)     ||0;
+      jog.golsContra  +=parseInt(obj.gol_contra)   ||0;
     });
     saveState();
   }catch(e){console.warn('eventos.csv:',e.message);}
@@ -1050,6 +1051,7 @@ function renderJogadores(){
       <span style="color:var(--blue)">🅰️ Assist. = +100</span>
       <span style="color:var(--red)">🟥 Vermelho = −10</span>
       <span style="color:var(--yellow)">🟨 Amarelo = −1</span>
+      <span style="color:var(--red)">⚽↩ Gol Contra = −100</span>
     </div>
 
     <div class="players-table-wrap">
@@ -1065,6 +1067,7 @@ function renderJogadores(){
           ${thCol('ast','assistencias','🅰️')}
           ${thCol('amar','amarelos','🟨')}
           ${thCol('verm','vermelhos','🟥')}
+          ${thCol('gc','golsContra','⚽↩')}
           <th></th>
         </tr></thead>
         <tbody id="players-body"></tbody>
@@ -1099,7 +1102,7 @@ function renderPlayersBody(){
   const tbody=document.getElementById('players-body');
   if(!tbody)return;
   if(list.length===0){
-    tbody.innerHTML=`<tr><td colspan="11" style="text-align:center;color:var(--muted);padding:1.5rem">Nenhum jogador encontrado.</td></tr>`;
+    tbody.innerHTML=`<tr><td colspan="12" style="text-align:center;color:var(--muted);padding:1.5rem">Nenhum jogador encontrado.</td></tr>`;
     return;
   }
   tbody.innerHTML=list.map((j,rank)=>{
@@ -1127,6 +1130,7 @@ function renderPlayersBody(){
       ${statCell(j.assistencias,'assistencias','assist-stat')}
       ${statCell(j.amarelos,'amarelos','yellow-stat')}
       ${statCell(j.vermelhos,'vermelhos','red-stat')}
+      ${statCell(j.golsContra,'golsContra','red-stat')}
       <td>${fromCsv?'':'<button class="btn-del-player" onclick="deletePlayer('+j.id+')" title="Remover">✕</button>'}</td>
     </tr>`;
   }).join('');
@@ -1221,6 +1225,7 @@ function renderStats(){
   const v=document.getElementById('view-stats');
   const topPts=[...state.jogadores].map(j=>({...j,pontuacao:calcPontuacao(j)})).filter(j=>j.pontuacao!==0).sort((a,b)=>b.pontuacao-a.pontuacao).slice(0,10);
   const topGols=[...state.jogadores].filter(j=>j.gols>0).sort((a,b)=>b.gols-a.gols).slice(0,10);
+  const topGC=[...state.jogadores].filter(j=>j.golsContra>0).sort((a,b)=>b.golsContra-a.golsContra).slice(0,10);
   const topAssist=[...state.jogadores].filter(j=>j.assistencias>0).sort((a,b)=>b.assistencias-a.assistencias).slice(0,10);
   const topAmar=[...state.jogadores].filter(j=>j.amarelos>0).sort((a,b)=>b.amarelos-a.amarelos).slice(0,10);
   const topVerm=[...state.jogadores].filter(j=>j.vermelhos>0).sort((a,b)=>b.vermelhos-a.vermelhos).slice(0,10);
@@ -1253,6 +1258,7 @@ function renderStats(){
       <div class="stat-card"><div class="stat-label">🟨 Amarelos</div><div class="stat-value">${state.jogadores.reduce((s,j)=>s+(j.amarelos||0),0)}</div></div>
       <div class="stat-card"><div class="stat-label">🟥 Vermelhos</div><div class="stat-value">${state.jogadores.reduce((s,j)=>s+(j.vermelhos||0),0)}</div></div>
       <div class="stat-card"><div class="stat-label">🅰️ Assistências</div><div class="stat-value">${state.jogadores.reduce((s,j)=>s+(j.assistencias||0),0)}</div></div>
+      <div class="stat-card"><div class="stat-label">⚽↩ Gols Contra</div><div class="stat-value" style="color:var(--red)">${state.jogadores.reduce((s,j)=>s+(j.golsContra||0),0)}</div></div>
     </div>
     <div class="stats-cols">
       <div><div class="stats-section-title">🏆 Ranking de Pontuação</div>${rankTable(topPts,'pontuacao','Pts','var(--gold2)')}</div>
@@ -1264,6 +1270,7 @@ function renderStats(){
     </div>
     <div class="stats-cols" style="margin-top:1rem">
       <div><div class="stats-section-title">🟥 Cartões Vermelhos</div>${rankTable(topVerm,'vermelhos','Verm.','var(--red)')}</div>
+      <div><div class="stats-section-title">⚽↩ Gols Contra</div>${rankTable(topGC,'golsContra','GC','var(--red)')}</div>
     </div>`;
 }
 
