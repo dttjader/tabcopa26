@@ -1,5 +1,7 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra
 QAT,SUI,QAT01,0,0,1,0
+QAT,SUI,QAT05,0,0,1,0
+QAT,SUI,SUI06,0,0,1,0
 QAT,SUI,SUI07,1,0,0,0
 EUA,PAR,EUA04,0,0,1,0
 EUA,PAR,EUA07,1,0,0,0
