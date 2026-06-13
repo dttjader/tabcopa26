@@ -890,10 +890,19 @@ async function loadRosters(){
 // ══════════════════════════════════════════════════════
 function calcStandings(g){
   const tbl={};
-  getGroupTeams(g).forEach(t=>{tbl[t]={pts:0,pj:0,v:0,e:0,d:0,gp:0,gc:0,sg:0}});
+  // Inicializa com os times reais dos jogos (CSV já tem os nomes corretos)
+  state.groupMatches[g].forEach(m=>{
+    if(m.home&&!isRepSlot(m.home)&&m.home!=='?')tbl[m.home]=tbl[m.home]||{pts:0,pj:0,v:0,e:0,d:0,gp:0,gc:0,sg:0};
+    if(m.away&&!isRepSlot(m.away)&&m.away!=='?')tbl[m.away]=tbl[m.away]||{pts:0,pj:0,v:0,e:0,d:0,gp:0,gc:0,sg:0};
+  });
+  // Fallback: times do groupsBase que não são repescagem e ainda não estão na tabela
+  groupsBase[g].forEach(t=>{
+    if(!isRepSlot(t)&&!tbl[t])tbl[t]={pts:0,pj:0,v:0,e:0,d:0,gp:0,gc:0,sg:0};
+  });
   state.groupMatches[g].forEach(m=>{
     const hk=m.home,ak=m.away;
-    if(!hk||!ak||m.hs===null||m.as===null)return;
+    if(!hk||!ak||isRepSlot(hk)||isRepSlot(ak)||hk==='?'||ak==='?')return;
+    if(m.hs===null||m.as===null)return;
     if(!tbl[hk])tbl[hk]={pts:0,pj:0,v:0,e:0,d:0,gp:0,gc:0,sg:0};
     if(!tbl[ak])tbl[ak]={pts:0,pj:0,v:0,e:0,d:0,gp:0,gc:0,sg:0};
     tbl[hk].pj++;tbl[ak].pj++;
