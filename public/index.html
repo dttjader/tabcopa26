@@ -1287,12 +1287,12 @@ function closeModal(){document.getElementById('modal-root').innerHTML='';}
 function renderStats(){
   const {goals,matches,played}=calcGlobalStats();
   const v=document.getElementById('view-stats');
-  const topPts=[...state.jogadores].map(j=>({...j,pontuacao:calcPontuacao(j)})).filter(j=>j.pontuacao!==0).sort((a,b)=>b.pontuacao-a.pontuacao).slice(0,10);
-  const topGols=[...state.jogadores].filter(j=>j.gols>0).sort((a,b)=>b.gols-a.gols).slice(0,10);
-  const topGC=[...state.jogadores].filter(j=>j.golsContra>0).sort((a,b)=>b.golsContra-a.golsContra).slice(0,10);
-  const topAssist=[...state.jogadores].filter(j=>j.assistencias>0).sort((a,b)=>b.assistencias-a.assistencias).slice(0,10);
-  const topAmar=[...state.jogadores].filter(j=>j.amarelos>0).sort((a,b)=>b.amarelos-a.amarelos).slice(0,10);
-  const topVerm=[...state.jogadores].filter(j=>j.vermelhos>0).sort((a,b)=>b.vermelhos-a.vermelhos).slice(0,10);
+  const topPts=[...state.jogadores].map(j=>({...j,pontuacao:calcPontuacao(j)})).filter(j=>j.pontuacao!==0).sort((a,b)=>b.pontuacao-a.pontuacao).slice(0,20);
+  const topGols=[...state.jogadores].filter(j=>j.gols>0).sort((a,b)=>b.gols-a.gols).slice(0,20);
+  const topGC=[...state.jogadores].filter(j=>j.golsContra>0).sort((a,b)=>b.golsContra-a.golsContra).slice(0,20);
+  const topAssist=[...state.jogadores].filter(j=>j.assistencias>0).sort((a,b)=>b.assistencias-a.assistencias).slice(0,20);
+  const topAmar=[...state.jogadores].filter(j=>j.amarelos>0).sort((a,b)=>b.amarelos-a.amarelos).slice(0,20);
+  const topVerm=[...state.jogadores].filter(j=>j.vermelhos>0).sort((a,b)=>b.vermelhos-a.vermelhos).slice(0,20);
 
   function rankTable(list,statKey,statLabel,color){
     if(list.length===0)return`<div style="color:var(--muted);font-size:.78rem;padding:.6rem 0">Nenhum dado ainda.</div>`;
@@ -1325,8 +1325,8 @@ function renderStats(){
       <div class="stat-card"><div class="stat-label">⚽↩ Gols Contra</div><div class="stat-value" style="color:var(--red)">${state.jogadores.reduce((s,j)=>s+(j.golsContra||0),0)}</div></div>
     </div>
     <div class="stats-cols">
-      <div><div class="stats-section-title">🏆 Ranking de Pontuação</div>${rankTable(topPts,'pontuacao','Pts','var(--gold2)')}</div>
       <div><div class="stats-section-title">🥅 Artilheiros</div>${rankTable(topGols,'gols','Gols','var(--gold2)')}</div>
+      <div><div class="stats-section-title">🅰️ Assistências</div>${rankTable(topAssist,'assistencias','Assist.','var(--blue)')}</div>
     </div>
     <div class="stats-cols" style="margin-top:1rem">
       <div><div class="stats-section-title">🅰️ Assistências</div>${rankTable(topAssist,'assistencias','Assist.','var(--blue)')}</div>
