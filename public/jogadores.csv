@@ -22,10 +22,6 @@ POR01,Portugal 🇵🇹,POR,1,Diogo Costa,G
 POR07,Portugal 🇵🇹,POR,7,Cristiano Ronaldo,A
 POR10,Portugal 🇵🇹,POR,10,Bernardo Silva,M
 POR17,Portugal 🇵🇹,POR,17,Rafael Leão,A
-ALE01,Alemanha 🇩🇪,ALE,1,Manuel Neuer,G
-ALE09,Alemanha 🇩🇪,ALE,9,Kai Havertz,A
-ALE10,Alemanha 🇩🇪,ALE,10,Jamal Musiala,M
-ALE13,Alemanha 🇩🇪,ALE,13,Thomas Müller,A
 HOL01,Países Baixos 🇳🇱,HOL,1,Bart Verbruggen,G
 HOL09,Países Baixos 🇳🇱,HOL,9,Memphis Depay,A
 HOL10,Países Baixos 🇳🇱,HOL,10,Davy Klaassen,M
@@ -467,3 +463,29 @@ TUR23,Turquia 🇹🇷,TUR,23,Ugurcan Cakir,G
 TUR24,Turquia 🇹🇷,TUR,24,Oguz Aydin,A
 TUR25,Turquia 🇹🇷,TUR,25,Samet Akaydin,D
 TUR26,Turquia 🇹🇷,TUR,26,Can Uzun,A
+ALE01,Alemanha 🇩🇪,ALE,1,Manuel Neuer,G
+ALE02,Alemanha 🇩🇪,ALE,2,Antonio Ruediger,D
+ALE03,Alemanha 🇩🇪,ALE,3,Waldemar Anton,D
+ALE04,Alemanha 🇩🇪,ALE,4,Jonathan Tah,D
+ALE05,Alemanha 🇩🇪,ALE,5,Aleksandar Pavlovic,M
+ALE06,Alemanha 🇩🇪,ALE,6,Joshua Kimmich,D
+ALE07,Alemanha 🇩🇪,ALE,7,Kai Havertz,A
+ALE08,Alemanha 🇩🇪,ALE,8,Leon Goretzka,M
+ALE09,Alemanha 🇩🇪,ALE,9,Jamie Leweling,M
+ALE10,Alemanha 🇩🇪,ALE,10,Jamal Musiala,M
+ALE11,Alemanha 🇩🇪,ALE,11,Nick Woltemade,A
+ALE12,Alemanha 🇩🇪,ALE,12,Oliver Baumann,G
+ALE13,Alemanha 🇩🇪,ALE,13,Pascal Gross,M
+ALE14,Alemanha 🇩🇪,ALE,14,Maximilian Beier,A
+ALE15,Alemanha 🇩🇪,ALE,15,Nico Schlotterbeck,D
+ALE16,Alemanha 🇩🇪,ALE,16,Angelo Stiller,M
+ALE17,Alemanha 🇩🇪,ALE,17,Florian Wirtz,M
+ALE18,Alemanha 🇩🇪,ALE,18,Nathaniel Brown,D
+ALE19,Alemanha 🇩🇪,ALE,19,Leroy Sane,M
+ALE20,Alemanha 🇩🇪,ALE,20,Nadiem Amiri,M
+ALE21,Alemanha 🇩🇪,ALE,21,Alexander Nuebel,G
+ALE22,Alemanha 🇩🇪,ALE,22,David Raum,D
+ALE23,Alemanha 🇩🇪,ALE,23,Felix Nmecha,M
+ALE24,Alemanha 🇩🇪,ALE,24,Malick Thiaw,D
+ALE25,Alemanha 🇩🇪,ALE,25,Assan Quedraogo,M
+ALE26,Alemanha 🇩🇪,ALE,26,Deniz Undav,A
