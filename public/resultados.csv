@@ -8,6 +8,9 @@ G_C_1,2026-06-13,19:00,grupos,C,Rodada 1,Brasil 🇧🇷,Marrocos 🇲🇦,1,1,,
 G_C_2,2026-06-13,22:00,grupos,C,Rodada 1,Haiti 🇭🇹,Escócia 🏴󠁧󠁢󠁳󠁣󠁴󠁿,0,1,,,Boston,Gillette Stadium
 G_D_2,2026-06-14,01:00,grupos,D,Rodada 1,Austrália 🇦🇺,Turquia 🇹🇷,2,0,,,Vancouver,BC Place
 G_E_1,2026-06-14,14:00,grupos,E,Rodada 1,Alemanha 🇩🇪,Curaçao 🇨🇼,1,1,,,Houston,NRG Stadium
+G_F_1,2026-06-14,17:00,grupos,F,Rodada 1,Países Baixos 🇳🇱,Japão 🇯🇵,,,,,Dallas,AT&T Stadium
+G_E_2,2026-06-14,20:00,grupos,E,Rodada 1,Costa do Marfim 🇨🇮,Equador 🇪🇨,,,,,Filadélfia,Lincoln Financial Field
+G_F_2,2026-06-14,23:00,grupos,F,Rodada 1,Suécia 🇸🇪,Tunísia 🇹🇳,,,,,Monterrey,Estadio BBVA
 G_A_3,2026-06-18,13:00,grupos,A,Rodada 2,República Tcheca 🇨🇿,África do Sul 🇿🇦,,,,,Atlanta,Mercedes-Benz Stadium
 G_A_4,2026-06-18,22:00,grupos,A,Rodada 2,México 🇲🇽,Coreia do Sul 🇰🇷,,,,,Guadalajara,Estádio Akron
 G_A_5,2026-06-24,22:00,grupos,A,Rodada 3,República Tcheca 🇨🇿,México 🇲🇽,,,,,Cidade do México,Estádio Azteca
@@ -24,17 +27,14 @@ G_D_3,2026-06-19,00:00,grupos,D,Rodada 2,EUA 🇺🇸,Austrália 🇦🇺,,,,,Se
 G_D_4,2026-06-20,01:00,grupos,D,Rodada 2,Turquia 🇹🇷,Paraguai 🇵🇾,,,,,São Francisco,Levi's Stadium
 G_D_5,2026-06-25,23:00,grupos,D,Rodada 3,Turquia 🇹🇷,EUA 🇺🇸,,,,,Los Angeles,SoFi Stadium
 G_D_6,2026-06-25,23:00,grupos,D,Rodada 3,Paraguai 🇵🇾,Austrália 🇦🇺,,,,,São Francisco,Levi's Stadium
-G_E_2,2026-06-14,20:00,grupos,E,Rodada 1,Costa do Marfim 🇨🇮,Equador 🇪🇨,,,,,Filadélfia,Lincoln Financial Field
 G_E_3,2026-06-20,17:00,grupos,E,Rodada 2,Alemanha 🇩🇪,Costa do Marfim 🇨🇮,,,,,Toronto,BMO Field
 G_E_4,2026-06-20,21:00,grupos,E,Rodada 2,Equador 🇪🇨,Curaçao 🇨🇼,,,,,Kansas City,Arrowhead Stadium
 G_E_5,2026-06-25,17:00,grupos,E,Rodada 3,Equador 🇪🇨,Alemanha 🇩🇪,,,,,Nova York,MetLife Stadium
 G_E_6,2026-06-25,17:00,grupos,E,Rodada 3,Curaçao 🇨🇼,Costa do Marfim 🇨🇮,,,,,Filadélfia,Lincoln Financial Field
-G_F_1,2026-06-14,17:00,grupos,F,Rodada 1,Países Baixos 🇳🇱,Japão 🇯🇵,,,,,Dallas,AT&T Stadium
-G_F_2,2026-06-14,23:00,grupos,F,Rodada 1,Repescagem Europa 2,Tunísia 🇹🇳,,,,,Monterrey,Estadio BBVA
-G_F_3,2026-06-20,14:00,grupos,F,Rodada 2,Países Baixos 🇳🇱,Repescagem Europa 2,,,,,Houston,NRG Stadium
+G_F_3,2026-06-20,14:00,grupos,F,Rodada 2,Países Baixos 🇳🇱,Suécia 🇸🇪,,,,,Houston,NRG Stadium
 G_F_4,2026-06-20,01:00,grupos,F,Rodada 2,Tunísia 🇹🇳,Japão 🇯🇵,,,,,Monterrey,Estadio BBVA
 G_F_5,2026-06-25,20:00,grupos,F,Rodada 3,Tunísia 🇹🇳,Países Baixos 🇳🇱,,,,,Kansas City,Arrowhead Stadium
-G_F_6,2026-06-25,20:00,grupos,F,Rodada 3,Japão 🇯🇵,Repescagem Europa 2,,,,,Dallas,AT&T Stadium
+G_F_6,2026-06-25,20:00,grupos,F,Rodada 3,Japão 🇯🇵,Suécia 🇸🇪,,,,,Dallas,AT&T Stadium
 G_G_1,2026-06-15,16:00,grupos,G,Rodada 1,Bélgica 🇧🇪,Egito 🇪🇬,,,,,Seattle,Lumen Field
 G_G_2,2026-06-15,22:00,grupos,G,Rodada 1,Irã 🇮🇷,Nova Zelândia 🇳🇿,,,,,Los Angeles,SoFi Stadium
 G_G_3,2026-06-21,16:00,grupos,G,Rodada 2,Bélgica 🇧🇪,Irã 🇮🇷,,,,,Los Angeles,SoFi Stadium
@@ -71,22 +71,6 @@ G_L_3,2026-06-23,17:00,grupos,L,Rodada 2,Inglaterra 🇬🇧,Gana 🇬🇭,,,,,B
 G_L_4,2026-06-23,20:00,grupos,L,Rodada 2,Panamá 🇵🇦,Croácia 🇭🇷,,,,,Toronto,BMO Field
 G_L_5,2026-06-27,18:00,grupos,L,Rodada 3,Panamá 🇵🇦,Inglaterra 🇬🇧,,,,,Nova York,MetLife Stadium
 G_L_6,2026-06-27,18:00,grupos,L,Rodada 3,Croácia 🇭🇷,Gana 🇬🇭,,,,,Filadélfia,Lincoln Financial Field
-REP_EU1_SF1,2026-03-26,14:00,repescagem,rep_eu_1,SF,Itália 🇮🇹,Irlanda do Norte 🏴,2,0,,,Europa,
-REP_EU1_SF2,2026-03-26,17:00,repescagem,rep_eu_1,SF,País de Gales 🏴,Bósnia 🇧🇦,1,1,2,4,Europa,
-REP_EU1_FIN,2026-03-31,17:00,repescagem,rep_eu_1,FIN,?,?,1,1,1,4,Europa,
-REP_EU2_SF1,2026-03-26,14:00,repescagem,rep_eu_2,SF,Ucrânia 🇺🇦,Suécia 🇸🇪,1,3,,,Europa,
-REP_EU2_SF2,2026-03-26,17:00,repescagem,rep_eu_2,SF,Polônia 🇵🇱,Albânia 🇦🇱,2,1,,,Europa,
-REP_EU2_FIN,2026-03-31,17:00,repescagem,rep_eu_2,FIN,?,?,3,2,,,Europa,
-REP_EU3_SF1,2026-03-26,14:00,repescagem,rep_eu_3,SF,Turquia 🇹🇷,Romênia 🇷🇴,1,0,,,Europa,
-REP_EU3_SF2,2026-03-26,17:00,repescagem,rep_eu_3,SF,Eslováquia 🇸🇰,Kosovo 🇽🇰,3,4,,,Europa,
-REP_EU3_FIN,2026-03-31,17:00,repescagem,rep_eu_3,FIN,?,?,1,0,,,Europa,
-REP_EU4_SF1,2026-03-26,14:00,repescagem,rep_eu_4,SF,Dinamarca 🇩🇰,Macedônia do Norte 🇲🇰,4,0,,,Europa,
-REP_EU4_SF2,2026-03-26,17:00,repescagem,rep_eu_4,SF,República Tcheca 🇨🇿,Irlanda 🇮🇪,2,2,4,3,Europa,
-REP_EU4_FIN,2026-03-31,17:00,repescagem,rep_eu_4,FIN,?,?,2,2,1,3,Europa,
-REP_IC1_SF1,2026-03-26,20:00,repescagem,rep_ic1,SF,Nova Caledônia 🇳🇨,Jamaica 🇯🇲,0,1,,,México,
-REP_IC1_FIN,2026-03-31,20:00,repescagem,rep_ic1,FIN,RD Congo 🇨🇩,Jamaica 🇯🇲,1,0,,,México,
-REP_IC2_SF1,2026-03-26,22:00,repescagem,rep_ic2,SF,Bolívia 🇧🇴,Suriname 🇸🇷,2,1,,,México,
-REP_IC2_FIN,2026-03-31,22:00,repescagem,rep_ic2,FIN,Iraque 🇮🇶,Bolívia 🇧🇴,2,1,,,México,
 KO_R32_1,2026-06-28,00:00,matamata,r32,Rodada de 32,?,?,,,,,TBD,
 KO_R32_2,2026-06-28,00:00,matamata,r32,Rodada de 32,?,?,,,,,TBD,
 KO_R32_3,2026-06-29,00:00,matamata,r32,Rodada de 32,?,?,,,,,TBD,
@@ -119,3 +103,19 @@ KO_SF_1,2026-07-14,00:00,matamata,sf,Semifinal,?,?,,,,,TBD,
 KO_SF_2,2026-07-15,00:00,matamata,sf,Semifinal,?,?,,,,,TBD,
 KO_3P_1,2026-07-18,21:00,matamata,3p,3º Lugar,?,?,,,,,Miami,Hard Rock Stadium
 KO_FIN_1,2026-07-19,18:00,matamata,final,Final,?,?,,,,,Nova York,MetLife Stadium
+REP_EU1_SF1,2026-03-26,14:00,repescagem,rep_eu_1,SF,Itália 🇮🇹,Irlanda do Norte 🏴,2,0,,,Europa,
+REP_EU1_SF2,2026-03-26,17:00,repescagem,rep_eu_1,SF,País de Gales 🏴,Bósnia 🇧🇦,1,1,2,4,Europa,
+REP_EU1_FIN,2026-03-31,17:00,repescagem,rep_eu_1,FIN,Itália 🇮🇹,Bósnia 🇧🇦,1,1,1,4,Europa,
+REP_EU2_SF1,2026-03-26,14:00,repescagem,rep_eu_2,SF,Ucrânia 🇺🇦,Suécia 🇸🇪,1,3,,,Europa,
+REP_EU2_SF2,2026-03-26,17:00,repescagem,rep_eu_2,SF,Polônia 🇵🇱,Albânia 🇦🇱,2,1,,,Europa,
+REP_EU2_FIN,2026-03-31,17:00,repescagem,rep_eu_2,FIN,Suécia 🇸🇪,Polônia 🇵🇱,3,2,,,Europa,
+REP_EU3_SF1,2026-03-26,14:00,repescagem,rep_eu_3,SF,Turquia 🇹🇷,Romênia 🇷🇴,1,0,,,Europa,
+REP_EU3_SF2,2026-03-26,17:00,repescagem,rep_eu_3,SF,Eslováquia 🇸🇰,Kosovo 🇽🇰,3,4,,,Europa,
+REP_EU3_FIN,2026-03-31,17:00,repescagem,rep_eu_3,FIN,Turquia 🇹🇷,Kosovo 🇽🇰,1,0,,,Europa,
+REP_EU4_SF1,2026-03-26,14:00,repescagem,rep_eu_4,SF,Dinamarca 🇩🇰,Macedônia do Norte 🇲🇰,4,0,,,Europa,
+REP_EU4_SF2,2026-03-26,17:00,repescagem,rep_eu_4,SF,República Tcheca 🇨🇿,Irlanda 🇮🇪,2,2,4,3,Europa,
+REP_EU4_FIN,2026-03-31,17:00,repescagem,rep_eu_4,FIN,Dinamarca 🇩🇰,República Tcheca 🇨🇿,2,2,1,3,Europa,
+REP_IC1_SF1,2026-03-26,20:00,repescagem,rep_ic1,SF,Nova Caledônia 🇳🇨,Jamaica 🇯🇲,0,1,,,México,
+REP_IC1_FIN,2026-03-31,20:00,repescagem,rep_ic1,FIN,RD Congo 🇨🇩,Jamaica 🇯🇲,1,0,,,México,
+REP_IC2_SF1,2026-03-26,22:00,repescagem,rep_ic2,SF,Bolívia 🇧🇴,Suriname 🇸🇷,2,1,,,México,
+REP_IC2_FIN,2026-03-31,22:00,repescagem,rep_ic2,FIN,Iraque 🇮🇶,Bolívia 🇧🇴,2,1,,,México,
