@@ -289,7 +289,7 @@ const allCountries=Object.values(groupsBase).flat().filter(t=>!t.startsWith('Rep
 
 // Calcula pontuação de um jogador
 function calcPontuacao(j){
-  return (j.gols||0)*1000 + (j.assistencias||0)*100 + (j.vermelhos||0)*(-10) + (j.amarelos||0)*(-1) + (j.golsContra||0)*(-100);
+  return (j.gols||0)*100 + (j.assistencias||0)*10 + (j.vermelhos||0)*(-10) + (j.amarelos||0)*(-1) + (j.golsContra||0)*(-100);
 }
 
 function makeGroupMatches(){
@@ -1056,8 +1056,8 @@ function renderJogadores(){
 
     <div style="font-size:.69rem;color:var(--muted);margin-bottom:.8rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap">
       <span>🏆 Pontuação:</span>
-      <span style="color:var(--gold2)">⚽ Gol = +1000</span>
-      <span style="color:var(--blue)">🅰️ Assist. = +100</span>
+      <span style="color:var(--gold2)">⚽ Gol = +100</span>
+      <span style="color:var(--blue)">🅰️ Assist. = +10</span>
       <span style="color:var(--red)">🟥 Vermelho = −10</span>
       <span style="color:var(--yellow)">🟨 Amarelo = −1</span>
       <span style="color:var(--red)">⚽↩ Gol Contra = −100</span>
