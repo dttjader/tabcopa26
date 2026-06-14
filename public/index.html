@@ -289,7 +289,7 @@ const allCountries=Object.values(groupsBase).flat().filter(t=>!t.startsWith('Rep
 
 // Calcula pontuação de um jogador
 function calcPontuacao(j){
-  return (j.gols||0)*100 + (j.assistencias||0)*10 + (j.vermelhos||0)*(-10) + (j.amarelos||0)*(-1) + (j.golsContra||0)*(-100);
+  return (j.gols||0)*1000 + (j.assistencias||0)*100 + (j.vermelhos||0)*(-10) + (j.amarelos||0)*(-1) + (j.golsContra||0)*(-100);
 }
 
 function makeGroupMatches(){
@@ -922,8 +922,9 @@ function renderGroups(){
     <div class="legend">
       <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>1º Lugar</div>
       <div class="legend-item"><div class="legend-dot" style="background:#86efac"></div>2º Lugar</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--yellow)"></div>3º (possível)</div>
-    </div><div class="groups-grid" id="gg"></div>`;
+      <div class="legend-item"><div class="legend-dot" style="background:var(--yellow)"></div>3º (possível classificação)</div>
+    </div><div class="groups-grid" id="gg"></div>
+    <div id="terceiros-section"></div>`;
   const gg=document.getElementById('gg');
   Object.keys(groupsBase).forEach(g=>{
     const st=calcStandings(g);
@@ -940,6 +941,60 @@ function renderGroups(){
         }).join('')}</tbody></table>`;
     gg.appendChild(div);
   });
+  renderTerceiros();
+}
+
+function renderTerceiros(){
+  const sec=document.getElementById('terceiros-section');
+  if(!sec)return;
+
+  // Coleta o 3º colocado de cada grupo
+  const terceiros=Object.keys(groupsBase).map(g=>{
+    const st=calcStandings(g);
+    if(st.length<3)return null;
+    return{grupo:g,...st[2]};
+  }).filter(Boolean);
+
+  // Ordena: pts → sg → gp
+  const sorted=[...terceiros].sort((a,b)=>b.pts-a.pts||b.sg-a.sg||b.gp-a.gp);
+  const total=Object.keys(groupsBase).length; // 12 grupos
+  const vagasTotal=8;
+
+  sec.innerHTML=`
+    <div class="match-section-title" style="margin-top:1.8rem">🥉 Classificação dos Terceiros Colocados</div>
+    <div style="font-size:.71rem;color:var(--muted);margin-bottom:.8rem">
+      Os <strong style="color:var(--gold)">8 melhores</strong> terceiros colocados entre os ${total} grupos avançam para o Mata-Mata.
+      ${terceiros.length<total?`<span style="color:var(--muted)"> (${total-terceiros.length} grupo(s) ainda sem 3º definido)</span>`:''}
+    </div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;overflow-x:auto">
+      <table class="group-table" style="min-width:520px">
+        <thead>
+          <tr>
+            <th style="text-align:center;width:36px">#</th>
+            <th style="text-align:left">Seleção</th>
+            <th>Grp</th>
+            <th>PJ</th><th>V</th><th>E</th><th>D</th><th>GF</th><th>GC</th><th>SG</th><th>PTS</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${sorted.map((t,i)=>{
+            const classifica=i<vagasTotal;
+            const borderColor=classifica?'var(--yellow)':'transparent';
+            const rankLabel=classifica?`<span style="font-family:'Bebas Neue',sans-serif;font-size:1rem;color:${i<vagasTotal?'var(--yellow)':'var(--muted)'}">${i+1}</span>`
+              :`<span style="font-size:.75rem;color:var(--muted)">${i+1}</span>`;
+            return`<tr style="opacity:${classifica?1:.5}">
+              <td style="text-align:center;border-left:3px solid ${borderColor}">${rankLabel}</td>
+              <td><div class="team-cell">${t.name}</div></td>
+              <td style="color:var(--gold);font-weight:700;font-family:'Bebas Neue',sans-serif">${t.grupo}</td>
+              <td>${t.pj}</td><td>${t.v}</td><td>${t.e}</td><td>${t.d}</td><td>${t.gp}</td><td>${t.gc}</td>
+              <td style="color:${t.sg>0?'var(--green)':t.sg<0?'var(--red)':'var(--muted)'}">${t.sg>0?'+':''}${t.sg}</td>
+              <td class="pts-cell">${t.pts}</td>
+            </tr>`;
+          }).join('')}
+          ${sorted.length===0?`<tr><td colspan="11" style="text-align:center;color:var(--muted);padding:1.2rem;font-size:.78rem">Nenhum grupo com 3 jogos disputados ainda.</td></tr>`:''}
+        </tbody>
+      </table>
+    </div>`;
 }
 
 // ══════════════════════════════════════════════════════
@@ -1056,8 +1111,8 @@ function renderJogadores(){
 
     <div style="font-size:.69rem;color:var(--muted);margin-bottom:.8rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap">
       <span>🏆 Pontuação:</span>
-      <span style="color:var(--gold2)">⚽ Gol = +100</span>
-      <span style="color:var(--blue)">🅰️ Assist. = +10</span>
+      <span style="color:var(--gold2)">⚽ Gol = +1000</span>
+      <span style="color:var(--blue)">🅰️ Assist. = +100</span>
       <span style="color:var(--red)">🟥 Vermelho = −10</span>
       <span style="color:var(--yellow)">🟨 Amarelo = −1</span>
       <span style="color:var(--red)">⚽↩ Gol Contra = −100</span>
