@@ -1,4 +1,9 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra
+CIV,EQU,CIV05,0,1,0,0
+CIV,EQU,CIV06,0,0,1,0
+CIV,EQU,CIV15,1,0,0,0
+CIV,EQU,CIV17,0,0,1,0
+CIV,EQU,EQU25,0,0,1,0
 HOL,JAP,HOL04,1,0,0,0
 HOL,JAP,HOL08,0,2,0,0
 HOL,JAP,HOL10,0,0,1,0
