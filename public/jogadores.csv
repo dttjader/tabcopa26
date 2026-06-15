@@ -9,11 +9,6 @@ FRA09,França 🇫🇷,FRA,9,Olivier Giroud,A
 FRA10,França 🇫🇷,FRA,10,Kylian Mbappé,A
 FRA14,França 🇫🇷,FRA,14,Adrien Rabiot,M
 FRA07,França 🇫🇷,FRA,7,Antoine Griezmann,A
-ESP01,Espanha 🇪🇸,ESP,1,Unai Simón,G
-ESP09,Espanha 🇪🇸,ESP,9,Álvaro Morata,A
-ESP10,Espanha 🇪🇸,ESP,10,Pedri,M
-ESP25,Espanha 🇪🇸,ESP,25,Lamine Yamal,A
-ESP22,Espanha 🇪🇸,ESP,22,Dani Olmo,M
 ING01,Inglaterra 🇬🇧,ING,1,Jordan Pickford,G
 ING07,Inglaterra 🇬🇧,ING,7,Bukayo Saka,A
 ING09,Inglaterra 🇬🇧,ING,9,Harry Kane,A
@@ -664,3 +659,29 @@ TUN23,Tunísia 🇹🇳,TUN,23,Moutaz Neffati,D
 TUN24,Tunísia 🇹🇳,TUN,24,Raed Chikhaoui,D
 TUN25,Tunísia 🇹🇳,TUN,25,Anis Slimane,M
 TUN26,Tunísia 🇹🇳,TUN,26,Sebastian Tounekti,M
+ESP01,Espanha 🇪🇸,ESP,1,David Raya,G
+ESP02,Espanha 🇪🇸,ESP,2,Marc Pubill,D
+ESP03,Espanha 🇪🇸,ESP,3,Alex Grimaldo,D
+ESP04,Espanha 🇪🇸,ESP,4,Eric Garcia,D
+ESP05,Espanha 🇪🇸,ESP,5,Marcos Llorente,D
+ESP06,Espanha 🇪🇸,ESP,6,Mikel Merino,M
+ESP07,Espanha 🇪🇸,ESP,7,Ferran Torres,A
+ESP08,Espanha 🇪🇸,ESP,8,Fabian Ruiz,M
+ESP09,Espanha 🇪🇸,ESP,9,Gavi,M
+ESP10,Espanha 🇪🇸,ESP,10,Davi Olmo,A
+ESP11,Espanha 🇪🇸,ESP,11,Yeremy Pino,A
+ESP12,Espanha 🇪🇸,ESP,12,Pedro Porro,D
+ESP13,Espanha 🇪🇸,ESP,13,Joan Garcia,G
+ESP14,Espanha 🇪🇸,ESP,14,Aymeric Laporte,D
+ESP15,Espanha 🇪🇸,ESP,15,Alex Baena,M
+ESP16,Espanha 🇪🇸,ESP,16,Rodri,M
+ESP17,Espanha 🇪🇸,ESP,17,Nico Williams,A
+ESP18,Espanha 🇪🇸,ESP,18,Martin Zubimendi,M
+ESP19,Espanha 🇪🇸,ESP,19,Lamine Yamal,A
+ESP20,Espanha 🇪🇸,ESP,20,Pedri,M
+ESP21,Espanha 🇪🇸,ESP,21,Mikel Oyarzabal,A
+ESP22,Espanha 🇪🇸,ESP,22,Pau Cubarsi,D
+ESP23,Espanha 🇪🇸,ESP,23,Unai Simon,G
+ESP24,Espanha 🇪🇸,ESP,24,Marc Cucurella,D
+ESP25,Espanha 🇪🇸,ESP,25,Victor Munoz,A
+ESP26,Espanha 🇪🇸,ESP,26,Borja Iglesias,A
