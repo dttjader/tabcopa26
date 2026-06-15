@@ -17,10 +17,6 @@ POR01,Portugal 🇵🇹,POR,1,Diogo Costa,G
 POR07,Portugal 🇵🇹,POR,7,Cristiano Ronaldo,A
 POR10,Portugal 🇵🇹,POR,10,Bernardo Silva,M
 POR17,Portugal 🇵🇹,POR,17,Rafael Leão,A
-BEL01,Bélgica 🇧🇪,BEL,1,Koen Casteels,G
-BEL07,Bélgica 🇧🇪,BEL,7,Kevin De Bruyne,M
-BEL09,Bélgica 🇧🇪,BEL,9,Romelu Lukaku,A
-BEL10,Bélgica 🇧🇪,BEL,10,Eden Hazard,A
 NOR01,Noruega 🇳🇴,NOR,1,Ørjan Nyland,G
 NOR09,Noruega 🇳🇴,NOR,9,Erling Haaland,A
 NOR11,Noruega 🇳🇴,NOR,11,Martin Ødegaard,M
@@ -711,3 +707,18 @@ CBV23,Cabo Verde 🇨🇻,CBV,23,CJ dos Santos,G
 CBV24,Cabo Verde 🇨🇻,CBV,24,Wagner Pina,D
 CBV25,Cabo Verde 🇨🇻,CBV,25,Kelvin Pires,D
 CBV26,Cabo Verde 🇨🇻,CBV,26,Hélio Varela,A
+BEL01,Bélgica 🇧🇪,BEL,1,Thibaut Courtois,G
+BEL02,Bélgica 🇧🇪,BEL,2,Zeno Debast,D
+BEL03,Bélgica 🇧🇪,BEL,3,Arthur Theate,D
+BEL04,Bélgica 🇧🇪,BEL,4,Brandon Mechele,D
+BEL05,Bélgica 🇧🇪,BEL,5,Maxim de Cuyper,D
+BEL07,Bélgica 🇧🇪,BEL,7,Kevin De Bruyne,M
+BEL09,Bélgica 🇧🇪,BEL,9,Romelu Lukaku,A
+BEL10,Bélgica 🇧🇪,BEL,10,Eden Hazard,A
+BEL12,Bélgica 🇧🇪,BEL,12,Senne Lammens,G
+BEL13,Bélgica 🇧🇪,BEL,13,Mike Penders,G
+BEL15,Bélgica 🇧🇪,BEL,15,Thomas Meunier,D
+BEL16,Bélgica 🇧🇪,BEL,16,Koni de Winter,D
+BEL18,Bélgica 🇧🇪,BEL,18,Joaquin Seys,D
+BEL21,Bélgica 🇧🇪,BEL,21,Timothy Castagne,D
+BEL25,Bélgica 🇧🇪,BEL,25,Nathan Ngoy,D
