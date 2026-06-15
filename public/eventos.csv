@@ -1,4 +1,13 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra
+HOL,JAP,HOL04,1,0,0,0
+HOL,JAP,HOL08,0,2,0,0
+HOL,JAP,HOL10,0,0,1,0
+HOL,JAP,HOL15,0,0,1,0
+HOL,JAP,HOL24,1,0,1,0
+HOL,JAP,JAP08,0,1,0,0
+HOL,JAP,JAP13,1,0,0,0
+HOL,JAP,JAP15,1,0,0,0
+HOL,JAP,JAP19,0,1,0,0
 ALE,CUR,ALE06,0,2,0,0
 ALE,CUR,ALE07,2,0,0,0
 ALE,CUR,ALE10,1,0,0,0
