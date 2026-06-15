@@ -22,10 +22,6 @@ POR01,Portugal 🇵🇹,POR,1,Diogo Costa,G
 POR07,Portugal 🇵🇹,POR,7,Cristiano Ronaldo,A
 POR10,Portugal 🇵🇹,POR,10,Bernardo Silva,M
 POR17,Portugal 🇵🇹,POR,17,Rafael Leão,A
-HOL01,Países Baixos 🇳🇱,HOL,1,Bart Verbruggen,G
-HOL09,Países Baixos 🇳🇱,HOL,9,Memphis Depay,A
-HOL10,Países Baixos 🇳🇱,HOL,10,Davy Klaassen,M
-HOL11,Países Baixos 🇳🇱,HOL,11,Cody Gakpo,A
 BEL01,Bélgica 🇧🇪,BEL,1,Koen Casteels,G
 BEL07,Bélgica 🇧🇪,BEL,7,Kevin De Bruyne,M
 BEL09,Bélgica 🇧🇪,BEL,9,Romelu Lukaku,A
@@ -515,3 +511,29 @@ CUR23,Curaçao 🇨🇼,CUR,23,Riechedly Bazoer,D
 CUR24,Curaçao 🇨🇼,CUR,24,Deveron Fonville,D
 CUR25,Curaçao 🇨🇼,CUR,25,Tyrick Bodak,G
 CUR26,Curaçao 🇨🇼,CUR,26,Trevor Doornbusch,G
+HOL01,Países Baixos 🇳🇱,HOL,1,Bart Verbruggen,G
+HOL02,Países Baixos 🇳🇱,HOL,2,Lutsharel Geertruida,D
+HOL03,Países Baixos 🇳🇱,HOL,3,Marten De Roon,M
+HOL04,Países Baixos 🇳🇱,HOL,4,Virgil Van Dijk,D
+HOL05,Países Baixos 🇳🇱,HOL,5,Nathan Ake,D
+HOL06,Países Baixos 🇳🇱,HOL,6,Jan Paul Van Hecke,D
+HOL07,Países Baixos 🇳🇱,HOL,7,Justin Kluivert,M
+HOL08,Países Baixos 🇳🇱,HOL,8,Ryan Gravenberch,M
+HOL09,Países Baixos 🇳🇱,HOL,9,Wout Weghorst,A
+HOL10,Países Baixos 🇳🇱,HOL,10,Memphis Depay,A
+HOL11,Países Baixos 🇳🇱,HOL,11,Cody Gakpo,A
+HOL12,Países Baixos 🇳🇱,HOL,12,Mats Wieffer,D
+HOL13,Países Baixos 🇳🇱,HOL,13,Robin Roefs,G
+HOL14,Países Baixos 🇳🇱,HOL,14,Tijjani Reijnders,M
+HOL15,Países Baixos 🇳🇱,HOL,15,Micky Van de Ven,D
+HOL16,Países Baixos 🇳🇱,HOL,16,Guus Til,M
+HOL17,Países Baixos 🇳🇱,HOL,17,Noa Lang,A
+HOL18,Países Baixos 🇳🇱,HOL,18,Donyell Malen,A
+HOL19,Países Baixos 🇳🇱,HOL,19,Brian Brobbey,A
+HOL20,Países Baixos 🇳🇱,HOL,20,Teun Koopmeiners,M
+HOL21,Países Baixos 🇳🇱,HOL,21,Frenkie de Jong,M
+HOL22,Países Baixos 🇳🇱,HOL,22,Denzel Dumfries,D
+HOL23,Países Baixos 🇳🇱,HOL,23,Mark Flekken,G
+HOL24,Países Baixos 🇳🇱,HOL,24,Crysescio Summerville,A
+HOL25,Países Baixos 🇳🇱,HOL,25,Jorrel Hato,D
+HOL26,Países Baixos 🇳🇱,HOL,26,Quinten Timber,M
