@@ -1,6 +1,7 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra
-BEL,EGI,EGI03,0,0,0,0,1
+BEL,EGI,BEL05,0,0,1,0
 BEL,EGI,BEL21,0,0,1,0
+BEL,EGI,EGI03,0,0,0,0,1
 BEL,EGI,EGI08,1,0,0,0
 BEL,EGI,EGI10,0,1,0,0
 BEL,EGI,EGI13,0,0,1,0
