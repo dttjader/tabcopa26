@@ -25,9 +25,6 @@ SEN10,Senegal 🇸🇳,SEN,10,Sadio Mané,A
 COL01,Colômbia 🇨🇴,COL,1,Camilo Vargas,G
 COL10,Colômbia 🇨🇴,COL,10,James Rodríguez,M
 COL09,Colômbia 🇨🇴,COL,9,Falcao,A
-URU01,Uruguai 🇺🇾,URU,1,Sergio Rochet,G
-URU09,Uruguai 🇺🇾,URU,9,Darwin Núñez,A
-URU10,Uruguai 🇺🇾,URU,10,Federico Valverde,M
 CRO01,Croácia 🇭🇷,CRO,1,Dominik Livaković,G
 CRO10,Croácia 🇭🇷,CRO,10,Luka Modrić,M
 CRO17,Croácia 🇭🇷,CRO,17,Andrej Kramarić,A
@@ -785,3 +782,29 @@ ARS23,Arábia Saudita 🇸🇦,ARS,23,Mohamed Kanno,M
 ARS24,Arábia Saudita 🇸🇦,ARS,24,Moteb Alharbi,D
 ARS25,Arábia Saudita 🇸🇦,ARS,25,Jehad Thikri,D
 ARS26,Arábia Saudita 🇸🇦,ARS,26,Mohammed Abu Alshamat,D
+URU01,Uruguai 🇺🇾,URU,1,Sergio Rochet,G
+URU02,Uruguai 🇺🇾,URU,2,Jose Maria Gimenez,D
+URU03,Uruguai 🇺🇾,URU,3,Sebastian Caceres,D
+URU04,Uruguai 🇺🇾,URU,4,Ronald Araujo,D
+URU05,Uruguai 🇺🇾,URU,5,Manuel Ugarte,M
+URU06,Uruguai 🇺🇾,URU,6,Rodrigo Betancur,M
+URU07,Uruguai 🇺🇾,URU,7,Nicolas de la Cruz,M
+URU08,Uruguai 🇺🇾,URU,8,Federico Valverde,M
+URU09,Uruguai 🇺🇾,URU,9,Darwin Núñez,A
+URU10,Uruguai 🇺🇾,URU,10,Giorgian de Arrascaeta,M
+URU11,Uruguai 🇺🇾,URU,11,Facundo Pellistri,A
+URU12,Uruguai 🇺🇾,URU,12,Santiago Mele,G
+URU13,Uruguai 🇺🇾,URU,13,Guillermo Varela,D
+URU14,Uruguai 🇺🇾,URU,14,Agustin Canobbio,M
+URU15,Uruguai 🇺🇾,URU,15,Emiliano Martinez,M
+URU16,Uruguai 🇺🇾,URU,16,Mathias Olivera,D
+URU17,Uruguai 🇺🇾,URU,17,Matias Vina,D
+URU18,Uruguai 🇺🇾,URU,18,Brian Rodriguez,A
+URU19,Uruguai 🇺🇾,URU,19,Rodrigo Aguirre,A
+URU20,Uruguai 🇺🇾,URU,20,Maxi Araujo,M
+URU21,Uruguai 🇺🇾,URU,21,Federico Vinas,A
+URU22,Uruguai 🇺🇾,URU,22,Joaquin Piquerez,M
+URU23,Uruguai 🇺🇾,URU,23,Fernando Muslera,G
+URU24,Uruguai 🇺🇾,URU,24,Santiago Bueno,D
+URU25,Uruguai 🇺🇾,URU,25,Juan Manuel Sanabria,M
+URU26,Uruguai 🇺🇾,URU,26,Rodrigo Zalazar,M
