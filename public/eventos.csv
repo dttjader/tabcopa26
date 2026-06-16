@@ -1,4 +1,9 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra
+IRA,NZL,IRA03,0,0,1,0
+IRA,NZL,IRA08,1,0,0,0
+IRA,NZL,IRA23,1,1,0,0
+IRA,NZL,NZL09,0,2,0,0
+IRA,NZL,NZL11,2,0,0,0
 ARS,URU,ARS04,1,0,1,0
 ARS,URU,URU20,1,0,0,0
 BEL,EGI,BEL05,0,0,1,0
