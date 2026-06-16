@@ -12,9 +12,6 @@ POR01,Portugal 🇵🇹,POR,1,Diogo Costa,G
 POR07,Portugal 🇵🇹,POR,7,Cristiano Ronaldo,A
 POR10,Portugal 🇵🇹,POR,10,Bernardo Silva,M
 POR17,Portugal 🇵🇹,POR,17,Rafael Leão,A
-NOR01,Noruega 🇳🇴,NOR,1,Ørjan Nyland,G
-NOR09,Noruega 🇳🇴,NOR,9,Erling Haaland,A
-NOR11,Noruega 🇳🇴,NOR,11,Martin Ødegaard,M
 COL01,Colômbia 🇨🇴,COL,1,Camilo Vargas,G
 COL10,Colômbia 🇨🇴,COL,10,James Rodríguez,M
 COL09,Colômbia 🇨🇴,COL,9,Falcao,A
@@ -905,3 +902,32 @@ SEN23,Senegal 🇸🇳,SEN,23,Mory Diaw,G
 SEN24,Senegal 🇸🇳,SEN,24,Antoine Mendy,D
 SEN25,Senegal 🇸🇳,SEN,25,El Hadji Malick Diouf,D
 SEN26,Senegal 🇸🇳,SEN,26,Pape Gueye,M
+IRQ01,Iraque 🇮🇶,IRQ,1,Fahad Talib,G
+IRQ02,Iraque 🇮🇶,IRQ,2,Rebin Sulaka,D
+IRQ03,Iraque 🇮🇶,IRQ,3,Hussein Ali,D
+IRQ04,Iraque 🇮🇶,IRQ,4,Zaid Tahseen,D
+IRQ05,Iraque 🇮🇶,IRQ,5,Akam Hashim,D
+IRQ06,Iraque 🇮🇶,IRQ,6,Munaf Younus,D
+IRQ07,Iraque 🇮🇶,IRQ,7,Youssef Amyn,M
+IRQ08,Iraque 🇮🇶,IRQ,8,Ibrahim Bayesh,M
+IRQ09,Iraque 🇮🇶,IRQ,9,Ali Alhamadi,A
+IRQ10,Iraque 🇮🇶,IRQ,10,Mohanad Ali,A
+IRQ11,Iraque 🇮🇶,IRQ,11,Ahmed Qasem,A
+IRQ12,Iraque 🇮🇶,IRQ,12,Jalal Hassan,G
+IRQ13,Iraque 🇮🇶,IRQ,13,Ali Yousif,A
+IRQ14,Iraque 🇮🇶,IRQ,14,Zidane Iqbal,M
+IRQ15,Iraque 🇮🇶,IRQ,15,Ahmed Maknazi,D
+IRQ16,Iraque 🇮🇶,IRQ,16,Amir Alammari,M
+IRQ17,Iraque 🇮🇶,IRQ,17,Ali Jasim,A
+IRQ18,Iraque 🇮🇶,IRQ,18,Aymen Hussein,A
+IRQ19,Iraque 🇮🇶,IRQ,19,Kevin Yakob,M
+IRQ20,Iraque 🇮🇶,IRQ,20,Aimar Sher,M
+IRQ21,Iraque 🇮🇶,IRQ,21,Marko Farji,A
+IRQ22,Iraque 🇮🇶,IRQ,22,Ahmed Basil,G
+IRQ23,Iraque 🇮🇶,IRQ,23,Merchas Doski,D
+IRQ24,Iraque 🇮🇶,IRQ,24,Zaid Ismael,M
+IRQ25,Iraque 🇮🇶,IRQ,25,Mustafa Saadoon,D
+IRQ26,Iraque 🇮🇶,IRQ,26,Frans Putros,D
+NOR01,Noruega 🇳🇴,NOR,1,Ørjan Nyland,G
+NOR09,Noruega 🇳🇴,NOR,9,Erling Haaland,A
+NOR11,Noruega 🇳🇴,NOR,11,Martin Ødegaard,M
