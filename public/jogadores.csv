@@ -4,11 +4,6 @@ ARG10,Argentina 🇦🇷,ARG,10,Lionel Messi,A
 ARG11,Argentina 🇦🇷,ARG,11,Ángel Di María,A
 ARG09,Argentina 🇦🇷,ARG,9,Julián Álvarez,A
 ARG22,Argentina 🇦🇷,ARG,22,Lautaro Martínez,A
-FRA01,França 🇫🇷,FRA,1,Mike Maignan,G
-FRA09,França 🇫🇷,FRA,9,Olivier Giroud,A
-FRA10,França 🇫🇷,FRA,10,Kylian Mbappé,A
-FRA14,França 🇫🇷,FRA,14,Adrien Rabiot,M
-FRA07,França 🇫🇷,FRA,7,Antoine Griezmann,A
 ING01,Inglaterra 🇬🇧,ING,1,Jordan Pickford,G
 ING07,Inglaterra 🇬🇧,ING,7,Bukayo Saka,A
 ING09,Inglaterra 🇬🇧,ING,9,Harry Kane,A
@@ -860,3 +855,29 @@ NZL23,Nova Zelândia 🇳🇿,NZL,23,Ryan Thomas,M
 NZL24,Nova Zelândia 🇳🇿,NZL,24,Callan Elliot,D
 NZL25,Nova Zelândia 🇳🇿,NZL,25,Lachlan Bayliss,M
 NZL26,Nova Zelândia 🇳🇿,NZL,26,Tommy Smith,D
+FRA01,França 🇫🇷,FRA,1,Brice Samba,G
+FRA02,França 🇫🇷,FRA,2,Malo Gusto,D
+FRA03,França 🇫🇷,FRA,3,Lucas Digne,D
+FRA04,França 🇫🇷,FRA,4,Dayot Upamecano,D
+FRA05,França 🇫🇷,FRA,5,Jules Kounde,D
+FRA06,França 🇫🇷,FRA,6,Manu Kone,M
+FRA07,França 🇫🇷,FRA,7,Ousmane Dembele,A
+FRA08,França 🇫🇷,FRA,8,Aurelien Tchouameni,M
+FRA09,França 🇫🇷,FRA,9,Marcus Thuram,A
+FRA10,França 🇫🇷,FRA,10,Kylian Mbappé,A
+FRA11,França 🇫🇷,FRA,11,Michael Olise,A
+FRA12,França 🇫🇷,FRA,12,Bradley Barcola,A
+FRA13,França 🇫🇷,FRA,13,Ngolo Kante,M
+FRA14,França 🇫🇷,FRA,14,Adrien Rabiot,M
+FRA15,França 🇫🇷,FRA,15,Ibrahima Konate,D
+FRA16,França 🇫🇷,FRA,16,Mike Maignan,G
+FRA17,França 🇫🇷,FRA,17,William Saliba,D
+FRA18,França 🇫🇷,FRA,18,Warren Zaire-Emery,M
+FRA19,França 🇫🇷,FRA,19,Theo Hernandez,D
+FRA20,França 🇫🇷,FRA,20,Desire Doue,A
+FRA21,França 🇫🇷,FRA,21,Lucas Hernandez,D
+FRA22,França 🇫🇷,FRA,22,Jean-Philippe Mateta,A
+FRA23,França 🇫🇷,FRA,23,Robin Risser,G
+FRA24,França 🇫🇷,FRA,24,Rayan Cherki,M
+FRA25,França 🇫🇷,FRA,25,Maghnes Akliouche,M
+FRA26,França 🇫🇷,FRA,26,Maxence Lacroix,D
