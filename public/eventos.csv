@@ -1,8 +1,10 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra
-FRA,SEN,FRA10,1,0,0,0
-FRA,SEN,FRA11,0,1,0,0
+FRA,SEN,FRA10,2,0,0,0
+FRA,SEN,FRA11,0,2,0,0
 FRA,SEN,FRA12,1,0,0,0
 FRA,SEN,FRA14,0,1,0,0
+FRA,SEN,SEN13,0,1,0,0
+FRA,SEN,SEN20,1,0,0,0
 IRA,NZL,IRA03,0,0,1,0
 IRA,NZL,IRA08,1,0,0,0
 IRA,NZL,IRA23,1,1,0,0
