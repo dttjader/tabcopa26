@@ -1,9 +1,4 @@
 id,pais,pais_code,numero,nome,posicao
-ARG01,Argentina 🇦🇷,ARG,1,Emiliano Martínez,G
-ARG10,Argentina 🇦🇷,ARG,10,Lionel Messi,A
-ARG11,Argentina 🇦🇷,ARG,11,Ángel Di María,A
-ARG09,Argentina 🇦🇷,ARG,9,Julián Álvarez,A
-ARG22,Argentina 🇦🇷,ARG,22,Lautaro Martínez,A
 ING01,Inglaterra 🇬🇧,ING,1,Jordan Pickford,G
 ING07,Inglaterra 🇬🇧,ING,7,Bukayo Saka,A
 ING09,Inglaterra 🇬🇧,ING,9,Harry Kane,A
@@ -954,3 +949,29 @@ NOR23,Noruega 🇳🇴,NOR,23,Jens Petter Hauge,M
 NOR24,Noruega 🇳🇴,NOR,24,Sondre Langas,D
 NOR25,Noruega 🇳🇴,NOR,25,Henrik Falchener,D
 NOR26,Noruega 🇳🇴,NOR,26,Julian Ryerson,A
+ARG01,Argentina 🇦🇷,ARG,1,Juan Musso,G
+ARG02,Argentina 🇦🇷,ARG,2,Marcos Senesi,M
+ARG03,Argentina 🇦🇷,ARG,3,Nicolas Tagliafico,D
+ARG04,Argentina 🇦🇷,ARG,4,Gonzalo Montiel,D
+ARG05,Argentina 🇦🇷,ARG,5,Leandro Paredes,M
+ARG06,Argentina 🇦🇷,ARG,6,Lisandro Martinez,D
+ARG07,Argentina 🇦🇷,ARG,7,Rodrigo de Paul,M
+ARG08,Argentina 🇦🇷,ARG,8,Valentin Barco,M
+ARG09,Argentina 🇦🇷,ARG,9,Julián Álvarez,A
+ARG10,Argentina 🇦🇷,ARG,10,Lionel Messi,A
+ARG11,Argentina 🇦🇷,ARG,11,Giovani lo Celso,M
+ARG12,Argentina 🇦🇷,ARG,12,Geronimo Rulli,G
+ARG13,Argentina 🇦🇷,ARG,13,Cristian Romero,D
+ARG14,Argentina 🇦🇷,ARG,14,Exequiel Palacios,M
+ARG15,Argentina 🇦🇷,ARG,15,Nico Gonzalez,M
+ARG16,Argentina 🇦🇷,ARG,16,Thiago Almada,A
+ARG17,Argentina 🇦🇷,ARG,17,Giuliano Simeone,A
+ARG18,Argentina 🇦🇷,ARG,18,Nico Paz,A
+ARG19,Argentina 🇦🇷,ARG,19,Nicolas Otamendi,D
+ARG20,Argentina 🇦🇷,ARG,20,Alexis Mac Allister,M
+ARG21,Argentina 🇦🇷,ARG,21,Jose Manuel Lopez,A
+ARG22,Argentina 🇦🇷,ARG,22,Lautaro Martínez,A
+ARG23,Argentina 🇦🇷,ARG,23,Emiliano Martínez,G
+ARG24,Argentina 🇦🇷,ARG,24,Enzo Fernandez,M
+ARG25,Argentina 🇦🇷,ARG,25,Facundo Medina,D
+ARG26,Argentina 🇦🇷,ARG,26,Nahuel Molina,D
