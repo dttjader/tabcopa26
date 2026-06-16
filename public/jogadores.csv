@@ -15,8 +15,6 @@ POR17,Portugal 🇵🇹,POR,17,Rafael Leão,A
 NOR01,Noruega 🇳🇴,NOR,1,Ørjan Nyland,G
 NOR09,Noruega 🇳🇴,NOR,9,Erling Haaland,A
 NOR11,Noruega 🇳🇴,NOR,11,Martin Ødegaard,M
-SEN01,Senegal 🇸🇳,SEN,1,Edouard Mendy,G
-SEN10,Senegal 🇸🇳,SEN,10,Sadio Mané,A
 COL01,Colômbia 🇨🇴,COL,1,Camilo Vargas,G
 COL10,Colômbia 🇨🇴,COL,10,James Rodríguez,M
 COL09,Colômbia 🇨🇴,COL,9,Falcao,A
@@ -881,3 +879,29 @@ FRA23,França 🇫🇷,FRA,23,Robin Risser,G
 FRA24,França 🇫🇷,FRA,24,Rayan Cherki,M
 FRA25,França 🇫🇷,FRA,25,Maghnes Akliouche,M
 FRA26,França 🇫🇷,FRA,26,Maxence Lacroix,D
+SEN01,Senegal 🇸🇳,SEN,1,Yehvann Diouf,G
+SEN02,Senegal 🇸🇳,SEN,2,Mamadou Sarr,D
+SEN03,Senegal 🇸🇳,SEN,3,Kalidou Koulibaly,D
+SEN04,Senegal 🇸🇳,SEN,4,Abdoulaye Seck,D
+SEN05,Senegal 🇸🇳,SEN,5,Idrissa Gana Gueye,M
+SEN06,Senegal 🇸🇳,SEN,6,Pathe Ciss,M
+SEN07,Senegal 🇸🇳,SEN,7,Assane Diao,A
+SEN08,Senegal 🇸🇳,SEN,8,Lamine Camara,M
+SEN09,Senegal 🇸🇳,SEN,9,Bamba Dieng,A
+SEN10,Senegal 🇸🇳,SEN,10,Sadio Mané,A
+SEN11,Senegal 🇸🇳,SEN,11,Nicolas Jackson,A
+SEN12,Senegal 🇸🇳,SEN,12,Cherif Ndiaye,A
+SEN13,Senegal 🇸🇳,SEN,13,Iliman Ndiaye,A
+SEN14,Senegal 🇸🇳,SEN,14,Ismael Jakobs,D
+SEN15,Senegal 🇸🇳,SEN,15,Krepin Diatta,D
+SEN16,Senegal 🇸🇳,SEN,16,Edouard Mendy,G
+SEN17,Senegal 🇸🇳,SEN,17,Pape Matar Sarr,M
+SEN18,Senegal 🇸🇳,SEN,18,Ismaila Sarr,A
+SEN19,Senegal 🇸🇳,SEN,19,Moussa Niakhate,D
+SEN20,Senegal 🇸🇳,SEN,20,Ibrahim Mbaye,A
+SEN21,Senegal 🇸🇳,SEN,21,Habib Diarra,M
+SEN22,Senegal 🇸🇳,SEN,22,Bara Sapoko Ndiaye,M
+SEN23,Senegal 🇸🇳,SEN,23,Mory Diaw,G
+SEN24,Senegal 🇸🇳,SEN,24,Antoine Mendy,D
+SEN25,Senegal 🇸🇳,SEN,25,El Hadji Malick Diouf,D
+SEN26,Senegal 🇸🇳,SEN,26,Pape Gueye,M
