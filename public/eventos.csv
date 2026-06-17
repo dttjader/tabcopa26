@@ -1,4 +1,11 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra
+IRQ,NOR,IRQ04,0,0,1,0
+IRQ,NOR,IRQ16,0,1,0,0
+IRQ,NOR,IRQ18,1,0,0,0,1
+IRQ,NOR,NOR04,1,0,0,0
+IRQ,NOR,NOR05,0,1,0,0
+IRQ,NOR,NOR09,2,0,0,0
+IRQ,NOR,NOR10,0,1,0,0
 FRA,SEN,FRA10,2,0,0,0
 FRA,SEN,FRA11,0,2,0,0
 FRA,SEN,FRA12,1,0,0,0
