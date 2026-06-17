@@ -1,4 +1,11 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra
+AUT,JOR,AUT04,0,1,0,0
+AUT,JOR,AUT07,1,0,0,0
+AUT,JOR,AUT09,0,0,1,0
+AUT,JOR,AUT18,1,0,0,0
+AUT,JOR,JOR05,0,0,0,0,1
+AUT,JOR,JOR08,0,1,0,0
+AUT,JOR,JOR09,1,0,0,0
 ARG,ALG,ARG07,0,1,0,0
 ARG,ALG,ARG10,3,0,0,0
 ARG,ALG,ARG15,0,1,0,0
