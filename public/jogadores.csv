@@ -1,8 +1,4 @@
 id,pais,pais_code,numero,nome,posicao
-ING01,Inglaterra 🇬🇧,ING,1,Jordan Pickford,G
-ING07,Inglaterra 🇬🇧,ING,7,Bukayo Saka,A
-ING09,Inglaterra 🇬🇧,ING,9,Harry Kane,A
-ING10,Inglaterra 🇬🇧,ING,10,Jude Bellingham,M
 COL01,Colômbia 🇨🇴,COL,1,Camilo Vargas,G
 COL10,Colômbia 🇨🇴,COL,10,James Rodríguez,M
 COL09,Colômbia 🇨🇴,COL,9,Falcao,A
@@ -1101,3 +1097,29 @@ CNG23,RD Congo 🇨🇩,CNG,23,Simon Banza,A
 CNG24,RD Congo 🇨🇩,CNG,24,Gedeon Kalulu,D
 CNG25,RD Congo 🇨🇩,CNG,25,Edo Kayembe,M
 CNG26,RD Congo 🇨🇩,CNG,26,Arthur Masuaku,D
+ING01,Inglaterra 🇬🇧,ING,1,Jordan Pickford,G
+ING02,Inglaterra 🇬🇧,ING,2,Ezri Konsa,D
+ING03,Inglaterra 🇬🇧,ING,3,Nico Oreilly,D
+ING04,Inglaterra 🇬🇧,ING,4,Declan Rice,M
+ING05,Inglaterra 🇬🇧,ING,5,John Stones,D
+ING06,Inglaterra 🇬🇧,ING,6,Marc Guehi,D
+ING07,Inglaterra 🇬🇧,ING,7,Bukayo Saka,A
+ING08,Inglaterra 🇬🇧,ING,8,Elliot Anderson,M
+ING09,Inglaterra 🇬🇧,ING,9,Harry Kane,A
+ING10,Inglaterra 🇬🇧,ING,10,Jude Bellingham,M
+ING11,Inglaterra 🇬🇧,ING,11,Marcus Rashford,A
+ING12,Inglaterra 🇬🇧,ING,12,Trevoh Chalobah,D
+ING13,Inglaterra 🇬🇧,ING,13,Dean Henderson,G
+ING14,Inglaterra 🇬🇧,ING,14,Jordan Henderson,M
+ING15,Inglaterra 🇬🇧,ING,15,Dan Burn,D
+ING16,Inglaterra 🇬🇧,ING,16,Kobbie Mainoo,M
+ING17,Inglaterra 🇬🇧,ING,17,Morgan Rogers,M
+ING18,Inglaterra 🇬🇧,ING,18,Anthony Gordon,A
+ING19,Inglaterra 🇬🇧,ING,19,Ollie Watkins,A
+ING20,Inglaterra 🇬🇧,ING,20,Noni Madueke,A
+ING21,Inglaterra 🇬🇧,ING,21,Eberechi Eze,M
+ING22,Inglaterra 🇬🇧,ING,22,Ivan Toney,A
+ING23,Inglaterra 🇬🇧,ING,23,James Trafford,G
+ING24,Inglaterra 🇬🇧,ING,24,Reece James,D
+ING25,Inglaterra 🇬🇧,ING,25,Djed Spence,D
+ING26,Inglaterra 🇬🇧,ING,26,Jarell Quansah,D
