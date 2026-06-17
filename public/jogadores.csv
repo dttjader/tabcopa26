@@ -3,10 +3,6 @@ ING01,Inglaterra 🇬🇧,ING,1,Jordan Pickford,G
 ING07,Inglaterra 🇬🇧,ING,7,Bukayo Saka,A
 ING09,Inglaterra 🇬🇧,ING,9,Harry Kane,A
 ING10,Inglaterra 🇬🇧,ING,10,Jude Bellingham,M
-POR01,Portugal 🇵🇹,POR,1,Diogo Costa,G
-POR07,Portugal 🇵🇹,POR,7,Cristiano Ronaldo,A
-POR10,Portugal 🇵🇹,POR,10,Bernardo Silva,M
-POR17,Portugal 🇵🇹,POR,17,Rafael Leão,A
 COL01,Colômbia 🇨🇴,COL,1,Camilo Vargas,G
 COL10,Colômbia 🇨🇴,COL,10,James Rodríguez,M
 COL09,Colômbia 🇨🇴,COL,9,Falcao,A
@@ -1053,3 +1049,29 @@ JOR23,Jordânia 🇯🇴,JOR,23,Ehsan Haddad,D
 JOR24,Jordânia 🇯🇴,JOR,24,Ali Azaizeh,A
 JOR25,Jordânia 🇯🇴,JOR,25,Mohammad Aldaoud,M
 JOR26,Jordânia 🇯🇴,JOR,26,Anas Badawi,D
+POR01,Portugal 🇵🇹,POR,1,Diogo Costa,G
+POR02,Portugal 🇵🇹,POR,2,Nelson Semedo,D
+POR03,Portugal 🇵🇹,POR,3,Ruben Dias,D
+POR04,Portugal 🇵🇹,POR,4,Tomas Araujo,D
+POR05,Portugal 🇵🇹,POR,5,Diogo Dalot,D
+POR06,Portugal 🇵🇹,POR,6,Matheus Nunes,M
+POR07,Portugal 🇵🇹,POR,7,Cristiano Ronaldo,A
+POR08,Portugal 🇵🇹,POR,8,Bruno Fernandes,M
+POR09,Portugal 🇵🇹,POR,9,Gonçalo Ramos,A
+POR10,Portugal 🇵🇹,POR,10,Bernardo Silva,M
+POR11,Portugal 🇵🇹,POR,11,João Felix,A
+POR12,Portugal 🇵🇹,POR,12,Jose Sá,G
+POR13,Portugal 🇵🇹,POR,13,Renato Veiga,D
+POR14,Portugal 🇵🇹,POR,14,Gonçalo Inácio,D
+POR15,Portugal 🇵🇹,POR,15,João Neves,M
+POR16,Portugal 🇵🇹,POR,16,Francisco Trincão,A
+POR17,Portugal 🇵🇹,POR,17,Rafael Leão,A
+POR18,Portugal 🇵🇹,POR,18,Pedro Neto,A
+POR19,Portugal 🇵🇹,POR,19,Gonçalo Guedes,A
+POR20,Portugal 🇵🇹,POR,20,João Cancelo,D
+POR21,Portugal 🇵🇹,POR,21,Ruben Neves,M
+POR22,Portugal 🇵🇹,POR,22,Rui Silva,G
+POR23,Portugal 🇵🇹,POR,23,Vitinha,M
+POR24,Portugal 🇵🇹,POR,24,Samu Costa,D
+POR25,Portugal 🇵🇹,POR,25,Nuno Mendes,D
+POR26,Portugal 🇵🇹,POR,26,Francisco Conceição,A
