@@ -22,55 +22,55 @@ G_J_2,2026-06-17,01:00,grupos,J,Rodada 1,Áustria 🇦🇹,Jordânia 🇯🇴,3,
 G_K_1,2026-06-17,14:00,grupos,K,Rodada 1,Portugal 🇵🇹,RD Congo 🇨🇩,1,1,,,Houston,NRG Stadium
 G_L_1,2026-06-17,17:00,grupos,L,Rodada 1,Inglaterra 🇬🇧,Croácia 🇭🇷,4,2,,,Dallas,AT&T Stadium
 G_L_2,2026-06-17,20:00,grupos,L,Rodada 1,Gana 🇬🇭,Panamá 🇵🇦,1,0,,,Toronto,BMO Field
-G_K_2,2026-06-17,23:00,grupos,K,Rodada 1,Uzbequistão 🇺🇿,Colômbia 🇨🇴,,,,,Cidade do México,Estádio Azteca
+G_K_2,2026-06-17,23:00,grupos,K,Rodada 1,Uzbequistão 🇺🇿,Colômbia 🇨🇴,1,3,,,Cidade do México,Estádio Azteca
 G_A_3,2026-06-18,13:00,grupos,A,Rodada 2,República Tcheca 🇨🇿,África do Sul 🇿🇦,,,,,Atlanta,Mercedes-Benz Stadium
-G_A_4,2026-06-18,22:00,grupos,A,Rodada 2,México 🇲🇽,Coreia do Sul 🇰🇷,,,,,Guadalajara,Estádio Akron
-G_A_5,2026-06-24,22:00,grupos,A,Rodada 3,República Tcheca 🇨🇿,México 🇲🇽,,,,,Cidade do México,Estádio Azteca
-G_A_6,2026-06-24,22:00,grupos,A,Rodada 3,África do Sul 🇿🇦,Coreia do Sul 🇰🇷,,,,,Monterrey,Estadio BBVA
-G_B_3,2026-06-18,16:00,grupos,B,Rodada 2,Canadá 🇨🇦,Catar 🇶🇦,,,,,Los Angeles,SoFi Stadium
 G_B_4,2026-06-18,19:00,grupos,B,Rodada 2,Suíça 🇨🇭,Bósnia 🇧🇦,,,,,Vancouver,BC Place
-G_B_5,2026-06-24,16:00,grupos,B,Rodada 3,Suíça 🇨🇭,Canadá 🇨🇦,,,,,Vancouver,BC Place
-G_B_6,2026-06-24,16:00,grupos,B,Rodada 3,Bósnia 🇧🇦,Catar 🇶🇦,,,,,Seattle,Lumen Field
+G_B_3,2026-06-18,16:00,grupos,B,Rodada 2,Canadá 🇨🇦,Catar 🇶🇦,,,,,Los Angeles,SoFi Stadium
+G_A_4,2026-06-18,22:00,grupos,A,Rodada 2,México 🇲🇽,Coreia do Sul 🇰🇷,,,,,Guadalajara,Estádio Akron
+G_D_3,2026-06-19,00:00,grupos,D,Rodada 2,EUA 🇺🇸,Austrália 🇦🇺,,,,,Seattle,Lumen Field
 G_C_3,2026-06-19,19:00,grupos,C,Rodada 2,Escócia 🏴󠁧󠁢󠁳󠁣󠁴󠁿,Marrocos 🇲🇦,,,,,Boston,Gillette Stadium
 G_C_4,2026-06-19,22:00,grupos,C,Rodada 2,Brasil 🇧🇷,Haiti 🇭🇹,,,,,Filadélfia,Lincoln Financial Field
-G_C_5,2026-06-24,19:00,grupos,C,Rodada 3,Escócia 🏴󠁧󠁢󠁳󠁣󠁴󠁿,Brasil 🇧🇷,,,,,Miami,Hard Rock Stadium
-G_C_6,2026-06-24,19:00,grupos,C,Rodada 3,Marrocos 🇲🇦,Haiti 🇭🇹,,,,,Atlanta,Mercedes-Benz Stadium
-G_D_3,2026-06-19,00:00,grupos,D,Rodada 2,EUA 🇺🇸,Austrália 🇦🇺,,,,,Seattle,Lumen Field
 G_D_4,2026-06-20,01:00,grupos,D,Rodada 2,Turquia 🇹🇷,Paraguai 🇵🇾,,,,,São Francisco,Levi's Stadium
-G_D_5,2026-06-25,23:00,grupos,D,Rodada 3,Turquia 🇹🇷,EUA 🇺🇸,,,,,Los Angeles,SoFi Stadium
-G_D_6,2026-06-25,23:00,grupos,D,Rodada 3,Paraguai 🇵🇾,Austrália 🇦🇺,,,,,São Francisco,Levi's Stadium
+G_F_3,2026-06-20,14:00,grupos,F,Rodada 2,Países Baixos 🇳🇱,Suécia 🇸🇪,,,,,Houston,NRG Stadium
 G_E_3,2026-06-20,17:00,grupos,E,Rodada 2,Alemanha 🇩🇪,Costa do Marfim 🇨🇮,,,,,Toronto,BMO Field
 G_E_4,2026-06-20,21:00,grupos,E,Rodada 2,Equador 🇪🇨,Curaçao 🇨🇼,,,,,Kansas City,Arrowhead Stadium
-G_E_5,2026-06-25,17:00,grupos,E,Rodada 3,Equador 🇪🇨,Alemanha 🇩🇪,,,,,Nova York,MetLife Stadium
-G_E_6,2026-06-25,17:00,grupos,E,Rodada 3,Curaçao 🇨🇼,Costa do Marfim 🇨🇮,,,,,Filadélfia,Lincoln Financial Field
-G_F_3,2026-06-20,14:00,grupos,F,Rodada 2,Países Baixos 🇳🇱,Suécia 🇸🇪,,,,,Houston,NRG Stadium
 G_F_4,2026-06-20,01:00,grupos,F,Rodada 2,Tunísia 🇹🇳,Japão 🇯🇵,,,,,Monterrey,Estadio BBVA
-G_F_5,2026-06-25,20:00,grupos,F,Rodada 3,Tunísia 🇹🇳,Países Baixos 🇳🇱,,,,,Kansas City,Arrowhead Stadium
-G_F_6,2026-06-25,20:00,grupos,F,Rodada 3,Japão 🇯🇵,Suécia 🇸🇪,,,,,Dallas,AT&T Stadium
-G_G_3,2026-06-21,16:00,grupos,G,Rodada 2,Bélgica 🇧🇪,Irã 🇮🇷,,,,,Los Angeles,SoFi Stadium
-G_G_4,2026-06-21,22:00,grupos,G,Rodada 2,Nova Zelândia 🇳🇿,Egito 🇪🇬,,,,,Vancouver,BC Place
-G_G_5,2026-06-26,00:00,grupos,G,Rodada 3,Nova Zelândia 🇳🇿,Bélgica 🇧🇪,,,,,Vancouver,BC Place
-G_G_6,2026-06-26,00:00,grupos,G,Rodada 3,Egito 🇪🇬,Irã 🇮🇷,,,,,Seattle,Lumen Field
 G_H_3,2026-06-21,13:00,grupos,H,Rodada 2,Espanha 🇪🇸,Arábia Saudita 🇸🇦,,,,,Atlanta,Mercedes-Benz Stadium
+G_G_3,2026-06-21,16:00,grupos,G,Rodada 2,Bélgica 🇧🇪,Irã 🇮🇷,,,,,Los Angeles,SoFi Stadium
 G_H_4,2026-06-21,19:00,grupos,H,Rodada 2,Uruguai 🇺🇾,Cabo Verde 🇨🇻,,,,,Miami,Hard Rock Stadium
-G_H_5,2026-06-26,21:00,grupos,H,Rodada 3,Uruguai 🇺🇾,Espanha 🇪🇸,,,,,Guadalajara,Estádio Akron
-G_H_6,2026-06-26,21:00,grupos,H,Rodada 3,Cabo Verde 🇨🇻,Arábia Saudita 🇸🇦,,,,,Houston,NRG Stadium
+G_G_4,2026-06-21,22:00,grupos,G,Rodada 2,Nova Zelândia 🇳🇿,Egito 🇪🇬,,,,,Vancouver,BC Place
+G_J_3,2026-06-22,14:00,grupos,J,Rodada 2,Argentina 🇦🇷,Áustria 🇦🇹,,,,,Dallas,AT&T Stadium
 G_I_3,2026-06-22,18:00,grupos,I,Rodada 2,França 🇫🇷,Iraque 🇮🇶,,,,,Filadélfia,Lincoln Financial Field
 G_I_4,2026-06-22,21:00,grupos,I,Rodada 2,Noruega 🇳🇴,Senegal 🇸🇳,,,,,Nova York,MetLife Stadium
-G_I_5,2026-06-26,16:00,grupos,I,Rodada 3,Noruega 🇳🇴,França 🇫🇷,,,,,Boston,Gillette Stadium
-G_I_6,2026-06-26,16:00,grupos,I,Rodada 3,Senegal 🇸🇳,Iraque 🇮🇶,,,,,Toronto,BMO Field
-G_J_3,2026-06-22,14:00,grupos,J,Rodada 2,Argentina 🇦🇷,Áustria 🇦🇹,,,,,Dallas,AT&T Stadium
 G_J_4,2026-06-23,00:00,grupos,J,Rodada 2,Jordânia 🇯🇴,Argélia 🇩🇿,,,,,São Francisco,Levi's Stadium
-G_J_5,2026-06-27,23:00,grupos,J,Rodada 3,Jordânia 🇯🇴,Argentina 🇦🇷,,,,,Dallas,AT&T Stadium
-G_J_6,2026-06-27,23:00,grupos,J,Rodada 3,Argélia 🇩🇿,Áustria 🇦🇹,,,,,Kansas City,Arrowhead Stadium
 G_K_3,2026-06-23,14:00,grupos,K,Rodada 2,Portugal 🇵🇹,Uzbequistão 🇺🇿,,,,,Houston,NRG Stadium
-G_K_4,2026-06-23,23:00,grupos,K,Rodada 2,Colômbia 🇨🇴,RD Congo 🇨🇩,,,,,Guadalajara,Estádio Akron
-G_K_5,2026-06-27,20:30,grupos,K,Rodada 3,Colômbia 🇨🇴,Portugal 🇵🇹,,,,,Miami,Hard Rock Stadium
-G_K_6,2026-06-27,20:30,grupos,K,Rodada 3,RD Congo 🇨🇩,Uzbequistão 🇺🇿,,,,,Atlanta,Mercedes-Benz Stadium
 G_L_3,2026-06-23,17:00,grupos,L,Rodada 2,Inglaterra 🇬🇧,Gana 🇬🇭,,,,,Boston,Gillette Stadium
 G_L_4,2026-06-23,20:00,grupos,L,Rodada 2,Panamá 🇵🇦,Croácia 🇭🇷,,,,,Toronto,BMO Field
+G_K_4,2026-06-23,23:00,grupos,K,Rodada 2,Colômbia 🇨🇴,RD Congo 🇨🇩,,,,,Guadalajara,Estádio Akron
+G_B_5,2026-06-24,16:00,grupos,B,Rodada 3,Suíça 🇨🇭,Canadá 🇨🇦,,,,,Vancouver,BC Place
+G_B_6,2026-06-24,16:00,grupos,B,Rodada 3,Bósnia 🇧🇦,Catar 🇶🇦,,,,,Seattle,Lumen Field
+G_C_5,2026-06-24,19:00,grupos,C,Rodada 3,Escócia 🏴󠁧󠁢󠁳󠁣󠁴󠁿,Brasil 🇧🇷,,,,,Miami,Hard Rock Stadium
+G_C_6,2026-06-24,19:00,grupos,C,Rodada 3,Marrocos 🇲🇦,Haiti 🇭🇹,,,,,Atlanta,Mercedes-Benz Stadium
+G_A_5,2026-06-24,22:00,grupos,A,Rodada 3,República Tcheca 🇨🇿,México 🇲🇽,,,,,Cidade do México,Estádio Azteca
+G_A_6,2026-06-24,22:00,grupos,A,Rodada 3,África do Sul 🇿🇦,Coreia do Sul 🇰🇷,,,,,Monterrey,Estadio BBVA
+G_E_6,2026-06-25,17:00,grupos,E,Rodada 3,Curaçao 🇨🇼,Costa do Marfim 🇨🇮,,,,,Filadélfia,Lincoln Financial Field
+G_E_5,2026-06-25,17:00,grupos,E,Rodada 3,Equador 🇪🇨,Alemanha 🇩🇪,,,,,Nova York,MetLife Stadium
+G_F_6,2026-06-25,20:00,grupos,F,Rodada 3,Japão 🇯🇵,Suécia 🇸🇪,,,,,Dallas,AT&T Stadium
+G_F_5,2026-06-25,20:00,grupos,F,Rodada 3,Tunísia 🇹🇳,Países Baixos 🇳🇱,,,,,Kansas City,Arrowhead Stadium
+G_D_5,2026-06-25,23:00,grupos,D,Rodada 3,Turquia 🇹🇷,EUA 🇺🇸,,,,,Los Angeles,SoFi Stadium
+G_D_6,2026-06-25,23:00,grupos,D,Rodada 3,Paraguai 🇵🇾,Austrália 🇦🇺,,,,,São Francisco,Levi's Stadium
+G_I_5,2026-06-26,16:00,grupos,I,Rodada 3,Noruega 🇳🇴,França 🇫🇷,,,,,Boston,Gillette Stadium
+G_I_6,2026-06-26,16:00,grupos,I,Rodada 3,Senegal 🇸🇳,Iraque 🇮🇶,,,,,Toronto,BMO Field
+G_H_6,2026-06-26,21:00,grupos,H,Rodada 3,Cabo Verde 🇨🇻,Arábia Saudita 🇸🇦,,,,,Houston,NRG Stadium
+G_H_5,2026-06-26,21:00,grupos,H,Rodada 3,Uruguai 🇺🇾,Espanha 🇪🇸,,,,,Guadalajara,Estádio Akron
+G_G_6,2026-06-26,00:00,grupos,G,Rodada 3,Egito 🇪🇬,Irã 🇮🇷,,,,,Seattle,Lumen Field
+G_G_5,2026-06-26,00:00,grupos,G,Rodada 3,Nova Zelândia 🇳🇿,Bélgica 🇧🇪,,,,,Vancouver,BC Place
 G_L_5,2026-06-27,18:00,grupos,L,Rodada 3,Panamá 🇵🇦,Inglaterra 🇬🇧,,,,,Nova York,MetLife Stadium
 G_L_6,2026-06-27,18:00,grupos,L,Rodada 3,Croácia 🇭🇷,Gana 🇬🇭,,,,,Filadélfia,Lincoln Financial Field
+G_K_5,2026-06-27,20:30,grupos,K,Rodada 3,Colômbia 🇨🇴,Portugal 🇵🇹,,,,,Miami,Hard Rock Stadium
+G_K_6,2026-06-27,20:30,grupos,K,Rodada 3,RD Congo 🇨🇩,Uzbequistão 🇺🇿,,,,,Atlanta,Mercedes-Benz Stadium
+G_J_6,2026-06-27,23:00,grupos,J,Rodada 3,Argélia 🇩🇿,Áustria 🇦🇹,,,,,Kansas City,Arrowhead Stadium
+G_J_5,2026-06-27,23:00,grupos,J,Rodada 3,Jordânia 🇯🇴,Argentina 🇦🇷,,,,,Dallas,AT&T Stadium
 KO_R32_1,2026-06-28,00:00,matamata,r32,Rodada de 32,?,?,,,,,TBD,
 KO_R32_2,2026-06-28,00:00,matamata,r32,Rodada de 32,?,?,,,,,TBD,
 KO_R32_3,2026-06-29,00:00,matamata,r32,Rodada de 32,?,?,,,,,TBD,
