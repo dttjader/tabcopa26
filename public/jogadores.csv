@@ -1,7 +1,4 @@
 id,pais,pais_code,numero,nome,posicao
-COL01,Colômbia 🇨🇴,COL,1,Camilo Vargas,G
-COL10,Colômbia 🇨🇴,COL,10,James Rodríguez,M
-COL09,Colômbia 🇨🇴,COL,9,Falcao,A
 MEX01,México 🇲🇽,MEX,1,Raul Rangel,G
 MEX02,México 🇲🇽,MEX,2,Jorge Sanchez,D
 MEX03,México 🇲🇽,MEX,3,Cesar Montes,D
@@ -1224,3 +1221,29 @@ UZB23,Uzbequistão 🇺🇿,UZB,23,Sherzod Esanov,M
 UZB24,Uzbequistão 🇺🇿,UZB,24,Behruzjon Karimov,D
 UZB25,Uzbequistão 🇺🇿,UZB,25,Avazbek Ulmasaliyev,D
 UZB26,Uzbequistão 🇺🇿,UZB,26,Jakhongir Urozov,D
+COL01,Colômbia 🇨🇴,COL,1,David Ospina,G
+COL02,Colômbia 🇨🇴,COL,2,Daniel Munoz,D
+COL03,Colômbia 🇨🇴,COL,3,Jhon Lucumi,D
+COL04,Colômbia 🇨🇴,COL,4,Santiago Arias,D
+COL05,Colômbia 🇨🇴,COL,5,Kevin Castano,M
+COL06,Colômbia 🇨🇴,COL,6,Richard Rios,M
+COL07,Colômbia 🇨🇴,COL,7,Luis Diaz,A
+COL08,Colômbia 🇨🇴,COL,8,Jorge Carrascal,M
+COL09,Colômbia 🇨🇴,COL,9,Jhon Cordoba,A
+COL10,Colômbia 🇨🇴,COL,10,James Rodríguez,M
+COL11,Colômbia 🇨🇴,COL,11,Jhon Arias,M
+COL12,Colômbia 🇨🇴,COL,12,Camilo Vargas,G
+COL13,Colômbia 🇨🇴,COL,13,Yerry Mina,D
+COL14,Colômbia 🇨🇴,COL,14,Gustavo Puerta,D
+COL15,Colômbia 🇨🇴,COL,15,Juan Portilla,M
+COL16,Colômbia 🇨🇴,COL,16,Jefferson Lerma,M
+COL17,Colômbia 🇨🇴,COL,17,Johan Mojica,D
+COL18,Colômbia 🇨🇴,COL,18,Willer Ditta,D
+COL19,Colômbia 🇨🇴,COL,19,Cucho Hernandez,A
+COL20,Colômbia 🇨🇴,COL,20,Juan Quintero,M
+COL21,Colômbia 🇨🇴,COL,21,Jaminton Campaz,A
+COL22,Colômbia 🇨🇴,COL,22,Deiver Machado,D
+COL23,Colômbia 🇨🇴,COL,23,Davinson Sanchez,D
+COL24,Colômbia 🇨🇴,COL,24,Alvaro Montero,G
+COL25,Colômbia 🇨🇴,COL,25,Luis Suarez,A
+COL26,Colômbia 🇨🇴,COL,26,Andres Gomez,A
