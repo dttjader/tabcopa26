@@ -1,8 +1,8 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
-CZE,RSA,CZE01,0,0,0,0,0,0,0
+CZE,RSA,CZE01,0,0,0,0,0,3,0
 CZE,RSA,CZE07,0,0,1,0
 CZE,RSA,CZE18,1,0,0,0
-CZE,RSA,RSA01,0,0,0,0,0,0,0
+CZE,RSA,RSA01,0,0,0,0,0,2,0
 CZE,RSA,RSA04,1,0,1,0
 CZE,RSA,RSA05,0,0,1,0
 UZB,COL,UZB01,0,0,0,0,0,1,0
