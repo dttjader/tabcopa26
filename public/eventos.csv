@@ -1,4 +1,15 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
+CZE,RSA,CZE18,1,0,0,0
+UZB,COL,UZB01,0,0,0,0,0,1,0
+UZB,COL,UZB02,0,0,1,0
+UZB,COL,UZB22,1,0,0,0
+UZB,COL,COL02,1,0,0,0
+UZB,COL,COL07,1,1,0,0
+UZB,COL,COL12,0,0,0,0,0,1,0
+UZB,COL,COL14,0,1,0,0
+UZB,COL,COL17,0,0,1,0
+UZB,COL,COL19,0,1,0,0
+UZB,COL,COL21,1,0,0,0
 GAN,PAN,GAN01,0,0,0,0,0,2,0
 GAN,PAN,GAN03,1,0,1,0
 GAN,PAN,GAN16,0,0,0,0,0,2,0
