@@ -153,7 +153,7 @@ nav.tabs{display:flex;justify-content:center;gap:.35rem;padding:1rem 1rem 0;flex
   border-radius:8px;padding:.42rem 1rem;font-size:.76rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap}
 .btn-add-player:hover{background:rgba(212,160,23,.22)}
 .players-table-wrap{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;overflow-x:auto}
-.players-table{width:100%;border-collapse:collapse;min-width:900px}
+.players-table{width:100%;border-collapse:collapse;min-width:1050px}
 .players-table th{padding:.45rem .6rem;font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;
   color:var(--muted);text-align:center;border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none}
 .players-table th:hover{color:var(--gold)}
@@ -168,6 +168,8 @@ nav.tabs{display:flex;justify-content:center;gap:.35rem;padding:1rem 1rem 0;flex
 .p-input.num.yellow-stat{color:var(--yellow)}
 .p-input.num.red-stat{color:var(--red)}
 .p-input.num.assist-stat{color:var(--blue)}
+.p-input.num.def-stat{color:#34d399}
+.p-input.num.pen-stat{color:var(--pen)}
 .pos-badge{display:inline-block;font-size:.58rem;font-weight:700;padding:2px 6px;border-radius:4px;letter-spacing:.04em}
 .pos-G{background:rgba(34,197,94,.15);color:var(--green)}
 .pos-D{background:rgba(96,165,250,.15);color:var(--blue)}
@@ -195,7 +197,7 @@ nav.tabs{display:flex;justify-content:center;gap:.35rem;padding:1rem 1rem 0;flex
 .stats-cols{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
 @media(max-width:700px){.stats-cols{grid-template-columns:1fr}}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem}
-.modal{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.4rem;width:100%;max-width:480px;max-height:90vh;overflow-y:auto}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.4rem;width:100%;max-width:520px;max-height:90vh;overflow-y:auto}
 .modal h3{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:.06em;color:var(--gold);margin-bottom:1rem}
 .modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.6rem}
 .modal-grid.full{grid-template-columns:1fr}
@@ -210,6 +212,8 @@ nav.tabs{display:flex;justify-content:center;gap:.35rem;padding:1rem 1rem 0;flex
 .modal-btn{flex:1;padding:.48rem;border-radius:7px;font-size:.78rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;border:none}
 .modal-btn.save{background:var(--gold);color:#000}
 .modal-btn.cancel{background:rgba(255,255,255,.05);color:var(--muted);border:1px solid var(--border)}
+.modal-section-title{font-size:.65rem;color:var(--pen);text-transform:uppercase;letter-spacing:.08em;font-weight:700;
+  margin:.6rem 0 .3rem;padding-top:.5rem;border-top:1px solid var(--border)}
 .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(120px);
   background:var(--green);color:#000;padding:.5rem 1.2rem;border-radius:999px;
   font-size:.77rem;font-weight:600;transition:transform .3s;z-index:9999;pointer-events:none}
@@ -287,9 +291,24 @@ const allCountries=Object.values(groupsBase).flat().filter(t=>!t.startsWith('Rep
   .concat(repDef.flatMap(r=>r.partidas.filter(p=>p.stage==='SF').flatMap(p=>[p.home,p.away])))
   .filter((v,i,a)=>a.indexOf(v)===i).sort();
 
-// Calcula pontuação de um jogador
+// ══════════════════════════════════════════════════════
+// PONTUAÇÃO
+// Defesas:  +1 pt por defesa — só goleiros (posicao==='G') acumulam pts
+// Pênaltis: goleiros +100 por pênalti defendido (valor positivo no CSV)
+//           demais jogadores -10 por pênalti (valor negativo no CSV, ex: -1)
+// ══════════════════════════════════════════════════════
 function calcPontuacao(j){
-  return (j.gols||0)*100 + (j.assistencias||0)*10 + (j.vermelhos||0)*(-10) + (j.amarelos||0)*(-1) + (j.golsContra||0)*(-100);
+  const ptDefesas   = (j.posicao==='G') ? (j.defesas||0)*1 : 0;
+  const ptPenaltis  = (j.posicao==='G')
+    ? Math.max(0, j.penaltis||0) * 100          // goleiro: +100 por pênalti defendido
+    : Math.min(0, j.penaltis||0) * 10;           // outros: -10 por pênalti cobrado com valor negativo
+  return (j.gols||0)*100
+       + (j.assistencias||0)*10
+       + (j.vermelhos||0)*(-10)
+       + (j.amarelos||0)*(-1)
+       + (j.golsContra||0)*(-100)
+       + ptDefesas
+       + ptPenaltis;
 }
 
 function makeGroupMatches(){
@@ -436,7 +455,7 @@ function calcGlobalStats(){
 }
 
 // ══════════════════════════════════════════════════════
-// MATCH CARD (edição — abas Grupos, Mata-Mata, Repescagem)
+// MATCH CARD
 // ══════════════════════════════════════════════════════
 function makeMatchCard({label,badgeClass,badgeText,home,away,hs,as,hpen,apen,allowPen,note,editTeams,onSave,onClear}){
   const done=hs!==null&&as!==null;
@@ -502,15 +521,11 @@ function makeMatchCard({label,badgeClass,badgeText,home,away,hs,as,hpen,apen,all
   return card;
 }
 
-// ══════════════════════════════════════════════════════
-// INFO CARD (somente leitura — calendário)
-// ══════════════════════════════════════════════════════
 function makeInfoCard(item){
   const done=item.hs!==null&&item.as!==null;
   const isDraw=done&&item.hs===item.as;
   const card=document.createElement('div');
   card.className='match-card'+(done?' done':'');
-
   let scoreHtml;
   if(done){
     const penHtml=isDraw&&item.hpen!==null
@@ -526,7 +541,6 @@ function makeInfoCard(item){
         ${item.time||'A definir'}
       </div>`;
   }
-
   card.innerHTML=`
     <div class="match-info">
       <span>${item.label}</span>
@@ -565,11 +579,8 @@ function renderMatches(){
       <div id="matches-body">
         <div style="color:var(--muted);padding:2rem;text-align:center">⏳ Carregando calendário...</div>
       </div>`;
-    if(scheduleLoaded){
-      renderMatchesCalendario();
-    }else{
-      loadSchedule().then(()=>{scheduleLoaded=true;renderMatchesCalendario();});
-    }
+    if(scheduleLoaded){renderMatchesCalendario();}
+    else{loadSchedule().then(()=>{scheduleLoaded=true;renderMatchesCalendario();});}
     return;
   }
 
@@ -601,8 +612,7 @@ function renderMatchesGrupos(){
   shown.forEach(g=>{
     const grid=document.getElementById('mg_'+g);
     state.groupMatches[g].forEach((m)=>{
-      const home=m.home||'?';
-      const away=m.away||'?';
+      const home=m.home||'?';const away=m.away||'?';
       grid.appendChild(makeMatchCard({
         label:`Grupo ${g}`,badgeClass:'badge-grupo',badgeText:'GRUPO',
         home,away,hs:m.hs,as:m.as,hpen:null,apen:null,allowPen:false,
@@ -677,7 +687,7 @@ function setGroup(g){activeGroup=g;renderMatches();}
 function setKoRound(k){activeKoRound=k;renderMatches();}
 
 // ══════════════════════════════════════════════════════
-// CALENDÁRIO — 100% baseado no resultados.csv
+// CALENDÁRIO
 // ══════════════════════════════════════════════════════
 let schedule=[];
 let scheduleLoaded=false;
@@ -722,8 +732,7 @@ function applyScheduleToState(){
       const idNum=parseInt(row.id.split('_').pop())-1;
       const m=state.groupMatches[g][idNum];
       if(!m)return;
-      m.home=row.mandante;
-      m.away=row.visitante;
+      m.home=row.mandante;m.away=row.visitante;
       if(row.gols_mandante!==null){m.hs=row.gols_mandante;m.as=row.gols_visitante;}
     }
     if(row.fase==='repescagem'){
@@ -748,8 +757,7 @@ function applyScheduleToState(){
       if(row.gols_mandante!==null){m.hs=row.gols_mandante;m.as=row.gols_visitante;m.hpen=row.pen_mandante;m.apen=row.pen_visitante;}
     }
   });
-  syncAllRepToGroups();
-  saveState();
+  syncAllRepToGroups();saveState();
 }
 
 function buildCalendarItems(){
@@ -828,7 +836,13 @@ function renderMatchesCalendario(){
 }
 
 // ══════════════════════════════════════════════════════
-// CARREGAMENTO DE JOGADORES E EVENTOS (CSV)
+// CSV DE JOGADORES E EVENTOS
+// Colunas esperadas no eventos.csv:
+//   mandante_code, visitante_code, jogador_id, gols, assistencias,
+//   amarelo, vermelho, gol_contra, defesas, penaltis
+//
+// defesas: número inteiro ≥ 0 (defesas realizadas pelo goleiro na partida)
+// penaltis: inteiro — positivo = pênalti defendido (goleiro); negativo = pênalti perdido/cobrado negativamente (jogador de linha)
 // ══════════════════════════════════════════════════════
 async function loadRosters(){
   try{
@@ -853,7 +867,10 @@ async function loadRosters(){
         state.jogadores.push({
           id:state._nextId++,csvId:cp.id,nome:cp.nome,pais:cp.pais,
           pais_code:cp.pais_code,numero:parseInt(cp.numero)||null,
-          posicao:cp.posicao,gols:0,assistencias:0,amarelos:0,vermelhos:0,fromCsv:true,
+          posicao:cp.posicao,
+          gols:0,assistencias:0,amarelos:0,vermelhos:0,golsContra:0,
+          defesas:0,penaltis:0,
+          fromCsv:true,
         });
       }
     });
@@ -867,7 +884,15 @@ async function loadRosters(){
     const lines=text.trim().split('\n').filter(l=>!l.startsWith('#')&&l.trim());
     if(lines.length<2)return;
     const headers=lines[0].split(',').map(h=>h.replace(/\r/g,'').trim());
-    state.jogadores.forEach(j=>{if(j.fromCsv){j.gols=0;j.assistencias=0;j.amarelos=0;j.vermelhos=0;j.golsContra=0;}});
+
+    // Reset only CSV-sourced players
+    state.jogadores.forEach(j=>{
+      if(j.fromCsv){
+        j.gols=0;j.assistencias=0;j.amarelos=0;j.vermelhos=0;
+        j.golsContra=0;j.defesas=0;j.penaltis=0;
+      }
+    });
+
     lines.slice(1).forEach(line=>{
       if(!line.trim())return;
       const cols=line.split(',');
@@ -880,22 +905,23 @@ async function loadRosters(){
       jog.amarelos    +=parseInt(obj.amarelo)      ||0;
       jog.vermelhos   +=parseInt(obj.vermelho)     ||0;
       jog.golsContra  +=parseInt(obj.gol_contra)   ||0;
+      // Novas colunas (opcionais — compatibilidade retroativa com CSVs antigos)
+      jog.defesas     +=parseInt(obj.defesas)       ||0;
+      jog.penaltis    +=parseInt(obj.penaltis)       ||0;
     });
     saveState();
   }catch(e){console.warn('eventos.csv:',e.message);}
 }
 
 // ══════════════════════════════════════════════════════
-// GRUPOS (leitura)
+// GRUPOS
 // ══════════════════════════════════════════════════════
 function calcStandings(g){
   const tbl={};
-  // Inicializa com os times reais dos jogos (CSV já tem os nomes corretos)
   state.groupMatches[g].forEach(m=>{
     if(m.home&&!isRepSlot(m.home)&&m.home!=='?')tbl[m.home]=tbl[m.home]||{pts:0,pj:0,v:0,e:0,d:0,gp:0,gc:0,sg:0};
     if(m.away&&!isRepSlot(m.away)&&m.away!=='?')tbl[m.away]=tbl[m.away]||{pts:0,pj:0,v:0,e:0,d:0,gp:0,gc:0,sg:0};
   });
-  // Fallback: times do groupsBase que não são repescagem e ainda não estão na tabela
   groupsBase[g].forEach(t=>{
     if(!isRepSlot(t)&&!tbl[t])tbl[t]={pts:0,pj:0,v:0,e:0,d:0,gp:0,gc:0,sg:0};
   });
@@ -947,19 +973,14 @@ function renderGroups(){
 function renderTerceiros(){
   const sec=document.getElementById('terceiros-section');
   if(!sec)return;
-
-  // Coleta o 3º colocado de cada grupo
   const terceiros=Object.keys(groupsBase).map(g=>{
     const st=calcStandings(g);
     if(st.length<3)return null;
     return{grupo:g,...st[2]};
   }).filter(Boolean);
-
-  // Ordena: pts → sg → gp
   const sorted=[...terceiros].sort((a,b)=>b.pts-a.pts||b.sg-a.sg||b.gp-a.gp);
-  const total=Object.keys(groupsBase).length; // 12 grupos
+  const total=Object.keys(groupsBase).length;
   const vagasTotal=8;
-
   sec.innerHTML=`
     <div class="match-section-title" style="margin-top:1.8rem">🥉 Classificação dos Terceiros Colocados</div>
     <div style="font-size:.71rem;color:var(--muted);margin-bottom:.8rem">
@@ -968,14 +989,12 @@ function renderTerceiros(){
     </div>
     <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;overflow-x:auto">
       <table class="group-table" style="min-width:520px">
-        <thead>
-          <tr>
-            <th style="text-align:center;width:36px">#</th>
-            <th style="text-align:left">Seleção</th>
-            <th>Grp</th>
-            <th>PJ</th><th>V</th><th>E</th><th>D</th><th>GF</th><th>GC</th><th>SG</th><th>PTS</th>
-          </tr>
-        </thead>
+        <thead><tr>
+          <th style="text-align:center;width:36px">#</th>
+          <th style="text-align:left">Seleção</th>
+          <th>Grp</th>
+          <th>PJ</th><th>V</th><th>E</th><th>D</th><th>GF</th><th>GC</th><th>SG</th><th>PTS</th>
+        </tr></thead>
         <tbody>
           ${sorted.map((t,i)=>{
             const classifica=i<vagasTotal;
@@ -998,7 +1017,7 @@ function renderTerceiros(){
 }
 
 // ══════════════════════════════════════════════════════
-// MATA-MATA (leitura)
+// MATA-MATA
 // ══════════════════════════════════════════════════════
 function renderKnockout(){
   const v=document.getElementById('view-matamata');
@@ -1026,7 +1045,7 @@ function renderKnockout(){
 }
 
 // ══════════════════════════════════════════════════════
-// REPESCAGEM (leitura)
+// REPESCAGEM
 // ══════════════════════════════════════════════════════
 function renderRepescagem(){
   const v=document.getElementById('view-repescagem');
@@ -1115,7 +1134,9 @@ function renderJogadores(){
       <span style="color:var(--blue)">🅰️ Assist. = +10</span>
       <span style="color:var(--red)">🟥 Vermelho = −10</span>
       <span style="color:var(--yellow)">🟨 Amarelo = −1</span>
-      <span style="color:var(--red)">⚽↩ Gol Contra = −100</span>
+      <span style="color:var(--red)">⚽↩ GC = −100</span>
+      <span style="color:#34d399">🧤 Defesa (GOL) = +1</span>
+      <span style="color:var(--pen)">🥅 Pên. defendido (GOL) = +100 · Pên. (outros) = −10</span>
     </div>
 
     <div class="players-table-wrap">
@@ -1132,6 +1153,8 @@ function renderJogadores(){
           ${thCol('amar','amarelos','🟨')}
           ${thCol('verm','vermelhos','🟥')}
           ${thCol('gc','golsContra','⚽↩')}
+          ${thCol('def','defesas','🧤')}
+          ${thCol('pen','penaltis','🥅')}
           <th></th>
         </tr></thead>
         <tbody id="players-body"></tbody>
@@ -1166,23 +1189,40 @@ function renderPlayersBody(){
   const tbody=document.getElementById('players-body');
   if(!tbody)return;
   if(list.length===0){
-    tbody.innerHTML=`<tr><td colspan="12" style="text-align:center;color:var(--muted);padding:1.5rem">Nenhum jogador encontrado.</td></tr>`;
+    tbody.innerHTML=`<tr><td colspan="14" style="text-align:center;color:var(--muted);padding:1.5rem">Nenhum jogador encontrado.</td></tr>`;
     return;
   }
   tbody.innerHTML=list.map((j,rank)=>{
     const posCls=`pos-${j.posicao||'M'}`;
     const fromCsv=!!j.fromCsv;
+    const isGol=j.posicao==='G';
     const pts=j.pontuacao;
     const ptsColor=pts>0?'var(--gold2)':pts<0?'var(--red)':'var(--muted)';
     const ptsStr=pts>0?`+${pts}`:String(pts);
-    // medalha para os 3 primeiros quando ordenado por pontuação
     const isSortingByPts=playerSort.col==='pontuacao';
     const rankLabel=isSortingByPts
       ?(rank===0?'🥇':rank===1?'🥈':rank===2?'🥉':`${rank+1}`)
       :`${rank+1}`;
+
+    // Helper for editable vs readonly stat cell
     const statCell=(val,field,cls)=>fromCsv
       ?`<td style="font-weight:600;text-align:center">${val||0}</td>`
       :`<td><input class="p-input num ${cls}" type="number" min="0" value="${val||0}" onchange="updatePlayer(${j.id},'${field}',this.value)"></td>`;
+
+    // Defesas: display for all, but only goleiros have meaningful pts
+    const defVal=j.defesas||0;
+    const defCell=fromCsv
+      ?`<td style="font-weight:600;text-align:center;color:${isGol&&defVal>0?'#34d399':'var(--muted)'}">${defVal||0}</td>`
+      :`<td><input class="p-input num def-stat" type="number" min="0" value="${defVal}" onchange="updatePlayer(${j.id},'defesas',this.value)"></td>`;
+
+    // Pênaltis: positivo = pên. defendido (GOL); negativo = pên. perdido (outros)
+    const penVal=j.penaltis||0;
+    const penDisplay=penVal>0?`+${penVal}`:String(penVal);
+    const penColor=penVal>0?'var(--pen)':penVal<0?'var(--red)':'var(--muted)';
+    const penCell=fromCsv
+      ?`<td style="font-weight:600;text-align:center;color:${penColor}">${penVal!==0?penDisplay:'0'}</td>`
+      :`<td><input class="p-input num pen-stat" type="number" value="${penVal}" onchange="updatePlayer(${j.id},'penaltis',this.value)" title="Positivo=pênalti defendido(GOL); Negativo=pênalti perdido"></td>`;
+
     return`<tr>
       <td style="text-align:center;font-size:.8rem;color:var(--muted);font-family:'Bebas Neue',sans-serif">${rankLabel}</td>
       <td style="text-align:center;font-family:'Bebas Neue',sans-serif;font-size:1rem;color:var(--muted)">${j.numero||'–'}</td>
@@ -1195,6 +1235,8 @@ function renderPlayersBody(){
       ${statCell(j.amarelos,'amarelos','yellow-stat')}
       ${statCell(j.vermelhos,'vermelhos','red-stat')}
       ${statCell(j.golsContra,'golsContra','red-stat')}
+      ${defCell}
+      ${penCell}
       <td>${fromCsv?'':'<button class="btn-del-player" onclick="deletePlayer('+j.id+')" title="Remover">✕</button>'}</td>
     </tr>`;
   }).join('');
@@ -1211,6 +1253,7 @@ function deletePlayer(id){
   state.jogadores=state.jogadores.filter(x=>x.id!==id);
   saveState();renderJogadores();renderStats();
 }
+
 function openAddPlayer(){
   const root=document.getElementById('modal-root');
   root.innerHTML=`<div class="modal-overlay" onclick="if(event.target===this)closeModal()">
@@ -1234,7 +1277,7 @@ function openAddPlayer(){
       <div class="modal-grid">
         <div>
           <div class="modal-label">Posição</div>
-          <select class="modal-select" id="p-pos">
+          <select class="modal-select" id="p-pos" onchange="toggleGolFields()">
             ${POSICOES.map(p=>`<option value="${p}">${POS_LABELS[p]} (${p})</option>`).join('')}
           </select>
         </div>
@@ -1249,11 +1292,22 @@ function openAddPlayer(){
           <input class="modal-input" id="p-assist" type="number" min="0" value="0">
         </div>
         <div>
-          <div class="modal-label">Cartões</div>
+          <div class="modal-label">Cartões (🟨 / 🟥)</div>
           <div style="display:flex;gap:.4rem">
             <input class="modal-input" id="p-amar" type="number" min="0" value="0" placeholder="🟨">
             <input class="modal-input" id="p-verm" type="number" min="0" value="0" placeholder="🟥">
           </div>
+        </div>
+      </div>
+      <div class="modal-section-title">🧤 Estatísticas de Goleiro / Pênaltis</div>
+      <div class="modal-grid">
+        <div>
+          <div class="modal-label">🧤 Defesas <span style="font-size:.6rem;color:var(--muted)">(+1 pt cada — só GOL)</span></div>
+          <input class="modal-input" id="p-def" type="number" min="0" value="0">
+        </div>
+        <div>
+          <div class="modal-label">🥅 Pênaltis <span style="font-size:.6rem;color:var(--muted)">(+GOL= pên. def.; −outros= pên. perdido)</span></div>
+          <input class="modal-input" id="p-pen" type="number" value="0" placeholder="Ex: 1 ou -1">
         </div>
       </div>
       <div class="modal-btns">
@@ -1264,6 +1318,11 @@ function openAddPlayer(){
   </div>`;
   setTimeout(()=>document.getElementById('p-nome')?.focus(),50);
 }
+
+function toggleGolFields(){
+  // Could highlight gol-specific fields — reserved for future UX enhancement
+}
+
 function confirmAddPlayer(){
   const nome=document.getElementById('p-nome').value.trim();
   const pais=document.getElementById('p-pais').value.trim();
@@ -1276,6 +1335,9 @@ function confirmAddPlayer(){
     assistencias:parseInt(document.getElementById('p-assist').value)||0,
     amarelos:parseInt(document.getElementById('p-amar').value)||0,
     vermelhos:parseInt(document.getElementById('p-verm').value)||0,
+    golsContra:0,
+    defesas:parseInt(document.getElementById('p-def').value)||0,
+    penaltis:parseInt(document.getElementById('p-pen').value)||0,
   });
   saveState();closeModal();renderJogadores();renderStats();toast(`✓ ${nome} adicionado!`);
 }
@@ -1287,12 +1349,21 @@ function closeModal(){document.getElementById('modal-root').innerHTML='';}
 function renderStats(){
   const {goals,matches,played}=calcGlobalStats();
   const v=document.getElementById('view-stats');
+
   const topPts=[...state.jogadores].map(j=>({...j,pontuacao:calcPontuacao(j)})).filter(j=>j.pontuacao!==0).sort((a,b)=>b.pontuacao-a.pontuacao).slice(0,20);
   const topGols=[...state.jogadores].filter(j=>j.gols>0).sort((a,b)=>b.gols-a.gols).slice(0,20);
   const topGC=[...state.jogadores].filter(j=>j.golsContra>0).sort((a,b)=>b.golsContra-a.golsContra).slice(0,20);
   const topAssist=[...state.jogadores].filter(j=>j.assistencias>0).sort((a,b)=>b.assistencias-a.assistencias).slice(0,20);
   const topAmar=[...state.jogadores].filter(j=>j.amarelos>0).sort((a,b)=>b.amarelos-a.amarelos).slice(0,20);
   const topVerm=[...state.jogadores].filter(j=>j.vermelhos>0).sort((a,b)=>b.vermelhos-a.vermelhos).slice(0,20);
+  // Ranking defesas — só goleiros
+  const topDef=[...state.jogadores].filter(j=>j.posicao==='G'&&(j.defesas||0)>0).sort((a,b)=>(b.defesas||0)-(a.defesas||0)).slice(0,20);
+  // Ranking pênaltis defendidos — só goleiros com valor positivo
+  const topPenDef=[...state.jogadores].filter(j=>j.posicao==='G'&&(j.penaltis||0)>0).sort((a,b)=>(b.penaltis||0)-(a.penaltis||0)).slice(0,20);
+
+  const totalDefesas=state.jogadores.reduce((s,j)=>s+(j.defesas||0),0);
+  const totalPenDef=state.jogadores.filter(j=>j.posicao==='G').reduce((s,j)=>s+Math.max(0,j.penaltis||0),0);
+  const totalPenPerd=state.jogadores.filter(j=>j.posicao!=='G').reduce((s,j)=>s+Math.abs(Math.min(0,j.penaltis||0)),0);
 
   function rankTable(list,statKey,statLabel,color){
     if(list.length===0)return`<div style="color:var(--muted);font-size:.78rem;padding:.6rem 0">Nenhum dado ainda.</div>`;
@@ -1300,7 +1371,8 @@ function renderStats(){
       <table class="rank-table">
         <thead><tr><th>#</th><th>Jogador</th><th>País</th><th>${statLabel}</th></tr></thead>
         <tbody>${list.map((j,i)=>{
-          const val=statKey==='pontuacao'?(j[statKey]>0?`+${j[statKey]}`:String(j[statKey])):j[statKey];
+          const raw=statKey==='pontuacao'?j[statKey]:(statKey==='penaltis'?Math.max(0,j[statKey]||0):j[statKey]);
+          const val=statKey==='pontuacao'?(raw>0?`+${raw}`:String(raw)):raw;
           return`<tr>
             <td><span class="rank-badge ${i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-n'}">${i+1}</span></td>
             <td style="font-weight:600">${j.nome}</td><td>${j.pais}</td>
@@ -1322,11 +1394,17 @@ function renderStats(){
       <div class="stat-card"><div class="stat-label">🟨 Amarelos</div><div class="stat-value">${state.jogadores.reduce((s,j)=>s+(j.amarelos||0),0)}</div></div>
       <div class="stat-card"><div class="stat-label">🟥 Vermelhos</div><div class="stat-value">${state.jogadores.reduce((s,j)=>s+(j.vermelhos||0),0)}</div></div>
       <div class="stat-card"><div class="stat-label">🅰️ Assistências</div><div class="stat-value">${state.jogadores.reduce((s,j)=>s+(j.assistencias||0),0)}</div></div>
-      <div class="stat-card"><div class="stat-label">⚽↩ Gols Contra</div><div class="stat-value" style="color:var(--red)">${state.jogadores.reduce((s,j)=>s+(j.golsContra||0),0)}</div></div>
+      <div class="stat-card"><div class="stat-label">🧤 Defesas (goleiros)</div><div class="stat-value" style="color:#34d399">${totalDefesas}</div><div class="stat-sub">+1 pt cada</div></div>
+      <div class="stat-card"><div class="stat-label">🥅 Pênaltis defendidos</div><div class="stat-value" style="color:var(--pen)">${totalPenDef}</div><div class="stat-sub">+100 pts por goleiro</div></div>
+      <div class="stat-card"><div class="stat-label">🥅 Pênaltis perdidos</div><div class="stat-value" style="color:var(--red)">${totalPenPerd}</div><div class="stat-sub">−10 pts por jogador de linha</div></div>
     </div>
     <div class="stats-cols">
       <div><div class="stats-section-title">🥅 Artilheiros</div>${rankTable(topGols,'gols','Gols','var(--gold2)')}</div>
       <div><div class="stats-section-title">🅰️ Assistências</div>${rankTable(topAssist,'assistencias','Assist.','var(--blue)')}</div>
+    </div>
+    <div class="stats-cols" style="margin-top:1rem">
+      <div><div class="stats-section-title">🧤 Defesas (goleiros)</div>${rankTable(topDef,'defesas','Defesas','#34d399')}</div>
+      <div><div class="stats-section-title">🥅 Pênaltis Defendidos (goleiros)</div>${rankTable(topPenDef,'penaltis','Pên. Def.','var(--pen)')}</div>
     </div>
     <div class="stats-cols" style="margin-top:1rem">
       <div><div class="stats-section-title">🟨 Cartões Amarelos</div>${rankTable(topAmar,'amarelos','Amar.','var(--yellow)')}</div>
