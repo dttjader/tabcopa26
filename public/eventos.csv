@@ -1,5 +1,9 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
+SCO,MAR,SCO01,0,0,0,0,0,0,0
+SCO,MAR,SCO03,0,0,1,0
+SCO,MAR,MAR01,0,0,0,0,0,0,0
 SCO,MAR,MAR11,1,0,0,0
+SCO,MAR,MAR14,0,0,1,0
 EUA,AUS,EUA03,0,0,1,0
 EUA,AUS,EUA05,0,0,1,0
 EUA,AUS,EUA16,1,0,0,0
