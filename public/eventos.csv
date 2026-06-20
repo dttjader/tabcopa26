@@ -1,8 +1,10 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
 HOL,SUE,HOL11,2,1,0,0
 HOL,SUE,HOL19,2,0,0,0
-HOL,SUE,HOL22,0,1,0,0
+HOL,SUE,HOL22,0,2,0,0
 HOL,SUE,HOL24,1,1,0,0
+HOL,SUE,SUE09,0,1,0,0
+HOL,SUE.SUE11,1,0,0,0
 TUR,PAR,TUR13,0,0,1,0
 TUR,PAR,TUR23,0,0,0,0,0,1,0
 TUR,PAR,PAR10,0,0,0,1
