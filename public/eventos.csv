@@ -1,4 +1,12 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
+TUN,JAP,TUN16,0,0,0,0,0,0,0
+TUN,JAP,JAP01,0,0,0,0,0,0,0
+TUN,JAP,JAP04,0,1,0,0
+TUN,JAP,JAP13,0,1,0,0
+TUN,JAP,JAP14,1,0,0,0
+TUN,JAP,JAP15,1,0,0,0
+TUN,JAP,JAP18,2,1,0,0
+TUN,JAP,JAP24,0,1,0,0
 EQU,CUR,EQU01,0,0,0,0,0,3,0
 EQU,CUR,EQU05,0,0,1,0
 EQU,CUR,CUR01,0,0,0,0,0,15,0
