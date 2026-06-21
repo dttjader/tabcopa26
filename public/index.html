@@ -317,23 +317,32 @@ const allCountries=Object.values(groupsBase).flat().filter(t=>!t.startsWith('Rep
 // Chaveamento oficial FIFA (12 grupos, 48 times, 32 avançam)
 // Códigos: "A1"=1ºGrupoA, "B2"=2ºGrupoB, "3-1"=1ºmelhor3º...
 // ══════════════════════════════════════════════════════
+// Chaveamento oficial Copa do Mundo 2026
+// Grupos de 4 partidas formam uma chave até o semifinalista:
+// Chave A (P1-P4) → QF1 → SF1, Chave B (P5-P8) → QF2 → SF1
+// Chave C (P9-P12) → QF3 → SF2, Chave D (P13-P16) → QF4 → SF2
+// 3-N = vencedor da Chave N de terceiros (não ranking geral)
 const KO_R32_SLOTS = [
-  { home: 'E1', away: '3-1' },   // Partida 1
-  { home: 'I1', away: '3-2' },   // Partida 2
+  // — Bloco 1 (Partidas 1–4) —
+  { home: 'E1', away: '3-1' },  // Partida 1
+  { home: 'I1', away: '3-2' },  // Partida 2
   { home: 'A2', away: 'B2' },   // Partida 3
   { home: 'F1', away: 'C2' },   // Partida 4
+  // — Bloco 2 (Partidas 5–8) —
   { home: 'K2', away: 'L2' },   // Partida 5
   { home: 'H1', away: 'J2' },   // Partida 6
-  { home: 'D1', away: '3-3' },   // Partida 7
-  { home: 'G1', away: '3-4' },   // Partida 8
+  { home: 'D1', away: '3-3' },  // Partida 7
+  { home: 'G1', away: '3-4' },  // Partida 8
+  // — Bloco 3 (Partidas 9–12) —
   { home: 'C1', away: 'F2' },   // Partida 9
   { home: 'E2', away: 'I2' },   // Partida 10
-  { home: 'A1', away: '3-5' },   // Partida 11
-  { home: 'L1', away: '3-6' },   // Partida 12
-  { home: 'J1', away: 'H2' }, // Partida 13 — melhores 3os
-  { home: 'D2', away: 'G2' }, // Partida 14
-  { home: 'B1', away: '3-7' }, // Partida 15
-  { home: 'K1', away: '3-8' }, // Partida 16
+  { home: 'A1', away: '3-5' },  // Partida 11
+  { home: 'L1', away: '3-6' },  // Partida 12
+  // — Bloco 4 (Partidas 13–16) —
+  { home: 'J1', away: 'H2' },   // Partida 13
+  { home: 'D2', away: 'G2' },   // Partida 14
+  { home: 'B1', away: '3-7' },  // Partida 15
+  { home: 'K1', away: '3-8' },  // Partida 16
 ];
 
 // Verifica se um valor é um código de slot
@@ -351,25 +360,49 @@ function slotLabel(code) {
     return `${pos} Grp ${gm[1]}`;
   }
   const tm = code.match(/^3-([1-8])$/);
-  if (tm) return `3º #${tm[1]}`;
+  if (tm) return `Chave ${tm[1]}`;
   return code;
 }
 
-// Retorna o N-ésimo melhor 3º colocado (rank 1=melhor)
-function getBestThird(rank) {
-  const terceiros = [];
+// Definição das chaves de terceiros (espelhada de renderTerceiros)
+const TERCEIROS_CHAVES = [
+  { id: 1, grupos: ['A', 'B', 'C', 'D', 'F'] },
+  { id: 2, grupos: ['C', 'D', 'F', 'G', 'H'] },
+  { id: 3, grupos: ['B', 'E', 'F', 'I', 'J'] },
+  { id: 4, grupos: ['A', 'E', 'H', 'I', 'J'] },
+  { id: 5, grupos: ['C', 'E', 'F', 'H', 'I'] },
+  { id: 6, grupos: ['E', 'H', 'I', 'J', 'K'] },
+  { id: 7, grupos: ['E', 'F', 'G', 'I', 'J'] },
+  { id: 8, grupos: ['D', 'E', 'I', 'J', 'L'] },
+];
+
+// Retorna o vencedor da Chave N de terceiros (não ranking global)
+// Lógica: cada chave usa 5 grupos; o melhor 3º desses grupos (excluindo
+// grupos já "consumidos" pelas chaves anteriores) vence a chave.
+function getBestThird(chaveNum) {
+  const terceirosMap = {};
   Object.keys(groupsBase).forEach(g => {
     const st = calcStandings(g);
     if (st && st.length >= 3) {
       const t = st[2];
-      if (t && t.pj > 0) {
-        terceiros.push({ name: t.name, pts: t.pts, sg: t.sg, gp: t.gp });
+      if (t && t.pj > 0 && !isRepSlot(t.name) && t.name !== '?') {
+        terceirosMap[g] = { name: t.name, pts: t.pts, sg: t.sg, gp: t.gp };
       }
     }
   });
-  terceiros.sort((a, b) => b.pts - a.pts || b.sg - a.sg || b.gp - a.gp);
-  const t = terceiros[rank - 1];
-  return (t && t.name && !isRepSlot(t.name)) ? t.name : null;
+  const gruposJaUsados = new Set();
+  for (let i = 0; i < TERCEIROS_CHAVES.length; i++) {
+    const chave = TERCEIROS_CHAVES[i];
+    const candidatos = chave.grupos
+      .filter(g => !gruposJaUsados.has(g) && terceirosMap[g])
+      .map(g => ({ ...terceirosMap[g], grupo: g }))
+      .sort((a, b) => b.pts - a.pts || b.sg - a.sg || b.gp - a.gp);
+    if (candidatos.length > 0) gruposJaUsados.add(candidatos[0].grupo);
+    if (chave.id === chaveNum) {
+      return candidatos.length > 0 ? candidatos[0].name : null;
+    }
+  }
+  return null;
 }
 
 // Resolve um código de slot para o nome real do time.
@@ -1160,12 +1193,13 @@ function renderKnockout(){
         <strong>Legenda:</strong>
         <span><strong style="color:var(--gold)">A1</strong> = 1º Grupo A</span>
         <span><strong style="color:var(--gold)">B2</strong> = 2º Grupo B</span>
-        <span><strong style="color:var(--gold)">3-1</strong> = 1º melhor 3º colocado</span>
+        <span><strong style="color:var(--gold)">Chave N</strong> = vencedor da Chave N de 3ºs colocados</span>
         <span style="color:var(--green)">Nome em verde = time já definido</span>
         <span style="color:var(--slot-color);font-style:italic">Itálico dourado = aguardando grupos</span>
       </div>
       <div class="r32-preview">`;
 
+  const BLOCO_LABELS = ['Bloco 1', 'Bloco 2', 'Bloco 3', 'Bloco 4'];
   KO_R32_SLOTS.forEach((slot, i) => {
     const homeName = resolveSlotToName(slot.home);
     const awayName = resolveSlotToName(slot.away);
@@ -1173,19 +1207,31 @@ function renderKnockout(){
     const awayDisplay = awayName || slotLabel(slot.away);
     const homeClass = homeName ? 'r32-team-name' : 'r32-team-name is-slot';
     const awayClass = awayName ? 'r32-team-name' : 'r32-team-name is-slot';
-    // Verificar se tem resultado
     const m = state.knockout.r32[i];
     const hasResult = m && m.hs !== null;
     const resHtml = hasResult
       ? `<span style="font-family:'Bebas Neue',sans-serif;font-size:.85rem;color:var(--gold2);margin-left:auto;white-space:nowrap">${m.hs}×${m.as}</span>`
       : '';
+    // Separador de bloco a cada 4 partidas (exceto antes da 1ª)
+    if (i > 0 && i % 4 === 0) {
+      previewHtml += `
+      <div style="grid-column:1/-1;display:flex;align-items:center;gap:.6rem;margin:.2rem 0">
+        <div style="flex:1;height:1px;background:rgba(212,160,23,.2)"></div>
+        <span style="font-family:'Bebas Neue',sans-serif;font-size:.75rem;letter-spacing:.12em;color:var(--gold);opacity:.7">${BLOCO_LABELS[i/4]}</span>
+        <div style="flex:1;height:1px;background:rgba(212,160,23,.2)"></div>
+      </div>`;
+    }
     previewHtml += `
       <div class="r32-preview-card" style="${hasResult?'border-color:rgba(34,197,94,.3)':''}">
         <span class="r32-preview-num">${i+1}</span>
         <div class="r32-preview-teams">
-          <span class="${homeClass}" title="${slot.home}">${homeDisplay}</span>
+          <span style="display:inline-flex;align-items:center;gap:.3rem;flex-wrap:wrap">
+            <span class="slot-badge">${slot.home}</span><span class="${homeClass}">${homeDisplay}</span>
+          </span>
           <span class="r32-vs">vs</span>
-          <span class="${awayClass}" title="${slot.away}">${awayDisplay}</span>
+          <span style="display:inline-flex;align-items:center;gap:.3rem;flex-wrap:wrap">
+            <span class="slot-badge">${slot.away}</span><span class="${awayClass}">${awayDisplay}</span>
+          </span>
         </div>
         ${resHtml}
       </div>`;
