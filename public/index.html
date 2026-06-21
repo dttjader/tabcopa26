@@ -12,6 +12,7 @@
   --text:#E8EAF0;--muted:#6B7280;
   --green:#22C55E;--red:#EF4444;--yellow:#EAB308;
   --pen:#A78BFA;--blue:#60A5FA;
+  --slot-bg:rgba(212,160,23,.08);--slot-border:rgba(212,160,23,.25);--slot-color:#D4A017;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;
@@ -125,6 +126,8 @@ nav.tabs{display:flex;justify-content:center;gap:.35rem;padding:1rem 1rem 0;flex
 .bracket-team{display:flex;align-items:center;justify-content:space-between;padding:.38rem .5rem;font-size:.71rem;font-weight:500}
 .bracket-team:first-child{border-bottom:1px solid var(--border)}
 .bracket-team.winner{color:var(--gold2);font-weight:700;background:rgba(245,200,66,.06)}
+/* Slot não definido — estilo especial */
+.bracket-team.slot-pending{color:var(--slot-color);font-style:italic;opacity:.7}
 .bracket-score-k{font-family:'Bebas Neue',sans-serif;font-size:.88rem;color:var(--gold);min-width:12px;text-align:right}
 .bracket-pen{font-size:.62rem;color:var(--pen);margin-left:2px}
 .rep-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:1rem}
@@ -142,6 +145,24 @@ nav.tabs{display:flex;justify-content:center;gap:.35rem;padding:1rem 1rem 0;flex
 .rep-winner-row{padding:.45rem .85rem;font-size:.73rem;color:var(--green);border-top:1px solid rgba(255,255,255,.06)}
 .rep-pending{padding:.45rem .85rem;font-size:.71rem;color:var(--muted);font-style:italic}
 .rep-note{padding:.3rem .85rem;font-size:.66rem;color:var(--muted);background:rgba(255,255,255,.02)}
+/* Legenda de slots */
+.slot-legend{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.8rem;padding:.55rem .8rem;
+  background:rgba(212,160,23,.05);border:1px solid rgba(212,160,23,.15);border-radius:8px;
+  font-size:.67rem;color:var(--muted)}
+.slot-legend strong{color:var(--gold);font-weight:700}
+/* Slot badge inline no bracket */
+.slot-badge{display:inline-flex;align-items:center;gap:.25rem;padding:.05rem .35rem;border-radius:4px;
+  background:var(--slot-bg);border:1px solid var(--slot-border);color:var(--slot-color);
+  font-size:.62rem;font-weight:700;font-family:'Bebas Neue',sans-serif;letter-spacing:.04em;white-space:nowrap}
+/* Painel de preview do chaveamento R32 */
+.r32-preview{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.5rem;margin-bottom:1.2rem}
+.r32-preview-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.6rem .75rem;
+  display:flex;align-items:center;gap:.5rem;font-size:.72rem}
+.r32-preview-num{font-family:'Bebas Neue',sans-serif;font-size:1rem;color:var(--muted);min-width:20px}
+.r32-preview-teams{flex:1;display:flex;align-items:center;gap:.3rem;flex-wrap:wrap}
+.r32-team-name{font-weight:600;color:var(--text)}
+.r32-team-name.is-slot{color:var(--slot-color);font-style:italic;font-weight:500}
+.r32-vs{color:var(--muted);font-size:.65rem}
 .players-toolbar{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem;align-items:center}
 .players-search{flex:1;min-width:160px;background:var(--card);border:1px solid var(--border);
   border-radius:8px;color:var(--text);padding:.42rem .8rem;font-size:.8rem;font-family:'DM Sans',sans-serif;outline:none}
@@ -292,16 +313,122 @@ const allCountries=Object.values(groupsBase).flat().filter(t=>!t.startsWith('Rep
   .filter((v,i,a)=>a.indexOf(v)===i).sort();
 
 // ══════════════════════════════════════════════════════
+// CHAVEAMENTO COPA 2026 — SLOTS DA RODADA DE 32
+// Chaveamento oficial FIFA (12 grupos, 48 times, 32 avançam)
+// Códigos: "A1"=1ºGrupoA, "B2"=2ºGrupoB, "3-1"=1ºmelhor3º...
+// ══════════════════════════════════════════════════════
+const KO_R32_SLOTS = [
+  { home: 'A1', away: 'B2' },   // Partida 1
+  { home: 'C1', away: 'D2' },   // Partida 2
+  { home: 'E1', away: 'F2' },   // Partida 3
+  { home: 'G1', away: 'H2' },   // Partida 4
+  { home: 'I1', away: 'J2' },   // Partida 5
+  { home: 'K1', away: 'L2' },   // Partida 6
+  { home: 'B1', away: 'A2' },   // Partida 7
+  { home: 'D1', away: 'C2' },   // Partida 8
+  { home: 'F1', away: 'E2' },   // Partida 9
+  { home: 'H1', away: 'G2' },   // Partida 10
+  { home: 'J1', away: 'I2' },   // Partida 11
+  { home: 'L1', away: 'K2' },   // Partida 12
+  { home: '3-1', away: '3-2' }, // Partida 13 — melhores 3os
+  { home: '3-3', away: '3-4' }, // Partida 14
+  { home: '3-5', away: '3-6' }, // Partida 15
+  { home: '3-7', away: '3-8' }, // Partida 16
+];
+
+// Verifica se um valor é um código de slot
+function isSlotCode(val) {
+  if (!val) return false;
+  return /^[A-L][12]$/.test(val) || /^3-[1-8]$/.test(val) || val === '?';
+}
+
+// Label legível para um código de slot
+function slotLabel(code) {
+  if (!code || code === '?') return '?';
+  const gm = code.match(/^([A-L])([12])$/);
+  if (gm) {
+    const pos = gm[2] === '1' ? '1º' : '2º';
+    return `${pos} Grp ${gm[1]}`;
+  }
+  const tm = code.match(/^3-([1-8])$/);
+  if (tm) return `3º #${tm[1]}`;
+  return code;
+}
+
+// Retorna o N-ésimo melhor 3º colocado (rank 1=melhor)
+function getBestThird(rank) {
+  const terceiros = [];
+  Object.keys(groupsBase).forEach(g => {
+    const st = calcStandings(g);
+    if (st && st.length >= 3) {
+      const t = st[2];
+      if (t && t.pj > 0) {
+        terceiros.push({ name: t.name, pts: t.pts, sg: t.sg, gp: t.gp });
+      }
+    }
+  });
+  terceiros.sort((a, b) => b.pts - a.pts || b.sg - a.sg || b.gp - a.gp);
+  const t = terceiros[rank - 1];
+  return (t && t.name && !isRepSlot(t.name)) ? t.name : null;
+}
+
+// Resolve um código de slot para o nome real do time.
+// Se o time ainda não está definido, retorna null (use slotLabel para exibição).
+function resolveSlotToName(code) {
+  if (!code || code === '?') return null;
+
+  // Já é nome de time real (não é código de slot)
+  if (!isSlotCode(code)) return code;
+
+  const gm = code.match(/^([A-L])([12])$/);
+  if (gm) {
+    const g = gm[1];
+    const pos = parseInt(gm[2]);
+    const st = calcStandings(g);
+    if (st && st.length >= pos) {
+      const team = st[pos - 1];
+      // Só retorna se o grupo tem pelo menos 1 jogo jogado
+      const hasGames = (state.groupMatches[g] || []).some(m => m.hs !== null);
+      if (team && team.pj > 0 && team.name && !isRepSlot(team.name) && team.name !== '?') {
+        return team.name;
+      }
+    }
+    return null;
+  }
+
+  const tm = code.match(/^3-([1-8])$/);
+  if (tm) {
+    return getBestThird(parseInt(tm[1]));
+  }
+
+  return null;
+}
+
+// Retorna o nome a exibir para um slot no mata-mata:
+// - nome real se definido
+// - label do slot caso contrário
+function displaySlot(code) {
+  if (!code || code === '?') return '?';
+  if (!isSlotCode(code)) return code; // já é nome real salvo
+  const resolved = resolveSlotToName(code);
+  return resolved || slotLabel(code);
+}
+
+// Verifica se um valor de exibição é ainda um slot pendente (não resolvido)
+function isDisplayPending(code) {
+  if (!code || code === '?') return true;
+  if (!isSlotCode(code)) return false;
+  return resolveSlotToName(code) === null;
+}
+
+// ══════════════════════════════════════════════════════
 // PONTUAÇÃO
-// Defesas:  +1 pt por defesa — só goleiros (posicao==='G') acumulam pts
-// Pênaltis: goleiros +100 por pênalti defendido (valor positivo no CSV)
-//           demais jogadores -10 por pênalti (valor negativo no CSV, ex: -1)
 // ══════════════════════════════════════════════════════
 function calcPontuacao(j){
   const ptDefesas   = (j.posicao==='G') ? (j.defesas||0)*1 : 0;
   const ptPenaltis  = (j.posicao==='G')
-    ? Math.max(0, j.penaltis||0) * 100          // goleiro: +100 por pênalti defendido
-    : Math.min(0, j.penaltis||0) * 10;           // outros: -10 por pênalti cobrado com valor negativo
+    ? Math.max(0, j.penaltis||0) * 100
+    : Math.min(0, j.penaltis||0) * 10;
   return (j.gols||0)*100
        + (j.assistencias||0)*10
        + (j.vermelhos||0)*(-10)
@@ -330,7 +457,10 @@ const state={
   groupMatches:{},
   repScores:{},
   knockout:{
-    r32:Array(16).fill(0).map(()=>({home:'?',away:'?',hs:null,as:null,hpen:null,apen:null})),
+    r32:Array(16).fill(0).map((_,i)=>{
+      const slot = KO_R32_SLOTS[i] || {home:'?',away:'?'};
+      return {home:slot.home,away:slot.away,hs:null,as:null,hpen:null,apen:null};
+    }),
     r16:Array(8).fill(0).map(()=>({home:'?',away:'?',hs:null,as:null,hpen:null,apen:null})),
     qf: Array(4).fill(0).map(()=>({home:'?',away:'?',hs:null,as:null,hpen:null,apen:null})),
     sf: Array(2).fill(0).map(()=>({home:'?',away:'?',hs:null,as:null,hpen:null,apen:null})),
@@ -355,6 +485,7 @@ function saveState(){
     }));
   }catch(e){}
 }
+
 (function loadState(){
   try{
     const s=JSON.parse(localStorage.getItem('copa2026v9')||'null');
@@ -372,16 +503,24 @@ function saveState(){
         });
       });
     }
-    if(s.repScores)    Object.assign(state.repScores,s.repScores);
+    if(s.repScores) Object.assign(state.repScores,s.repScores);
     if(s.knockout){
       Object.keys(s.knockout).forEach(k=>{
         if(Array.isArray(s.knockout[k])&&Array.isArray(state.knockout[k])){
-          s.knockout[k].forEach((m,i)=>{ if(state.knockout[k][i]) Object.assign(state.knockout[k][i],m); });
+          s.knockout[k].forEach((m,i)=>{
+            if(state.knockout[k][i]) Object.assign(state.knockout[k][i],m);
+          });
         }
       });
     }
-    if(s.jogadores)    state.jogadores=s.jogadores;
-    if(s._nextId)      state._nextId=s._nextId;
+    // Para a R32, garantir que os slots base sejam mantidos se não foram sobrescritos
+    KO_R32_SLOTS.forEach((slot, i) => {
+      const m = state.knockout.r32[i];
+      if(m && (m.home === '?' || !m.home) && slot.home !== '?') m.home = slot.home;
+      if(m && (m.away === '?' || !m.away) && slot.away !== '?') m.away = slot.away;
+    });
+    if(s.jogadores) state.jogadores=s.jogadores;
+    if(s._nextId)   state._nextId=s._nextId;
   }catch(e){}
 })();
 
@@ -668,12 +807,20 @@ function renderMatchesKO(){
   body.innerHTML=`<div class="filter-bar">${roundBtns}</div><div class="match-section-title">${rLabel}</div><div class="matches-grid" id="ko-grid"></div>`;
   const grid=document.getElementById('ko-grid');
   state.knockout[activeKoRound].forEach((m,mi)=>{
+    // Para R32, resolver os slots dinamicamente
+    let homeDisplay = m.home;
+    let awayDisplay = m.away;
+    if(activeKoRound === 'r32') {
+      homeDisplay = displaySlot(m.home);
+      awayDisplay = displaySlot(m.away);
+    }
     grid.appendChild(makeMatchCard({
       label:`${rLabel} · Partida ${mi+1}`,badgeClass:'badge-ko',badgeText:'MATA-MATA',
-      home:m.home,away:m.away,hs:m.hs,as:m.as,hpen:m.hpen,apen:m.apen,
-      allowPen:true,editTeams:true,
+      home:homeDisplay,away:awayDisplay,hs:m.hs,as:m.as,hpen:m.hpen,apen:m.apen,
+      allowPen:true,editTeams:activeKoRound!=='r32', // R32 não edita times manualmente
       onSave:(hs,as,hpen,apen,home,away)=>{
-        if(home)m.home=home;if(away)m.away=away;
+        if(home&&activeKoRound!=='r32')m.home=home;
+        if(away&&activeKoRound!=='r32')m.away=away;
         m.hs=hs;m.as=as;m.hpen=hpen;m.apen=apen;
         saveState();renderKnockout();renderMatches();toast('✓ Salvo!');
       },
@@ -752,9 +899,18 @@ function applyScheduleToState(){
       if(isNaN(idx)||idx<0)return;
       const m=state.knockout[roundKey][idx];
       if(!m)return;
-      if(row.mandante&&row.mandante!=='?')m.home=row.mandante;
-      if(row.visitante&&row.visitante!=='?')m.away=row.visitante;
-      if(row.gols_mandante!==null){m.hs=row.gols_mandante;m.as=row.gols_visitante;m.hpen=row.pen_mandante;m.apen=row.pen_visitante;}
+      // Para R32: NÃO sobrescrever os códigos de slot com "?"
+      if(roundKey === 'r32') {
+        // Só salvar resultado, não os times (gerenciados pelos slots)
+        if(row.gols_mandante!==null){
+          m.hs=row.gols_mandante;m.as=row.gols_visitante;
+          m.hpen=row.pen_mandante;m.apen=row.pen_visitante;
+        }
+      } else {
+        if(row.mandante&&row.mandante!=='?')m.home=row.mandante;
+        if(row.visitante&&row.visitante!=='?')m.away=row.visitante;
+        if(row.gols_mandante!==null){m.hs=row.gols_mandante;m.as=row.gols_visitante;m.hpen=row.pen_mandante;m.apen=row.pen_visitante;}
+      }
     }
   });
   syncAllRepToGroups();saveState();
@@ -836,84 +992,6 @@ function renderMatchesCalendario(){
 }
 
 // ══════════════════════════════════════════════════════
-// CSV DE JOGADORES E EVENTOS
-// Colunas esperadas no eventos.csv:
-//   mandante_code, visitante_code, jogador_id, gols, assistencias,
-//   amarelo, vermelho, gol_contra, defesas, penaltis
-//
-// defesas: número inteiro ≥ 0 (defesas realizadas pelo goleiro na partida)
-// penaltis: inteiro — positivo = pênalti defendido (goleiro); negativo = pênalti perdido/cobrado negativamente (jogador de linha)
-// ══════════════════════════════════════════════════════
-async function loadRosters(){
-  try{
-    const r=await fetch('jogadores.csv');
-    if(!r.ok)throw new Error('jogadores.csv não encontrado');
-    const text=await r.text();
-    const lines=text.trim().split('\n').filter(l=>!l.startsWith('#'));
-    const headers=lines[0].split(',').map(h=>h.replace(/\r/g,'').trim());
-    const csvPlayers=lines.slice(1).map(line=>{
-      const cols=line.split(',');
-      const obj={};
-      headers.forEach((h,i)=>obj[h]=(cols[i]||'').replace(/\r/g,'').trim());
-      return obj;
-    }).filter(o=>o.id);
-    csvPlayers.forEach(cp=>{
-      const existing=state.jogadores.find(j=>j.csvId===cp.id);
-      if(existing){
-        existing.nome=cp.nome;existing.pais=cp.pais;
-        existing.numero=parseInt(cp.numero)||null;
-        existing.posicao=cp.posicao;existing.pais_code=cp.pais_code;
-      }else{
-        state.jogadores.push({
-          id:state._nextId++,csvId:cp.id,nome:cp.nome,pais:cp.pais,
-          pais_code:cp.pais_code,numero:parseInt(cp.numero)||null,
-          posicao:cp.posicao,
-          gols:0,assistencias:0,amarelos:0,vermelhos:0,golsContra:0,
-          defesas:0,penaltis:0,
-          fromCsv:true,
-        });
-      }
-    });
-    saveState();
-  }catch(e){console.warn('jogadores.csv:',e.message);}
-
-  try{
-    const r=await fetch('eventos.csv');
-    if(!r.ok)throw new Error('eventos.csv não encontrado');
-    const text=await r.text();
-    const lines=text.trim().split('\n').filter(l=>!l.startsWith('#')&&l.trim());
-    if(lines.length<2)return;
-    const headers=lines[0].split(',').map(h=>h.replace(/\r/g,'').trim());
-
-    // Reset only CSV-sourced players
-    state.jogadores.forEach(j=>{
-      if(j.fromCsv){
-        j.gols=0;j.assistencias=0;j.amarelos=0;j.vermelhos=0;
-        j.golsContra=0;j.defesas=0;j.penaltis=0;
-      }
-    });
-
-    lines.slice(1).forEach(line=>{
-      if(!line.trim())return;
-      const cols=line.split(',');
-      const obj={};
-      headers.forEach((h,i)=>obj[h]=(cols[i]||'').replace(/\r/g,'').trim());
-      const jog=state.jogadores.find(j=>j.csvId===obj.jogador_id);
-      if(!jog)return;
-      jog.gols        +=parseInt(obj.gols)        ||0;
-      jog.assistencias+=parseInt(obj.assistencias)||0;
-      jog.amarelos    +=parseInt(obj.amarelo)      ||0;
-      jog.vermelhos   +=parseInt(obj.vermelho)     ||0;
-      jog.golsContra  +=parseInt(obj.gol_contra)   ||0;
-      // Novas colunas (opcionais — compatibilidade retroativa com CSVs antigos)
-      jog.defesas     +=parseInt(obj.defesas)       ||0;
-      jog.penaltis    +=parseInt(obj.penaltis)       ||0;
-    });
-    saveState();
-  }catch(e){console.warn('eventos.csv:',e.message);}
-}
-
-// ══════════════════════════════════════════════════════
 // GRUPOS
 // ══════════════════════════════════════════════════════
 function calcStandings(g){
@@ -970,32 +1048,16 @@ function renderGroups(){
   renderTerceiros();
 }
 
-// =====================================================================
-// SUBSTITUIÇÃO: copie esta função inteira no index.html,
-// SUBSTITUINDO o bloco que começa em:
-//   function renderTerceiros(){
-// e termina no próximo } de fechamento da função (antes de renderGroups).
-// =====================================================================
-
 function renderTerceiros() {
   const sec = document.getElementById('terceiros-section');
   if (!sec) return;
-
-  // 1. Calcular o 3º colocado de cada grupo disponível
   const terceirosMap = {};
   if (typeof groupsBase !== 'undefined' && typeof calcStandings === 'function') {
     Object.keys(groupsBase).forEach(g => {
       const st = calcStandings(g);
-      if (st && st.length >= 3) {
-        terceirosMap[g] = { grupo: g, ...st[2] };
-      }
+      if (st && st.length >= 3) terceirosMap[g] = { grupo: g, ...st[2] };
     });
-  } else {
-    console.error("Erro: groupsBase ou calcStandings não definidos.");
-    return;
-  }
-
-  // 2. Definição das 8 chaves
+  } else { return; }
   const listas = [
     { id: 1, grupos: ['A', 'B', 'C', 'D', 'F'] },
     { id: 2, grupos: ['C', 'D', 'F', 'G', 'H'] },
@@ -1006,11 +1068,8 @@ function renderTerceiros() {
     { id: 7, grupos: ['E', 'F', 'G', 'I', 'J'] },
     { id: 8, grupos: ['D', 'E', 'I', 'J', 'L'] },
   ];
-
   const total = Object.keys(groupsBase).length;
   const definidos = Object.keys(terceirosMap).length;
-
-  // 3. Preparar o container principal
   sec.innerHTML = `
     <div class="match-section-title" style="margin-top:1.8rem">🥉 Classificação dos Terceiros Colocados — por Chave</div>
     <div style="font-size:.71rem;color:var(--muted);margin-bottom:1rem">
@@ -1018,54 +1077,35 @@ function renderTerceiros() {
       ${definidos < total ? ` · ${total - definidos} grupo(s) ainda sem 3º definido` : ''}
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1rem" id="terceiros-listas"></div>`;
-
   const container = document.getElementById('terceiros-listas');
   const gruposJaClassificados = new Set();
-
-  // 4. Renderizar cada chave
   listas.forEach(function(lista) {
     const candidatos = lista.grupos
       .filter(g => !gruposJaClassificados.has(g))
-      .map(g => terceirosMap[g])
-      .filter(Boolean)
+      .map(g => terceirosMap[g]).filter(Boolean)
       .sort((a, b) => b.pts - a.pts || b.sg - a.sg || b.gp - a.gp);
-
-    const gruposSemResultado = lista.grupos
-      .filter(g => !gruposJaClassificados.has(g) && !terceirosMap[g]);
-
-    const gruposRemovidos = lista.grupos
-      .filter(g => gruposJaClassificados.has(g));
-
-    // Se houver um vencedor na chave, ele é marcado como classificado para não aparecer nas próximas
-    if (candidatos.length > 0) {
-      gruposJaClassificados.add(candidatos[0].grupo);
-    }
-
+    const gruposSemResultado = lista.grupos.filter(g => !gruposJaClassificados.has(g) && !terceirosMap[g]);
+    const gruposRemovidos = lista.grupos.filter(g => gruposJaClassificados.has(g));
+    if (candidatos.length > 0) gruposJaClassificados.add(candidatos[0].grupo);
     const card = document.createElement('div');
     card.style.cssText = 'background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden';
-
     let html = `
       <div style="background:linear-gradient(135deg,rgba(212,160,23,.15),rgba(212,160,23,.05));padding:.55rem 1rem;font-family:'Bebas Neue',sans-serif;font-size:.9rem;letter-spacing:.1em;color:var(--gold);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
         <span>Chave ${lista.id}</span>
         <span style="font-size:.67rem;color:var(--muted);font-weight:400;letter-spacing:0">Grp ${lista.grupos.join(' · ')}</span>
       </div>
       <table style="width:100%;border-collapse:collapse">
-        <thead>
-          <tr style="background:rgba(255,255,255,.025)">
-            <th style="padding:.3rem .45rem;font-size:.57rem;text-transform:uppercase;color:var(--muted);text-align:center;width:34px">#</th>
-            <th style="padding:.3rem .45rem;font-size:.57rem;text-transform:uppercase;color:var(--muted);text-align:left">Seleção</th>
-            <th style="padding:.3rem .32rem;font-size:.57rem;color:var(--muted);text-align:center">PTS</th>
-          </tr>
-        </thead>
+        <thead><tr style="background:rgba(255,255,255,.025)">
+          <th style="padding:.3rem .45rem;font-size:.57rem;text-transform:uppercase;color:var(--muted);text-align:center;width:34px">#</th>
+          <th style="padding:.3rem .45rem;font-size:.57rem;text-transform:uppercase;color:var(--muted);text-align:left">Seleção</th>
+          <th style="padding:.3rem .32rem;font-size:.57rem;color:var(--muted);text-align:center">PTS</th>
+        </tr></thead>
         <tbody>`;
-
-    // Linhas dos candidatos
     candidatos.forEach((t, rankReal) => {
       const classifica = rankReal === 0;
-      const borderColor = classifica ? 'var(--yellow)' : 'transparent';
       html += `
         <tr style="border-top:1px solid rgba(255,255,255,.04);opacity:${classifica ? 1 : 0.55}">
-          <td style="text-align:center;border-left:3px solid ${borderColor};padding:.4rem .45rem">
+          <td style="text-align:center;border-left:3px solid ${classifica?'var(--yellow)':'transparent'};padding:.4rem .45rem">
             ${classifica ? '<span style="color:var(--yellow)">1º</span>' : (rankReal + 1) + 'º'}
           </td>
           <td style="padding:.4rem .45rem;font-size:.73rem;font-weight:${classifica ? 700 : 500}">
@@ -1074,54 +1114,132 @@ function renderTerceiros() {
           <td style="text-align:center;font-weight:bold;color:var(--gold2)">${t.pts}</td>
         </tr>`;
     });
-
-    // Grupos aguardando
     gruposSemResultado.forEach(g => {
-      html += `
-        <tr style="border-top:1px solid rgba(255,255,255,.04);opacity:.28">
-          <td style="text-align:center;padding:.35rem .45rem">—</td>
-          <td colspan="2" style="font-size:.68rem;color:var(--muted);padding:.35rem .45rem">Grp ${g} — aguardando</td>
-        </tr>`;
+      html += `<tr style="border-top:1px solid rgba(255,255,255,.04);opacity:.28">
+        <td style="text-align:center;padding:.35rem .45rem">—</td>
+        <td colspan="2" style="font-size:.68rem;color:var(--muted);padding:.35rem .45rem">Grp ${g} — aguardando</td>
+      </tr>`;
     });
-
-    // Grupos já classificados em chaves anteriores
     gruposRemovidos.forEach(g => {
-      html += `
-        <tr style="border-top:1px solid rgba(255,255,255,.04);opacity:.3">
-          <td style="text-align:center;padding:.35rem .45rem">✓</td>
-          <td colspan="2" style="font-size:.68rem;color:var(--muted);padding:.35rem .45rem;font-style:italic">Grp ${g} — já classificado</td>
-        </tr>`;
+      html += `<tr style="border-top:1px solid rgba(255,255,255,.04);opacity:.3">
+        <td style="text-align:center;padding:.35rem .45rem">✓</td>
+        <td colspan="2" style="font-size:.68rem;color:var(--muted);padding:.35rem .45rem;font-style:italic">Grp ${g} — já classificado</td>
+      </tr>`;
     });
-
     html += '</tbody></table>';
     card.innerHTML = html;
     container.appendChild(card);
   });
 }
 
-
 // ══════════════════════════════════════════════════════
-// MATA-MATA
+// MATA-MATA — com resolução de slots
 // ══════════════════════════════════════════════════════
 function renderKnockout(){
   const v=document.getElementById('view-matamata');
+
+  // Contar quantos slots R32 já estão resolvidos
+  const r32Resolved = KO_R32_SLOTS.filter(s =>
+    resolveSlotToName(s.home) !== null && resolveSlotToName(s.away) !== null
+  ).length;
+  const r32Total = KO_R32_SLOTS.length;
+  const allResolved = r32Resolved === r32Total;
+
+  // Preview do chaveamento R32 com slots e nomes
+  let previewHtml = `
+    <div style="margin-bottom:1.5rem">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;flex-wrap:wrap;gap:.5rem">
+        <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.08em;color:var(--gold)">
+          ⚔️ Chaveamento — Rodada de 32
+        </h3>
+        <span style="font-size:.7rem;color:${allResolved?'var(--green)':'var(--muted)'}">
+          ${allResolved ? '✓ Todos os times definidos' : `${r32Resolved}/${r32Total} times definidos`}
+        </span>
+      </div>
+      <div class="slot-legend">
+        <strong>Legenda:</strong>
+        <span><strong style="color:var(--gold)">A1</strong> = 1º Grupo A</span>
+        <span><strong style="color:var(--gold)">B2</strong> = 2º Grupo B</span>
+        <span><strong style="color:var(--gold)">3-1</strong> = 1º melhor 3º colocado</span>
+        <span style="color:var(--green)">Nome em verde = time já definido</span>
+        <span style="color:var(--slot-color);font-style:italic">Itálico dourado = aguardando grupos</span>
+      </div>
+      <div class="r32-preview">`;
+
+  KO_R32_SLOTS.forEach((slot, i) => {
+    const homeName = resolveSlotToName(slot.home);
+    const awayName = resolveSlotToName(slot.away);
+    const homeDisplay = homeName || slotLabel(slot.home);
+    const awayDisplay = awayName || slotLabel(slot.away);
+    const homeClass = homeName ? 'r32-team-name' : 'r32-team-name is-slot';
+    const awayClass = awayName ? 'r32-team-name' : 'r32-team-name is-slot';
+    // Verificar se tem resultado
+    const m = state.knockout.r32[i];
+    const hasResult = m && m.hs !== null;
+    const resHtml = hasResult
+      ? `<span style="font-family:'Bebas Neue',sans-serif;font-size:.85rem;color:var(--gold2);margin-left:auto;white-space:nowrap">${m.hs}×${m.as}</span>`
+      : '';
+    previewHtml += `
+      <div class="r32-preview-card" style="${hasResult?'border-color:rgba(34,197,94,.3)':''}">
+        <span class="r32-preview-num">${i+1}</span>
+        <div class="r32-preview-teams">
+          <span class="${homeClass}" title="${slot.home}">${homeDisplay}</span>
+          <span class="r32-vs">vs</span>
+          <span class="${awayClass}" title="${slot.away}">${awayDisplay}</span>
+        </div>
+        ${resHtml}
+      </div>`;
+  });
+
+  previewHtml += `</div></div>`;
+
   v.innerHTML=`<div class="readonly-note">👁 Somente leitura — insira resultados na aba Partidas</div>
+    ${previewHtml}
     <div class="bracket-outer"><div class="bracket" id="brk"></div></div>`;
+
   const brk=document.getElementById('brk');
   koRounds.forEach(round=>{
     const col=document.createElement('div');col.className='bracket-round';
     col.innerHTML=`<div class="round-title">${round.label}</div>`;
     const wrap=document.createElement('div');wrap.className='bracket-matches';
-    state.knockout[round.key].forEach(m=>{
-      const w=getWinner(m);
-      const hWin=w!==null&&w===m.home,aWin=w!==null&&w===m.away;
+    state.knockout[round.key].forEach((m, mi)=>{
+      // Para R32: resolver os slots para nomes reais (se disponíveis)
+      let homeVal = m.home;
+      let awayVal = m.away;
+      if(round.key === 'r32') {
+        const slot = KO_R32_SLOTS[mi];
+        if(slot) {
+          homeVal = resolveSlotToName(slot.home) || slot.home;
+          awayVal = resolveSlotToName(slot.away) || slot.away;
+        }
+      }
+
+      const w=getWinner({...m, home:homeVal, away:awayVal});
+      const hWin=w!==null&&w===homeVal,aWin=w!==null&&w===awayVal;
       const isDraw=m.hs!==null&&m.as!==null&&m.hs===m.as;
       const hPen=isDraw&&m.hpen!==null?`<span class="bracket-pen">(${m.hpen})</span>`:'';
       const aPen=isDraw&&m.apen!==null?`<span class="bracket-pen">(${m.apen})</span>`:'';
+
+      // Para R32: verificar se slot ainda não está resolvido
+      const homeIsPending = round.key === 'r32' && resolveSlotToName(KO_R32_SLOTS[mi]?.home) === null;
+      const awayIsPending = round.key === 'r32' && resolveSlotToName(KO_R32_SLOTS[mi]?.away) === null;
+      const homeLabel = homeIsPending ? slotLabel(KO_R32_SLOTS[mi]?.home) : homeVal;
+      const awayLabel = awayIsPending ? slotLabel(KO_R32_SLOTS[mi]?.away) : awayVal;
+
       const el=document.createElement('div');el.className='bracket-match';
       el.innerHTML=`
-        <div class="bracket-team${hWin?' winner':''}"><span>${m.home}</span><span style="display:flex;align-items:center;gap:2px"><span class="bracket-score-k">${m.hs!==null?m.hs:''}</span>${hPen}</span></div>
-        <div class="bracket-team${aWin?' winner':''}"><span>${m.away}</span><span style="display:flex;align-items:center;gap:2px"><span class="bracket-score-k">${m.as!==null?m.as:''}</span>${aPen}</span></div>`;
+        <div class="bracket-team${hWin?' winner':''}${homeIsPending?' slot-pending':''}">
+          <span>${homeLabel}</span>
+          <span style="display:flex;align-items:center;gap:2px">
+            <span class="bracket-score-k">${m.hs!==null?m.hs:''}</span>${hPen}
+          </span>
+        </div>
+        <div class="bracket-team${aWin?' winner':''}${awayIsPending?' slot-pending':''}">
+          <span>${awayLabel}</span>
+          <span style="display:flex;align-items:center;gap:2px">
+            <span class="bracket-score-k">${m.as!==null?m.as:''}</span>${aPen}
+          </span>
+        </div>`;
       wrap.appendChild(el);
     });
     col.appendChild(wrap);brk.appendChild(col);
@@ -1207,11 +1325,9 @@ function renderJogadores(){
       <button class="btn-add-player" onclick="openAddPlayer()">+ Adicionar Jogador</button>
       <button class="btn-add-player" style="background:rgba(96,165,250,.12);border-color:rgba(96,165,250,.3);color:var(--blue)" onclick="reloadRosters()">🔄 Recarregar CSV</button>
     </div>
-
     <div style="font-size:.69rem;color:var(--muted);margin-bottom:.5rem">
       📂 Jogadores do <code>jogadores.csv</code> — estatísticas do <code>eventos.csv</code>.
     </div>
-
     <div style="font-size:.69rem;color:var(--muted);margin-bottom:.8rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap">
       <span>🏆 Pontuação:</span>
       <span style="color:var(--gold2)">⚽ Gol = +100</span>
@@ -1222,7 +1338,6 @@ function renderJogadores(){
       <span style="color:#34d399">🧤 Defesa (GOL) = +1</span>
       <span style="color:var(--pen)">🥅 Pên. defendido (GOL) = +100 · Pên. (outros) = −10</span>
     </div>
-
     <div class="players-table-wrap">
       <table class="players-table">
         <thead><tr>
@@ -1287,26 +1402,19 @@ function renderPlayersBody(){
     const rankLabel=isSortingByPts
       ?(rank===0?'🥇':rank===1?'🥈':rank===2?'🥉':`${rank+1}`)
       :`${rank+1}`;
-
-    // Helper for editable vs readonly stat cell
     const statCell=(val,field,cls)=>fromCsv
       ?`<td style="font-weight:600;text-align:center">${val||0}</td>`
       :`<td><input class="p-input num ${cls}" type="number" min="0" value="${val||0}" onchange="updatePlayer(${j.id},'${field}',this.value)"></td>`;
-
-    // Defesas: display for all, but only goleiros have meaningful pts
     const defVal=j.defesas||0;
     const defCell=fromCsv
       ?`<td style="font-weight:600;text-align:center;color:${isGol&&defVal>0?'#34d399':'var(--muted)'}">${defVal||0}</td>`
       :`<td><input class="p-input num def-stat" type="number" min="0" value="${defVal}" onchange="updatePlayer(${j.id},'defesas',this.value)"></td>`;
-
-    // Pênaltis: positivo = pên. defendido (GOL); negativo = pên. perdido (outros)
     const penVal=j.penaltis||0;
     const penDisplay=penVal>0?`+${penVal}`:String(penVal);
     const penColor=penVal>0?'var(--pen)':penVal<0?'var(--red)':'var(--muted)';
     const penCell=fromCsv
       ?`<td style="font-weight:600;text-align:center;color:${penColor}">${penVal!==0?penDisplay:'0'}</td>`
       :`<td><input class="p-input num pen-stat" type="number" value="${penVal}" onchange="updatePlayer(${j.id},'penaltis',this.value)" title="Positivo=pênalti defendido(GOL); Negativo=pênalti perdido"></td>`;
-
     return`<tr>
       <td style="text-align:center;font-size:.8rem;color:var(--muted);font-family:'Bebas Neue',sans-serif">${rankLabel}</td>
       <td style="text-align:center;font-family:'Bebas Neue',sans-serif;font-size:1rem;color:var(--muted)">${j.numero||'–'}</td>
@@ -1361,7 +1469,7 @@ function openAddPlayer(){
       <div class="modal-grid">
         <div>
           <div class="modal-label">Posição</div>
-          <select class="modal-select" id="p-pos" onchange="toggleGolFields()">
+          <select class="modal-select" id="p-pos">
             ${POSICOES.map(p=>`<option value="${p}">${POS_LABELS[p]} (${p})</option>`).join('')}
           </select>
         </div>
@@ -1403,10 +1511,6 @@ function openAddPlayer(){
   setTimeout(()=>document.getElementById('p-nome')?.focus(),50);
 }
 
-function toggleGolFields(){
-  // Could highlight gol-specific fields — reserved for future UX enhancement
-}
-
 function confirmAddPlayer(){
   const nome=document.getElementById('p-nome').value.trim();
   const pais=document.getElementById('p-pais').value.trim();
@@ -1433,22 +1537,17 @@ function closeModal(){document.getElementById('modal-root').innerHTML='';}
 function renderStats(){
   const {goals,matches,played}=calcGlobalStats();
   const v=document.getElementById('view-stats');
-
   const topPts=[...state.jogadores].map(j=>({...j,pontuacao:calcPontuacao(j)})).filter(j=>j.pontuacao!==0).sort((a,b)=>b.pontuacao-a.pontuacao).slice(0,20);
   const topGols=[...state.jogadores].filter(j=>j.gols>0).sort((a,b)=>b.gols-a.gols).slice(0,20);
   const topGC=[...state.jogadores].filter(j=>j.golsContra>0).sort((a,b)=>b.golsContra-a.golsContra).slice(0,20);
   const topAssist=[...state.jogadores].filter(j=>j.assistencias>0).sort((a,b)=>b.assistencias-a.assistencias).slice(0,20);
   const topAmar=[...state.jogadores].filter(j=>j.amarelos>0).sort((a,b)=>b.amarelos-a.amarelos).slice(0,20);
   const topVerm=[...state.jogadores].filter(j=>j.vermelhos>0).sort((a,b)=>b.vermelhos-a.vermelhos).slice(0,20);
-  // Ranking defesas — só goleiros
   const topDef=[...state.jogadores].filter(j=>j.posicao==='G'&&(j.defesas||0)>0).sort((a,b)=>(b.defesas||0)-(a.defesas||0)).slice(0,20);
-  // Ranking pênaltis defendidos — só goleiros com valor positivo
   const topPenDef=[...state.jogadores].filter(j=>j.posicao==='G'&&(j.penaltis||0)>0).sort((a,b)=>(b.penaltis||0)-(a.penaltis||0)).slice(0,20);
-
   const totalDefesas=state.jogadores.reduce((s,j)=>s+(j.defesas||0),0);
   const totalPenDef=state.jogadores.filter(j=>j.posicao==='G').reduce((s,j)=>s+Math.max(0,j.penaltis||0),0);
   const totalPenPerd=state.jogadores.filter(j=>j.posicao!=='G').reduce((s,j)=>s+Math.abs(Math.min(0,j.penaltis||0)),0);
-
   function rankTable(list,statKey,statLabel,color){
     if(list.length===0)return`<div style="color:var(--muted);font-size:.78rem;padding:.6rem 0">Nenhum dado ainda.</div>`;
     return`<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden">
@@ -1462,12 +1561,10 @@ function renderStats(){
             <td style="font-weight:600">${j.nome}</td><td>${j.pais}</td>
             <td style="font-weight:700;color:${color}">${val}</td>
           </tr>`;
-        }).join('')}
-        </tbody>
+        }).join('')}</tbody>
       </table>
     </div>`;
   }
-
   v.innerHTML=`
     <div class="stats-grid">
       <div class="stat-card"><div class="stat-label">⚽ Total de Gols</div><div class="stat-value">${goals}</div><div class="stat-sub">todos os jogos disputados</div></div>
@@ -1516,6 +1613,73 @@ function toast(msg){
   const t=document.getElementById('toast');
   t.textContent=msg;t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+// ══════════════════════════════════════════════════════
+// CSV DE JOGADORES E EVENTOS
+// ══════════════════════════════════════════════════════
+async function loadRosters(){
+  try{
+    const r=await fetch('jogadores.csv');
+    if(!r.ok)throw new Error('jogadores.csv não encontrado');
+    const text=await r.text();
+    const lines=text.trim().split('\n').filter(l=>!l.startsWith('#'));
+    const headers=lines[0].split(',').map(h=>h.replace(/\r/g,'').trim());
+    const csvPlayers=lines.slice(1).map(line=>{
+      const cols=line.split(',');
+      const obj={};
+      headers.forEach((h,i)=>obj[h]=(cols[i]||'').replace(/\r/g,'').trim());
+      return obj;
+    }).filter(o=>o.id);
+    csvPlayers.forEach(cp=>{
+      const existing=state.jogadores.find(j=>j.csvId===cp.id);
+      if(existing){
+        existing.nome=cp.nome;existing.pais=cp.pais;
+        existing.numero=parseInt(cp.numero)||null;
+        existing.posicao=cp.posicao;existing.pais_code=cp.pais_code;
+      }else{
+        state.jogadores.push({
+          id:state._nextId++,csvId:cp.id,nome:cp.nome,pais:cp.pais,
+          pais_code:cp.pais_code,numero:parseInt(cp.numero)||null,
+          posicao:cp.posicao,
+          gols:0,assistencias:0,amarelos:0,vermelhos:0,golsContra:0,
+          defesas:0,penaltis:0,
+          fromCsv:true,
+        });
+      }
+    });
+    saveState();
+  }catch(e){console.warn('jogadores.csv:',e.message);}
+  try{
+    const r=await fetch('eventos.csv');
+    if(!r.ok)throw new Error('eventos.csv não encontrado');
+    const text=await r.text();
+    const lines=text.trim().split('\n').filter(l=>!l.startsWith('#')&&l.trim());
+    if(lines.length<2)return;
+    const headers=lines[0].split(',').map(h=>h.replace(/\r/g,'').trim());
+    state.jogadores.forEach(j=>{
+      if(j.fromCsv){
+        j.gols=0;j.assistencias=0;j.amarelos=0;j.vermelhos=0;
+        j.golsContra=0;j.defesas=0;j.penaltis=0;
+      }
+    });
+    lines.slice(1).forEach(line=>{
+      if(!line.trim())return;
+      const cols=line.split(',');
+      const obj={};
+      headers.forEach((h,i)=>obj[h]=(cols[i]||'').replace(/\r/g,'').trim());
+      const jog=state.jogadores.find(j=>j.csvId===obj.jogador_id);
+      if(!jog)return;
+      jog.gols        +=parseInt(obj.gols)        ||0;
+      jog.assistencias+=parseInt(obj.assistencias)||0;
+      jog.amarelos    +=parseInt(obj.amarelo)      ||0;
+      jog.vermelhos   +=parseInt(obj.vermelho)     ||0;
+      jog.golsContra  +=parseInt(obj.gol_contra)   ||0;
+      jog.defesas     +=parseInt(obj.defesas)       ||0;
+      jog.penaltis    +=parseInt(obj.penaltis)       ||0;
+    });
+    saveState();
+  }catch(e){console.warn('eventos.csv:',e.message);}
 }
 
 // ══════════════════════════════════════════════════════
