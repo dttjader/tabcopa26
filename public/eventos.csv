@@ -1,4 +1,13 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
+URU,CBV,URU06,0,0,1,0
+URU,CBV,URU14,1,0,0,0
+URU,CBV,URU16,0,0,1,0
+URU,CBV,URU20,1,1,0,0
+URU,CBV,URU23,0,0,0,0,0,2,0
+URU,CBV,CBV03,0,0,1,0
+URU,CBV,CBV06,1,0,0,0
+URU,CBV,CBV13,0,0,1,0
+URU,CBV,CBV26,1,0,0,0
 BEL,IRA,BEL01,0,0,0,0,0,3,0
 BEL,IRA,IRA01,0,0,0,0,0,7,0
 ESP,ARS,ESP10,0,1,0,0
