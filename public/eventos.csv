@@ -1,4 +1,9 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
+NZL,EGI,NZL01,0,0,0,0,0,4,0
+NZL,EGI,NZL02,0,1,0,0
+NZL,EGI,NZL10,0,0,1,0
+NZL,EGI,NZL16,1,0,0,0
+NZL,EGI,NZL20,0,0,1,0
 URU,CBV,URU06,0,0,1,0
 URU,CBV,URU14,1,0,0,0
 URU,CBV,URU16,0,0,1,0
