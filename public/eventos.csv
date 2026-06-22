@@ -1,5 +1,5 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
-ARG,AUT,ARG10,1,0,0,0,0,0,-1
+ARG,AUT,ARG10,2,0,0,0,0,0,-1
 ARG,AUT,ARG23,0,0,0,0,0,0,0
 ARG,AUT,ARG25,0,1,0,0
 ARG,AUT,AUT01,0,0,0,0,0,0,0
