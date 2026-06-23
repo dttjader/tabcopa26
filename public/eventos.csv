@@ -1,6 +1,7 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
 POR,UZB,POR01,0,0,0,0,0,0,0
-POR,UZB,POR07,1,0,0,0
+POR,UZB,POR07,2,0,0,0
+POR,UZB,POR08,0,1,0,0
 POR,UZB,POR20,0,1,0,0
 POR,UZB,POR25,1,0,0,0
 POR,UZB,UZB12,0,0,0,0,0,0,0
