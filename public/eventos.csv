@@ -1,4 +1,13 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
+JOR,ALG,JOR01,0,0,0,0,0,6,0
+JOR,ALG,JOR04,0,1,0,0
+JOR,ALG,JOR10,0,1,0,0
+JOR,ALG,JOR21,1,0,0,0
+JOR,ALG,ALG06,0,1,0,0
+JOR,ALG,ALG07,0,1,0,0
+JOR,ALG,ALG09,1,0,0,0
+JOR,ALG,ALG12,1,0,0,0
+JOR,ALG,ALG23,0,0,0,0,0,3,0
 NOR,SEN,NOR01,0,0,0,0,0,2,0
 NOR,SEN,NOR06,0,1,0,0
 NOR,SEN,NOR09,2,0,0,0
