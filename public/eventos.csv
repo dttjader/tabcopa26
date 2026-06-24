@@ -1,6 +1,8 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
 SUI,CAN,SUI01,0,0,0,0,0,0,0
+SUI,CAN,SUI09,0,1,0,0
 SUI,CAN,SUI10,0,0,1,0
+SUI,CAN,SUI17,1,0,0,0
 SUI,CAN,CAN09,0,0,1,0
 SUI,CAN,CAN16,0,0,0,0,0,0,0
 BIH,QAT,BIH01,0,0,0,0,0,0,0
