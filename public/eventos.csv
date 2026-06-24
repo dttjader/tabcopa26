@@ -2,10 +2,10 @@ mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_c
 SUI,CAN,SUI01,0,0,0,0,0,0,0
 SUI,CAN,CAN16,0,0,0,0,0,0,0
 BIH,QAT,BIH01,0,0,0,0,0,0,0
-BIH,QAT,BIH11,1,0,0,0
 BIH,QAT,BIH13,0,1,0,0
 BIH,QAT,BIH19,1,0,0,0
 BIH,QAT,QAT01,0,0,0,0,0,0,0
+BIH,QAT,QAT18,0,0,0,0,1
 COL,CNG,COL02,1,0,0,0
 COL,CNG,COL03,0,0,1,0
 COL,CNG,COL12,0,0,0,0,0,1,0
