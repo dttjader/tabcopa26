@@ -1,5 +1,12 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
+PAN,CRO,PAN11,0,0,1,0
+PAN,CRO,PAN22,0,0,0,0,0,1,0
+PAN,CRO,CRO01,0,0,0,0,0,1,0
+PAN,CRO,CRO02,0,1,0,0
+PAN,CRO,CRO11,1,0,0,0
+PAN,CRO,CRO17,0,0,1,0
 ING,GAN,ING04,0,0,1,0
+ING,GAN,GAN16,0,0,0,0,0,3,0
 ING,GAN,GAN19,0,0,1,0
 POR,UZB,POR01,0,0,0,0,0,2,0
 POR,UZB,POR07,2,0,0,0
