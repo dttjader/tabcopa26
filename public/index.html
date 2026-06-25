@@ -437,10 +437,15 @@ function resolveSlotToName(code) {
     if (gm) {
         var st = calcStandings(gm[1]);
         var pos = parseInt(gm[2]) - 1;
-        var hasGames = (state.groupMatches[gm[1]] || []).some(function(m) { return m.hs !== null; });
-        return (hasGames && st[pos]) ? st[pos].name : null;
+        
+        // ✅ CORRIGIDO: Retorna o nome se existir, independente de hasGames
+        if (st && st[pos] && st[pos].name) {
+            return st[pos].name;
+        }
+        
+        // Se não conseguir calcular standings, retorna null para usar fallback
+        return null;
     }
-    
     return null; 
 }
 
