@@ -380,11 +380,14 @@ function displaySlot(code) {
         // Passo A: Pergunta ao Filtro se é um nome fixo (1º ou 2º lugar)
         var fixed = resolveSlotToName(code);
         if (fixed !== null) {
-            return fixed;  // ✅ Retorna apenas a string
+            console.log(">>> [LOG] Nome fixo encontrado: " + fixed);
+            return fixed;
         }
         
         // Passo B: Lógica de Probabilidades para 3ºs lugares
         if (code && code.indexOf('3-') === 0) {
+            console.log(">>> [LOG] Processando slot de 3º lugar: " + code);
+            
             var scenarios = getPossibleScenarios();
             console.log(">>> [LOG MOTOR] Cenários ativos: " + scenarios.length);
             
@@ -394,7 +397,12 @@ function displaySlot(code) {
             }
             
             var leader = SLOT_TO_LEADER[code];
-            if (scenarios.length > 0 && leader) {
+            console.log(">>> [LOG] Leader para " + code + ": " + leader);
+            
+            // ✅ CORRIGIDO: Verificar se leader existe E se há cenários
+            if (leader && scenarios && scenarios.length > 0) {
+                console.log(">>> [LOG] Iniciando cálculo de probabilidades...");
+                
                 var counts = {};
                 for (var i = 0; i < scenarios.length; i++) {
                     var g = scenarios[i].mapping[leader];
@@ -402,6 +410,8 @@ function displaySlot(code) {
                         counts[g] = (counts[g] || 0) + 1;
                     }
                 }
+                
+                console.log(">>> [LOG] Contagens calculadas:", counts);
                 
                 var total = scenarios.length;
                 var results = [];
@@ -411,6 +421,8 @@ function displaySlot(code) {
                 
                 results.sort(function(a, b) { return b.percent - a.percent; });
                 
+                console.log(">>> [LOG] Resultados ordenados:", results);
+                
                 if (results.length > 0) {
                     var output = "";
                     var limit = Math.min(results.length, 3);
@@ -418,14 +430,22 @@ function displaySlot(code) {
                         if (j > 0) output += " | ";
                         output += "3º " + results[j].grp + " (" + results[j].percent.toFixed(0) + "%)";
                     }
-                    return output;  // ✅ Retorna apenas a string
+                    console.log(">>> [LOG SUCESSO] Retornando probabilidades: " + output);
+                    return output;
+                } else {
+                    console.log(">>> [LOG] Nenhum resultado encontrado");
                 }
+            } else {
+                console.log(">>> [LOG] Condição falhou - leader: " + leader + ", scenarios: " + (scenarios ? scenarios.length : 'undefined'));
             }
         }
     } catch (e) {
         console.error(">>> [ERRO CRÍTICO] Falha na displaySlot: " + e.message);
+        console.error(e.stack);
     }
     
+    // Fallback
+    console.log(">>> [LOG] Usando fallback slotLabel para: " + code);
     return (typeof slotLabel === 'function') ? slotLabel(code) : code;
 }
   
