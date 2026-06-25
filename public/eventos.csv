@@ -1,4 +1,10 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
+RSA,KOR,RSA01,0,0,0,0,0,3,0
+RSA,KOR,RSA06,0,0,1,0
+RSA,KOR,RSA08,0,1,0,0
+RSA,KOR,RSA12,1,0,0,0
+RSA,KOR,KOR01,0,0,0,0,0,3,0
+RSA,KOR,KOR09,0,0,1,0
 CZE,MEX,CZE01,0,0,0,0,0,2,0
 CZE,MEX,MEX01,0,0,0,0,0,1,0
 CZE,MEX,MEX02,0,1,0,0
