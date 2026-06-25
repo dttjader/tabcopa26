@@ -1,5 +1,6 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
 CUR,CMA,CUR01,0,0,0,0,0,0,0
+CUR,CMA,CUR07,0,0,1,0
 CUR,CMA,CMA01,0,0,0,0,0,0,0
 CUR,CMA,CMA02,0,1,0,0
 CUR,CMA,CMA18,0,1,0,0
