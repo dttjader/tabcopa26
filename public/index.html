@@ -313,17 +313,17 @@ const allCountries=Object.values(groupsBase).flat().filter(t=>!t.startsWith('Rep
   .concat(repDef.flatMap(r=>r.partidas.filter(p=>p.stage==='SF').flatMap(p=>[p.home,p.away])))
   .filter((v,i,a)=>a.indexOf(v)===i).sort();
 
-// ========================================================
-// 1. CONFIGURAÇÕES E BASE DE DADOS (FONTE DA VERDADE)
-// ========================================================
+// ══════════════════════════════════════════════════════
+// NOVA LÓGICA: FONTE DA VERDADE (495 COMBINAÇÕES FIFA)
+// ══════════════════════════════════════════════════════
 
-// Mapeamento dos slots da FIFA para os líderes de grupo
+// 1. Mapeamento dos slots para os líderes (Anexo C)
 const SLOT_TO_LEADER = { 
     '3-1': 'E1', '3-2': 'I1', '3-3': 'D1', '3-4': 'G1', 
     '3-5': 'A1', '3-6': 'L1', '3-7': 'B1', '3-8': 'K1' 
 };
 
-// Definição de prioridades do Anexo C da FIFA
+// 2. Prioridades de distribuição da FIFA
 const TERCEIROS_PRIORIDADE = [
     { match: 'E1', grupos: ['A', 'B', 'C', 'D', 'F'] },
     { match: 'I1', grupos: ['C', 'D', 'F', 'G', 'H'] },
@@ -335,7 +335,7 @@ const TERCEIROS_PRIORIDADE = [
     { match: 'K1', grupos: ['D', 'E', 'I', 'J', 'L'] }
 ];
 
-// Geração automática das 495 combinações
+// 3. Geração da Base de Dados (As 495 possibilidades)
 const COMBINACOES_TERCEIROS = (function() {
     const grupos = ['A','B','C','D','E','F','G','H','I','J','K','L'];
     let results = [];
@@ -357,31 +357,42 @@ const COMBINACOES_TERCEIROS = (function() {
     return results;
 })();
 
-// ========================================================
-// 2. FUNÇÕES DE APOIO E RÓTULOS (RESOLVE O ERRO DE SLOTLABEL)
-// ========================================================
+// 4. Chaveamento da Rodada de 32
+const KO_R32_SLOTS = [
+  { home: 'E1', away: '3-1' }, { home: 'I1', away: '3-2' },
+  { home: 'A2', away: 'B2' },   { home: 'F1', away: 'C2' },
+  { home: 'K2', away: 'L2' },   { home: 'H1', away: 'J2' },
+  { home: 'D1', away: '3-3' }, { home: 'G1', away: '3-4' },
+  { home: 'C1', away: 'F2' },   { home: 'E2', away: 'I2' },
+  { home: 'A1', away: '3-5' }, { home: 'L1', away: '3-6' },
+  { home: 'J1', away: 'H2' },   { home: 'D2', away: 'G2' },
+  { home: 'B1', away: '3-7' }, { home: 'K1', away: '3-8' }
+];
 
-function slotLabel(code) {
-    if (!code || code === '?') return '?';
-    const gm = code.match(/^([A-L])([12])$/);
-    if (gm) {
-        const pos = gm[2] === '1' ? '1º' : '2º';
-        return `${pos} Grp ${gm[1]}`;
-    }
-    const tm = code.match(/^3-([1-8])$/);
-    if (tm) return `Chave ${tm[1]}`;
-    return code;
+// 5. Funções de Suporte (Rótulos e Verificação)
+function isSlotCode(val) {
+  if (!val) return false;
+  return /^[A-L][12]$/.test(val) || /^3-[1-8]$/.test(val) || val === '?';
 }
 
-// ========================================================
-// 3. LÓGICA DE FILTRAGEM DINÂMICA
-// ========================================================
+function slotLabel(code) {
+  if (!code || code === '?') return '?';
+  const gm = code.match(/^([A-L])([12])$/);
+  if (gm) {
+    const pos = gm[2] === '1' ? '1º' : '2º';
+    return `${pos} Grp ${gm[1]}`;
+  }
+  const tm = code.match(/^3-([1-8])$/);
+  if (tm) return `Chave ${tm[1]}`;
+  return code;
+}
 
+// 6. Lógica de Filtragem Dinâmica
 function getPossibleScenarios() {
     const ranking = []; 
     ['A','B','C','D','E','F','G','H','I','J','K','L'].forEach(g => {
         const st = calcStandings(g);
-        const finished = (state.groupMatches[g] || []).every(m => m.hs !== null);
+        const finished = (state.groupMatches[g] || []).some(m => m.hs !== null);
         ranking.push({ grupo: g, pts: st[2].pts, sg: st[2].sg, gp: st[2].gp, finished });
     });
     ranking.sort((a, b) => b.pts - a.pts || b.sg - a.sg || b.gp - a.gp);
@@ -440,6 +451,12 @@ function displaySlot(code) {
         }
     }
     return slotLabel(code);
+}
+
+function isDisplayPending(code) {
+  if (!code || code === '?') return true;
+  if (!isSlotCode(code)) return false;
+  return resolveSlotToName(code) === null;
 }
   
 // ══════════════════════════════════════════════════════
