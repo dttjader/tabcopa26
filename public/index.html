@@ -369,6 +369,18 @@ const COMBINACOES_FIFA = (function() {
     });
 })();
 
+// ✅ NOVO: Mapeamento de grupos permitidos por líder
+const ALLOWED_THIRD_PLACE_GROUPS = {
+  'E1': ['A', 'B', 'C', 'D', 'F'],           // 1E x 3º de A,B,C,D,F
+  'I1': ['C', 'D', 'F', 'G', 'H'],           // 1I x 3º de C,D,F,G,H
+  'A1': ['C', 'E', 'F', 'H', 'I'],           // 1A x 3º de C,E,F,H,I
+  'L1': ['E', 'H', 'I', 'J', 'K'],           // 1L x 3º de E,H,I,J,K
+  'D1': ['B', 'E', 'F', 'I', 'J'],           // 1D x 3º de B,E,F,I,J
+  'G1': ['A', 'E', 'H', 'I', 'J'],           // 1G x 3º de A,E,H,I,J
+  'B1': ['E', 'F', 'G', 'I', 'J'],           // 1B x 3º de E,F,G,I,J
+  'K1': ['D', 'E', 'I', 'J', 'L']            // 1K x 3º de D,E,I,J,L
+};
+
 // 4. Função de Filtragem (Quem está no G8 agora?)
 // 0. LOG DE CARREGAMENTO
 console.log("--- [SISTEMA FIFA] INICIANDO CARREGAMENTO DO SCRIPT ---");
@@ -394,21 +406,26 @@ function displaySlot(code) {
             var leader = SLOT_TO_LEADER[code];
             
             if (leader && scenarios && scenarios.length > 0) {
-                // ✅ NOVO: Extrair o grupo do líder (ex: 'E1' → 'E')
-                var leaderGroup = leader.charAt(0);
-                console.log(">>> [LOG] Grupo do líder: " + leaderGroup);
+                // ✅ NOVO: Obter grupos permitidos para este líder
+                var allowedGroups = ALLOWED_THIRD_PLACE_GROUPS[leader];
+                console.log(">>> [LOG] Líder: " + leader + ", Grupos permitidos: " + allowedGroups.join(','));
+                
+                if (!allowedGroups) {
+                    console.error(">>> [ERRO] Líder " + leader + " não tem mapeamento de grupos permitidos!");
+                    return "Erro: Regulamento";
+                }
                 
                 var counts = {};
                 for (var i = 0; i < scenarios.length; i++) {
                     var g = scenarios[i].mapping[leader];
                     
-                    // ✅ NOVO: Excluir o grupo do líder (regulamento)
-                    if (g && g !== leaderGroup) {
+                    // ✅ NOVO: Verificar se o grupo está na lista de permitidos
+                    if (g && allowedGroups.indexOf(g) !== -1) {
                         counts[g] = (counts[g] || 0) + 1;
                     }
                 }
                 
-                console.log(">>> [LOG] Contagens após filtro: ", counts);
+                console.log(">>> [LOG] Contagens após filtro regulatório: ", counts);
                 
                 var total = scenarios.length;
                 var results = [];
@@ -433,6 +450,8 @@ function displaySlot(code) {
                     }
                     console.log(">>> [LOG SUCESSO] Retornando probabilidades: " + output);
                     return output;
+                } else {
+                    console.log(">>> [LOG] Nenhum resultado após filtro regulatório");
                 }
             }
         }
