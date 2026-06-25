@@ -394,13 +394,21 @@ function displaySlot(code) {
             var leader = SLOT_TO_LEADER[code];
             
             if (leader && scenarios && scenarios.length > 0) {
+                // ✅ NOVO: Extrair o grupo do líder (ex: 'E1' → 'E')
+                var leaderGroup = leader.charAt(0);
+                console.log(">>> [LOG] Grupo do líder: " + leaderGroup);
+                
                 var counts = {};
                 for (var i = 0; i < scenarios.length; i++) {
                     var g = scenarios[i].mapping[leader];
-                    if (g) {
+                    
+                    // ✅ NOVO: Excluir o grupo do líder (regulamento)
+                    if (g && g !== leaderGroup) {
                         counts[g] = (counts[g] || 0) + 1;
                     }
                 }
+                
+                console.log(">>> [LOG] Contagens após filtro: ", counts);
                 
                 var total = scenarios.length;
                 var results = [];
@@ -421,7 +429,6 @@ function displaySlot(code) {
                         var thirdPlace = groupStandings[2];
                         var teamName = thirdPlace ? thirdPlace.name : groupLetter;
                         
-                        // ✅ REMOVIDO: "3º " foi removido
                         output += teamName + " (" + results[j].percent.toFixed(0) + "%)";
                     }
                     console.log(">>> [LOG SUCESSO] Retornando probabilidades: " + output);
