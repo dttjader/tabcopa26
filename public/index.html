@@ -877,13 +877,15 @@ function renderMatchesKO(){
     const matchHTML = `
       <div class="match-card">
         <div class="match-team home">
-          <span class="team-name">${homeDisplay}</span>
+          <span class="slot-badge">${m.home}</span>
+          <span class="r32-team-name is-slot">${homeDisplay}</span>
           <input type="number" class="score" value="${m.homeScore || 0}">
         </div>
         <div class="match-vs">vs</div>
         <div class="match-team away">
           <input type="number" class="score" value="${m.awayScore || 0}">
-          <span class="team-name">${awayDisplay}</span>
+          <span class="slot-badge">${m.away}</span>
+          <span class="r32-team-name is-slot">${awayDisplay}</span>
         </div>
       </div>
     `;
@@ -891,7 +893,7 @@ function renderMatchesKO(){
     grid.innerHTML += matchHTML;
   });
 }
-
+  
 function setPhase(p){activePhase=p;renderMatches();}
 function setGroup(g){activeGroup=g;renderMatches();}
 function setKoRound(k){activeKoRound=k;renderMatches();}
