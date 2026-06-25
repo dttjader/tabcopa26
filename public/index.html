@@ -313,7 +313,18 @@ const allCountries=Object.values(groupsBase).flat().filter(t=>!t.startsWith('Rep
   .concat(repDef.flatMap(r=>r.partidas.filter(p=>p.stage==='SF').flatMap(p=>[p.home,p.away])))
   .filter((v,i,a)=>a.indexOf(v)===i).sort();
 
-// 1. Mapeamento dos slots para os líderes (Anexo C)
+// 1. Definição dos Slots do Mata-Mata (Rodada de 32)
+const KO_R32_SLOTS = [
+  { id: 1, home: 'E1', away: '3-1' }, { id: 2, home: 'I1', away: '3-2' },
+  { id: 3, home: 'A2', away: 'B2' },   { id: 4, home: 'F1', away: 'C2' },
+  { id: 5, home: 'K2', away: 'L2' },   { id: 6, home: 'H1', away: 'J2' },
+  { id: 7, home: 'D1', away: '3-3' }, { id: 8, home: 'G1', away: '3-4' },
+  { id: 9, home: 'C1', away: 'F2' },   { id: 10, home: 'E2', away: 'I2' },
+  { id: 11, home: 'A1', away: '3-5' }, { id: 12, home: 'L1', away: '3-6' },
+  { id: 13, home: 'J1', away: 'H2' },  { id: 14, home: 'D2', away: 'G2' },
+  { id: 15, home: 'B1', away: '3-7' }, { id: 16, home: 'K1', away: '3-8' }
+];
+
 const SLOT_TO_LEADER = { 
     '3-1': 'E1', '3-2': 'I1', '3-3': 'D1', '3-4': 'G1', 
     '3-5': 'A1', '3-6': 'L1', '3-7': 'B1', '3-8': 'K1' 
