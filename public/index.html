@@ -362,32 +362,34 @@ const COMBINACOES_FIFA = (function() {
     });
 })();
 
-// 3. Função de Filtragem (A que estava faltando)
+// 3. Função de Filtragem (Ajustada para Ranking em Tempo Real)
 function getPossibleScenarios() {
     const ranking = [];
     ['A','B','C','D','E','F','G','H','I','J','K','L'].forEach(g => {
         const st = calcStandings(g);
-        const matches = state.groupMatches[g] || [];
-        // Um grupo só é considerado "finalizado" se tiver os 6 jogos preenchidos
-        const finished = matches.length >= 6 && matches.every(m => m.hs !== null && m.as !== null);
-        ranking.push({ grupo: g, pts: st[2].pts, sg: st[2].sg, gp: st[2].gp, finished });
+        // Removemos a trava do "finished" para permitir cálculo em tempo real
+        ranking.push({ 
+            grupo: g, 
+            pts: st[2].pts, 
+            sg: st[2].sg, 
+            gp: st[2].gp 
+        });
     });
 
-    // Ordena o ranking geral dos terceiros
+    // Ordena o ranking atual (quem seriam os 8 hoje)
     ranking.sort((a, b) => b.pts - a.pts || b.sg - a.sg || b.gp - a.gp);
 
-    const qualificados = ranking.filter(r => r.finished).slice(0, 8).map(r => r.grupo);
-    const eliminados = ranking.filter(r => r.finished).slice(8).map(r => r.grupo);
-
-    // Filtra as 495 opções: elimina as que não batem com os classificados/eliminados reais
+    // Pegamos os 8 que estão passando AGORA e os 4 que estão saindo AGORA
+    const qualificados = ranking.slice(0, 8).map(r => r.grupo);
+    
+    // Como o Anexo C da FIFA é uma tabela de busca baseada no SET de 8 times,
+    // ao passarmos os 8 atuais, o filtro encontrará exatamente 1 opção das 495.
     return COMBINACOES_FIFA.filter(c => {
-        for (let g of qualificados) if (!c.classificados.includes(g)) return false;
-        for (let g of eliminados) if (c.classificados.includes(g)) return false;
-        return true;
+        return qualificados.every(g => c.classificados.includes(g));
     });
 }
 
-// 4. Resolução do nome do time no Mata-Mata
+/ 4. Resolução do nome do time no Mata-Mata
 function resolveSlotToName(code) {
     if (!code || code === '?') return null;
     const gm = code.match(/^([A-L])([12])$/);
@@ -399,17 +401,19 @@ function resolveSlotToName(code) {
     }
     if (code.startsWith('3-')) {
         const scenarios = getPossibleScenarios();
+        // Se a lógica de ranking encontrar a combinação única (length === 1)
         if (scenarios.length === 1) {
             const leader = SLOT_TO_LEADER[code];
             const targetGrp = scenarios[0].mapping[leader];
             const st = calcStandings(targetGrp);
+            // Retorna o nome do time que está em 3º naquele grupo agora
             return st[2] ? st[2].name : `3º Grp ${targetGrp}`;
         }
     }
     return null;
 }
 
-// 5. Função de Exibição (Substitui "Chave 1" pelo resultado ou probabilidade)
+// 5. Função de Exibição
 function displaySlot(code) {
     const resolved = resolveSlotToName(code);
     if (resolved) return resolved;
@@ -418,8 +422,9 @@ function displaySlot(code) {
         const leader = SLOT_TO_LEADER[code];
         const scenarios = getPossibleScenarios();
         
-        // Se já houver filtros aplicados, mostra a probabilidade
-        if (scenarios.length > 0 && scenarios.length < 495) {
+        // Se houver incerteza (mais de 1 cenário), mostra probabilidade
+        // Se houver apenas 1, o resolveSlotToName já teria retornado acima
+        if (scenarios.length > 1 && scenarios.length < 495) {
             const counts = {};
             scenarios.forEach(s => { 
                 const g = s.mapping[leader];
