@@ -367,117 +367,105 @@ const COMBINACOES_FIFA = (function() {
 })();
 
 // 4. Função de Filtragem (Quem está no G8 agora?)
+// 1. A MESTRA (Entrada de tudo)
 function displaySlot(code) {
-    // LOG DE ENTRADA TOTAL - Primeira linha da função
-    console.group(`[ENTRADA CRÍTICA] Slot: ${code}`);
-    
-    // 1. Tenta resolver nomes fixos (1º e 2º lugares)
-    const resolved = resolveSlotToName(code);
-    console.log("Resultado de resolveSlotToName:", resolved);
+    // O LOG MAIS IMPORTANTE: Primeira linha da função
+    console.log(">>> [LOG DE ENTRADA] Processando slot: " + code);
 
-    // Se resolveSlotToName retornar qualquer coisa que não seja null, o cálculo de 3ºs é abortado
-    if (resolved !== null) {
-        console.log("Interrompendo: resolveSlotToName bloqueou o cálculo de probabilidades.");
-        console.groupEnd();
-        return resolved;
+    // Passo A: Pergunta ao filtro se é um nome fixo (1º ou 2º)
+    var fixedName = resolveSlotToName(code);
+    console.log(">>> [LOG FILTRO] resolveSlotToName retornou: " + fixedName);
+
+    // Se o filtro retornar QUALQUER COISA, a função para aqui.
+    // Por isso, para 3ºs lugares, o filtro DEVE retornar null.
+    if (fixedName !== null) {
+        return fixedName;
     }
 
-    console.log("Iniciando cálculo de probabilidades para terceiros...");
-    
-    if (code.startsWith('3-')) {
-        const leader = SLOT_TO_LEADER[code];
-        const scenarios = getPossibleScenarios();
+    // Passo B: Se chegou aqui, é obrigatoriamente um 3º lugar e o filtro falhou (corretamente)
+    if (code && code.indexOf('3-') === 0) {
+        console.log(">>> [LOG MOTOR] Iniciando cálculo para 3º lugar...");
         
-        console.log("Líder do Slot:", leader);
-        console.log("Cenários ativos recebidos:", scenarios.length);
+        var scenarios = getPossibleScenarios();
+        console.log(">>> [LOG MOTOR] Cenários encontrados: " + scenarios.length);
 
         if (scenarios.length > 0) {
-            const counts = {};
-            scenarios.forEach(s => { 
-                const g = s.mapping[leader];
-                if (g) counts[g] = (counts[g] || 0) + 1; 
-            });
+            var leader = SLOT_TO_LEADER[code];
+            var counts = {};
             
-            const total = scenarios.length;
-            const sorted = Object.entries(counts)
-                .map(([grp, qtd]) => ({ grp, percent: (qtd / total) * 100 }))
-                .sort((a, b) => b.percent - a.percent);
-
-            console.log("Distribuição calculada:", sorted);
-            console.groupEnd();
-
-            // REGRA: Se houver cenários, mostra probabilidade.
-            if (sorted.length > 0) {
-                return sorted.slice(0, 3)
-                    .map(p => `3º ${p.grp} (${p.percent.toFixed(0)}%)`)
-                    .join(' | ');
+            for (var i = 0; i < scenarios.length; i++) {
+                var g = scenarios[i].mapping[leader];
+                if (g) counts[g] = (counts[g] || 0) + 1;
             }
+
+            var total = scenarios.length;
+            var results = [];
+            for (var grp in counts) {
+                results.push({ grp: grp, percent: (counts[grp] / total) * 100 });
+            }
+            results.sort(function(a, b) { return b.percent - a.percent; });
+
+            // Retorno das probabilidades
+            var output = results.slice(0, 3).map(function(p) {
+                return "3º " + p.grp + " (" + p.percent.toFixed(0) + "%)";
+            }).join(' | ');
+            
+            console.log(">>> [LOG SUCESSO] Resultado: " + output);
+            return output;
         }
     }
 
-    console.error("FALHA NO FLUXO: Clicou no fallback final.");
-    console.groupEnd();
+    // Passo C: Fallback real (Só se scenarios for 0)
+    console.error(">>> [LOG ERRO] Fallback atingido para: " + code);
     return typeof slotLabel === 'function' ? slotLabel(code) : code;
 }
-  
-function getPossibleScenarios() {
-    const ranking = [];
-    const grupos = ['A','B','C','D','E','F','G','H','I','J','K','L'];
+
+// Ajuste na resolveSlotToName para não retornar fallback indevido
+// 2. O FILTRO (Auxiliar da Mestra)
+function resolveSlotToName(code) {
+    if (!code || code === '?') return null;
     
-    grupos.forEach(g => {
-        const st = calcStandings(g);
-        const matches = state.groupMatches[g] || [];
-        const finished = matches.length >= 6 && matches.every(m => m.hs !== null && m.as !== null);
-        const third = st[2] || { pts: 0, sg: -99, gp: 0 };
-        ranking.push({ grupo: g, pts: third.pts, sg: third.sg, gp: third.gp, finished });
-    });
+    var gm = code.match(/^([A-L])([12])$/);
+    if (gm) {
+        var st = calcStandings(gm[1]);
+        var pos = parseInt(gm[2]) - 1;
+        var hasGames = (state.groupMatches[gm[1]] || []).some(function(m) { return m.hs !== null; });
+        return (hasGames && st[pos]) ? st[pos].name : null;
+    }
+    
+    // Para 3ºs lugares, retornamos NULL para não interromper a displaySlot
+    return null; 
+}
+ 
+// 3. O MOTOR (Cálculo dos 495)
+function getPossibleScenarios() {
+    var ranking = [];
+    var grupos = ['A','B','C','D','E','F','G','H','I','J','K','L'];
+    
+    for (var i = 0; i < grupos.length; i++) {
+        var st = calcStandings(grupos[i]);
+        var matches = state.groupMatches[grupos[i]] || [];
+        var finished = matches.length >= 6 && matches.every(function(m) { return m.hs !== null; });
+        var third = st[2] || { pts: 0, sg: -99, gp: 0 };
+        ranking.push({ grupo: grupos[i], pts: third.pts, sg: third.sg, gp: third.gp, finished: finished });
+    }
 
-    // LÓGICA DE SEGURANÇA: Só filtra se houver certeza matemática absoluta
-    const eliminados = ranking.filter(r => {
-        if (!r.finished) return false;
-        // Um grupo só está eliminado se 8 outros grupos JÁ TÊM pontuação superior garantida
-        const garantidosMelhores = ranking.filter(outro => {
-            if (outro.grupo === r.grupo) return false;
-            return outro.pts > r.pts || (outro.pts === r.pts && outro.sg > r.sg);
-        }).length;
-        return garantidosMelhores >= 8;
-    }).map(r => r.grupo);
+    // LÓGICA PARA MANTER 495: 
+    // Só filtramos se houver certeza matemática (ninguém tem certeza ainda)
+    var qualificados = []; 
+    var eliminados = [];
 
-    const qualificados = ranking.filter(r => {
-        if (!r.finished) return false;
-        // Um grupo só está garantido se for impossível 8 grupos ficarem à frente dele
-        const potenciaisMelhores = ranking.filter(outro => {
-            if (outro.grupo === r.grupo) return false;
-            // Se o outro não terminou, ele ainda pode superar R
-            if (!outro.finished) return true;
-            return outro.pts > r.pts || (outro.pts === r.pts && outro.sg > r.sg);
-        }).length;
-        return potenciaisMelhores < 8;
-    }).map(r => r.grupo);
-
-    const filtrados = COMBINACOES_FIFA.filter(c => {
-        for (let g of qualificados) if (!c.classificados.includes(g)) return false;
-        for (let g of eliminados) if (c.classificados.includes(g)) return false;
+    var filtrados = COMBINACOES_FIFA.filter(function(c) {
+        for (var j = 0; j < qualificados.length; j++) {
+            if (c.classificados.indexOf(qualificados[j]) === -1) return false;
+        }
+        for (var k = 0; k < eliminados.length; k++) {
+            if (c.classificados.indexOf(eliminados[k]) !== -1) return false;
+        }
         return true;
     });
 
     return filtrados;
-}
-  
-// Ajuste na resolveSlotToName para não retornar fallback indevido
-function resolveSlotToName(code) {
-    if (!code || code === '?') return null;
-    
-    const gm = code.match(/^([A-L])([12])$/);
-    if (gm) {
-        const st = calcStandings(gm[1]);
-        const pos = parseInt(gm[2]) - 1;
-        const hasGames = (state.groupMatches[gm[1]] || []).some(m => m.hs !== null);
-        return (hasGames && st[pos]) ? st[pos].name : null;
-    }
-    
-    // Para códigos "3-X", SEMPRE retorna null aqui para forçar o cálculo no displaySlot
-    return null; 
 }
 
 function slotLabel(code) {
