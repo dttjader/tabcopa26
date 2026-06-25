@@ -372,38 +372,24 @@ function getPossibleScenarios() {
     ['A','B','C','D','E','F','G','H','I','J','K','L'].forEach(g => {
         const st = calcStandings(g);
         const matches = state.groupMatches[g] || [];
-        // Um grupo só é considerado "Eliminado" se terminou os 6 jogos 
-        // E é impossível ele alcançar o 8º lugar do ranking geral.
+        // Um grupo só é considerado "Finalizado" se tiver os 6 jogos
         const finished = matches.length >= 6 && matches.every(m => m.hs !== null && m.as !== null);
         ranking.push({ grupo: g, pts: st[2].pts, sg: st[2].sg, gp: st[2].gp, finished });
     });
 
     ranking.sort((a, b) => b.pts - a.pts || b.sg - a.sg || b.gp - a.gp);
 
-    // SÓ filtramos se houver ELIMINAÇÃO MATEMÁTICA confirmada
-    // Se o 9º colocado já terminou todos os jogos e não pode mais alcançar o 8º, ele está fora.
-    const eliminadosMatematicamente = ranking.filter((r, index) => {
-        if (!r.finished) return false;
-        // Se ele terminou em 9º ou abaixo, e os grupos acima ainda podem pontuar, 
-        // ele só é eliminado se ninguém abaixo dele puder superá-lo também.
-        return index >= 8; 
-    }).map(r => r.grupo);
-
-    // SÓ filtramos se houver CLASSIFICAÇÃO MATEMÁTICA confirmada
-    const classificadosMatematicamente = ranking.filter((r, index) => {
-        if (!r.finished) return false;
-        // Um terceiro só está garantido se, mesmo que todos os outros grupos vençam,
-        // ele não caia para 9º.
-        return index < 8;
-    }).map(r => r.grupo);
+    // Filtramos as 495 opções apenas por quem já está MATEMATICAMENTE fora ou dentro
+    // Se ninguém terminou abaixo do 8º lugar com todos os jogos, eliminados fica []
+    const eliminados = ranking.filter((r, i) => r.finished && i >= 8).map(r => r.grupo);
+    const qualificados = ranking.filter((r, i) => r.finished && i < 8).map(r => r.grupo);
 
     const filtrados = COMBINACOES_FIFA.filter(c => {
-        for (let g of classificadosMatematicamente) if (!c.classificados.includes(g)) return false;
-        for (let g of eliminadosMatematicamente) if (c.classificados.includes(g)) return false;
+        for (let g of qualificados) if (!c.classificados.includes(g)) return false;
+        for (let g of eliminados) if (c.classificados.includes(g)) return false;
         return true;
     });
 
-    console.log("Cenários FIFA ativos:", filtrados.length);
     return filtrados;
 }
   
@@ -428,16 +414,22 @@ function displaySlot(code) {
                 .map(([grp, qtd]) => ({ grp, percent: (qtd / total) * 100 }))
                 .sort((a, b) => b.percent - a.percent);
 
-            // Se houver muitas opções (como as 495), mostramos as principais probabilidades
-            // Limitamos a exibição para não quebrar o layout, mas o cálculo considera todas.
-            return sorted.slice(0, 3)
+            // Se houver apenas 1 cenário (100%), mostra o grupo direto
+            if (sorted.length === 1 || sorted[0].percent === 100) {
+                return `3º Grp ${sorted[0].grp}`;
+            }
+
+            // Mostra as 3 maiores probabilidades para não poluir o layout
+            // Se houver mais, coloca reticências
+            const display = sorted.slice(0, 3)
                 .map(p => `3º ${p.grp} (${p.percent.toFixed(0)}%)`)
-                .join(' | ') + (sorted.length > 3 ? '...' : '');
+                .join(' | ');
+            
+            return sorted.length > 3 ? display + '...' : display;
         }
     }
     return typeof slotLabel === 'function' ? slotLabel(code) : code;
 }
-
 function resolveSlotToName(code) {
     if (!code || code === '?') return null;
     const gm = code.match(/^([A-L])([12])$/);
