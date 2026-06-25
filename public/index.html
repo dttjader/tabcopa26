@@ -313,7 +313,11 @@ const allCountries=Object.values(groupsBase).flat().filter(t=>!t.startsWith('Rep
   .concat(repDef.flatMap(r=>r.partidas.filter(p=>p.stage==='SF').flatMap(p=>[p.home,p.away])))
   .filter((v,i,a)=>a.indexOf(v)===i).sort();
 
-// 1. ESTRUTURA DO MATA-MATA (RODADA DE 32)
+// ══════════════════════════════════════════════════════
+// LÓGICA DO MATA-MATA (ANEXO C FIFA)
+// ══════════════════════════════════════════════════════
+
+// 1. Estrutura das Partidas (Rodada de 32)
 const KO_R32_SLOTS = [
   { id: 1, home: 'E1', away: '3-1' }, { id: 2, home: 'I1', away: '3-2' },
   { id: 3, home: 'A2', away: 'B2' },   { id: 4, home: 'F1', away: 'C2' },
@@ -325,13 +329,13 @@ const KO_R32_SLOTS = [
   { id: 15, home: 'B1', away: '3-7' }, { id: 16, home: 'K1', away: '3-8' }
 ];
 
-// 2. MAPEAMENTO DE SLOTS PARA LÍDERES
+// 2. Mapeamento de Slots para Líderes
 const SLOT_TO_LEADER = { 
     '3-1': 'E1', '3-2': 'I1', '3-3': 'D1', '3-4': 'G1', 
     '3-5': 'A1', '3-6': 'L1', '3-7': 'B1', '3-8': 'K1' 
 };
 
-// 3. GERAÇÃO DAS 495 OPÇÕES (ORDEM OFICIAL FIFA: E, I, D, G, A, B, K, L)
+// 3. Geração das 495 Opções (Ordem de Prioridade Oficial FIFA)
 const COMBINACOES_FIFA = (function() {
     const grupos = ['A','B','C','D','E','F','G','H','I','J','K','L'];
     const chavesPrio = [
@@ -362,20 +366,19 @@ const COMBINACOES_FIFA = (function() {
     });
 })();
 
-// 4. FILTRAGEM POR CLASSIFICADOS REAIS
+// 4. Função de Filtragem (Quem está no G8 agora?)
 function getPossibleScenarios() {
     const ranking = [];
     ['A','B','C','D','E','F','G','H','I','J','K','L'].forEach(g => {
         const st = calcStandings(g);
         const matches = state.groupMatches[g] || [];
-        // Consideramos o grupo "travado" se tiver jogos preenchidos
-        const finished = matches.length > 0 && matches.every(m => m.hs !== null);
+        // Consideramos o grupo "definido" se tiver jogos
+        const finished = matches.some(m => m.hs !== null);
         ranking.push({ grupo: g, pts: st[2].pts, sg: st[2].sg, gp: st[2].gp, finished });
     });
 
     ranking.sort((a, b) => b.pts - a.pts || b.sg - a.sg || b.gp - a.gp);
 
-    // Grupos que já estão matematicamente no Top 8 (ou eliminados)
     const qualificados = ranking.filter(r => r.finished).slice(0, 8).map(r => r.grupo);
     const eliminados = ranking.filter(r => r.finished).slice(8).map(r => r.grupo);
 
@@ -385,11 +388,10 @@ function getPossibleScenarios() {
         return true;
     });
 
-    console.log("Log FIFA:", { qualificados, eliminados, cenarios: filtrados.length });
     return filtrados;
 }
 
-// 5. EXIBIÇÃO DAS POSSIBILIDADES
+// 5. Exibição das Possibilidades (Substitui "Chave 1" pelas opções reais)
 function displaySlot(code) {
     const resolved = resolveSlotToName(code);
     if (resolved) return resolved;
@@ -404,10 +406,10 @@ function displaySlot(code) {
             
             const list = Array.from(possibleGroups).sort();
             
-            // Se houver apenas 1 possibilidade, mostra o grupo
+            // Se houver apenas 1 possibilidade matemática, mostra o grupo
             if (list.length === 1) return `3º Grp ${list[0]}`;
             
-            // Se houver várias, mostra a lista de opções (ex: 3º E, F ou G)
+            // Se houver várias, mostra a lista (ex: 3º E, F ou G)
             return `3º ${list.join(', ')}`;
         }
     }
