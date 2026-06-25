@@ -372,15 +372,16 @@ function getPossibleScenarios() {
     ['A','B','C','D','E','F','G','H','I','J','K','L'].forEach(g => {
         const st = calcStandings(g);
         const matches = state.groupMatches[g] || [];
-        // Um grupo só é considerado "Finalizado" se tiver os 6 jogos
+        // Um grupo só é considerado "Matematicamente Definido" se terminou os 6 jogos
         const finished = matches.length >= 6 && matches.every(m => m.hs !== null && m.as !== null);
         ranking.push({ grupo: g, pts: st[2].pts, sg: st[2].sg, gp: st[2].gp, finished });
     });
 
+    // Ordena o ranking atual (quem seriam os 8 hoje)
     ranking.sort((a, b) => b.pts - a.pts || b.sg - a.sg || b.gp - a.gp);
 
-    // Filtramos as 495 opções apenas por quem já está MATEMATICAMENTE fora ou dentro
-    // Se ninguém terminou abaixo do 8º lugar com todos os jogos, eliminados fica []
+    // SÓ filtramos se houver ELIMINAÇÃO ou CLASSIFICAÇÃO MATEMÁTICA confirmada
+    // Enquanto os grupos A, B e C puderem cair para 9º, eles não travam o filtro
     const eliminados = ranking.filter((r, i) => r.finished && i >= 8).map(r => r.grupo);
     const qualificados = ranking.filter((r, i) => r.finished && i < 8).map(r => r.grupo);
 
@@ -390,6 +391,7 @@ function getPossibleScenarios() {
         return true;
     });
 
+    console.log("Cenários FIFA ativos:", filtrados.length);
     return filtrados;
 }
   
@@ -419,8 +421,8 @@ function displaySlot(code) {
                 return `3º Grp ${sorted[0].grp}`;
             }
 
-            // Mostra as 3 maiores probabilidades para não poluir o layout
-            // Se houver mais, coloca reticências
+            // EXIBIÇÃO OBRIGATÓRIA: Mostra as probabilidades reais
+            // Removemos o fallback de "Chave 1" para qualquer cenário > 0
             const display = sorted.slice(0, 3)
                 .map(p => `3º ${p.grp} (${p.percent.toFixed(0)}%)`)
                 .join(' | ');
@@ -428,8 +430,10 @@ function displaySlot(code) {
             return sorted.length > 3 ? display + '...' : display;
         }
     }
+    // O fallback só acontece se scenarios.length for 0 (erro de dados)
     return typeof slotLabel === 'function' ? slotLabel(code) : code;
 }
+  
 function resolveSlotToName(code) {
     if (!code || code === '?') return null;
     const gm = code.match(/^([A-L])([12])$/);
