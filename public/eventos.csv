@@ -1,4 +1,10 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
+CUR,CMA,CUR01,0,0,0,0,0,0,0
+CUR,CMA,CMA01,0,0,0,0,0,0,0
+EQU,ALE,EQU01,0,0,0,0,0,0,0
+EQU,ALE,ALE01,0,0,0,0,0,0,0
+EQU,ALE,ALE17,0,1,0,0
+EQU,ALE,ALE19,1,0,0,0
 RSA,KOR,RSA01,0,0,0,0,0,3,0
 RSA,KOR,RSA06,0,0,1,0
 RSA,KOR,RSA08,0,1,0,0
