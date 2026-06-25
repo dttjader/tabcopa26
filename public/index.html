@@ -1204,22 +1204,16 @@ function renderTerceiros() {
 // ══════════════════════════════════════════════════════
 // MATA-MATA — com resolução de slots
 // ══════════════════════════════════════════════════════
+// ✅ CORRIGIDO:
 function slotLabel(code) {
   if (!code || code === '?') return '?';
-  
-  // Trata 1º e 2º lugares (Ex: A1, B2)
   const gm = code.match(/^([A-L])([12])$/);
-  if (gm) {
-    const pos = gm[2] === '1' ? '1º' : '2º';
-    return `${pos} Grp ${gm[1]}`;
-  }
-  
-  // Trata slots de terceiros (Ex: 3-1, 3-2)
+  if (gm) return `${gm[2] === '1' ? '1º' : '2º'} Grp ${gm[1]}`;
   const tm = code.match(/^3-([1-8])$/);
-  if (tm) return `Chave ${tm[1]}`;
-  
+  if (tm) return displaySlot(code);  // ← Usar displaySlot em vez de "Chave"
   return code;
 }
+  
   function renderKnockout(){
   const v=document.getElementById('view-matamata');
 
