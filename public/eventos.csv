@@ -1,4 +1,13 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
+SCO,BRA,SCO01,0,0,0,0,0,6,0
+SCO,BRA,SCO11,0,0,1,0
+SCO,BRA,BRA01,0,0,0,0,0,5,0
+SCO,BRA,BRA07,2,0,0,0
+SCO,BRA,BRA08,0,2,0,0
+SCO,BRA,BRA09,1,0,0,0
+SCO,BRA,BRA13,0,0,1,0
+SCO,BRA,BRA17,0,0,1,0
+SCO,BRA,BRA26,0,1,0,0
 SUI,CAN,SUI01,0,0,0,0,0,0,0
 SUI,CAN,SUI07,0,1,0,0
 SUI,CAN,SUI09,1,1,0,0
