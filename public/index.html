@@ -368,12 +368,14 @@ function getPossibleScenarios() {
     ['A','B','C','D','E','F','G','H','I','J','K','L'].forEach(g => {
         const st = calcStandings(g);
         const matches = state.groupMatches[g] || [];
-        const finished = matches.length >= 6 && matches.every(m => m.hs !== null && m.as !== null);
+        // Consideramos o grupo "travado" se tiver jogos
+        const finished = matches.length > 0 && matches.every(m => m.hs !== null);
         ranking.push({ grupo: g, pts: st[2].pts, sg: st[2].sg, gp: st[2].gp, finished });
     });
 
     ranking.sort((a, b) => b.pts - a.pts || b.sg - a.sg || b.gp - a.gp);
 
+    // Filtramos apenas quem REALMENTE terminou
     const qualificados = ranking.filter(r => r.finished).slice(0, 8).map(r => r.grupo);
     const eliminados = ranking.filter(r => r.finished).slice(8).map(r => r.grupo);
 
@@ -383,13 +385,7 @@ function getPossibleScenarios() {
         return true;
     });
 
-    // LOG DE AUDITORIA NO CONSOLE (Aperte F12 para ver)
-    console.group("Log de Decisão FIFA - Anexo C");
-    console.log("Grupos Finalizados (G8):", qualificados.join(', '));
-    console.log("Grupos Eliminados:", eliminados.join(', '));
-    console.log("Cenários Restantes das 495 opções:", filtrados.length);
-    console.groupEnd();
-
+    console.log("Filtro FIFA:", { qualificados, eliminados, cenarios: filtrados.length });
     return filtrados;
 }
 
@@ -419,14 +415,16 @@ function resolveSlotToName(code) {
 
 // 5. Função de Exibição com Detalhamento
 function displaySlot(code) {
+    // 1. Tenta resolver 1º e 2º lugares
     const resolved = resolveSlotToName(code);
     if (resolved) return resolved;
 
+    // 2. Lógica para Terceiros (3-1, 3-2...)
     if (code.startsWith('3-')) {
         const leader = SLOT_TO_LEADER[code];
         const scenarios = getPossibleScenarios();
         
-        if (scenarios.length > 0 && scenarios.length < 495) {
+        if (scenarios.length > 0) {
             const counts = {};
             scenarios.forEach(s => { 
                 const g = s.mapping[leader];
@@ -437,14 +435,17 @@ function displaySlot(code) {
             const topGrp = sorted[0][0];
             const prob = ((sorted[0][1] / scenarios.length) * 100).toFixed(0);
 
-            // Se houver mais de uma opção, mostramos o log visual na interface
-            if (sorted.length > 1) {
-                return `<span title="Cenários possíveis: ${sorted.map(x => x[0]).join(', ')}">3º ${topGrp} (${prob}%)</span>`;
+            // Se só houver 1 cenário, mostra o nome do time
+            if (scenarios.length === 1 || prob === "100") {
+                const st = calcStandings(topGrp);
+                return st[2] ? st[2].name : `3º Grp ${topGrp}`;
             }
-            return `3º Grp ${topGrp}`;
+            
+            // Se houver incerteza, mostra o grupo e a probabilidade
+            return `3º ${topGrp} (${prob}%)`;
         }
     }
-    return typeof slotLabel === 'function' ? slotLabel(code) : code;
+    return slotLabel(code);
 }
   
 // ══════════════════════════════════════════════════════
