@@ -371,18 +371,17 @@ function getPossibleScenarios() {
     const ranking = [];
     ['A','B','C','D','E','F','G','H','I','J','K','L'].forEach(g => {
         const st = calcStandings(g);
-        if (!st || st.length < 3) return; // Segurança para grupos sem times
         const matches = state.groupMatches[g] || [];
         // Um grupo só é considerado "Finalizado" se tiver os 6 jogos preenchidos
         const finished = matches.length >= 6 && matches.every(m => m.hs !== null && m.as !== null);
-        ranking.push({ grupo: g, pts: st[2].pts, sg: st[2].sg, gp: st[2].gp, finished });
+        
+        // Segurança: garante que o objeto de terceiro lugar exista
+        const thirdPlace = st[2] || { pts: 0, sg: 0, gp: 0 };
+        ranking.push({ grupo: g, pts: thirdPlace.pts, sg: thirdPlace.sg, gp: thirdPlace.gp, finished });
     });
 
-    // Ordena o ranking geral dos terceiros
     ranking.sort((a, b) => b.pts - a.pts || b.sg - a.sg || b.gp - a.gp);
 
-    // Filtro dinâmico: considera quem já terminou e está no G8 como "provável"
-    // Isso reduz de 495 para 126 quando A, B e C terminam no topo
     const qualificados = ranking.filter(r => r.finished).slice(0, 8).map(r => r.grupo);
     const eliminados = ranking.filter(r => r.finished).slice(8).map(r => r.grupo);
 
@@ -392,19 +391,33 @@ function getPossibleScenarios() {
         return true;
     });
 
+    // LOG DE AUDITORIA CRÍTICO
+    console.group("--- AUDITORIA DE CENÁRIOS ---");
+    console.log("Ranking de Terceiros:", ranking);
+    console.log("Qualificados (G8 Travado):", qualificados);
+    console.log("Eliminados (Fora Travado):", eliminados);
+    console.log("Cenários Restantes (Filtrados):", filtrados.length);
+    console.groupEnd();
+
     return filtrados;
 }
   
 // 5. Exibição das Possibilidades (Substitui "Chave 1" pelas opções reais)
 function displaySlot(code) {
+    // 1. Tenta resolver nomes fixos (1º e 2º lugares)
     const resolved = resolveSlotToName(code);
     if (resolved) return resolved;
 
+    // 2. Lógica para Terceiros (3-1 a 3-8)
     if (code.startsWith('3-')) {
         const leader = SLOT_TO_LEADER[code];
         const scenarios = getPossibleScenarios();
         
-        // REMOVEMOS A TRAVA DO 495: Agora ele calcula mesmo com incerteza total
+        // LOG DE FALLBACK
+        console.group(`--- DIAGNÓSTICO SLOT ${code} ---`);
+        console.log("Líder associado:", leader);
+        console.log("Quantidade de cenários recebida:", scenarios.length);
+
         if (scenarios.length > 0) {
             const counts = {};
             scenarios.forEach(s => { 
@@ -412,25 +425,33 @@ function displaySlot(code) {
                 counts[g] = (counts[g] || 0) + 1; 
             });
             
+            console.log("Contagem de Grupos (counts):", counts);
+
             const total = scenarios.length;
             const sorted = Object.entries(counts)
                 .map(([grp, qtd]) => ({ grp, percent: (qtd / total) * 100 }))
                 .sort((a, b) => b.percent - a.percent);
 
-            // Se houver apenas 1 cenário (100%), mostra o nome do time ou o grupo
+            console.log("Distribuição Final:", sorted);
+            console.groupEnd();
+
+            // Se houver apenas 1 cenário (100%), mostra o nome do time ou grupo
             if (sorted.length === 1 || sorted[0].percent === 100) {
                 const st = calcStandings(sorted[0].grp);
                 return st[2] ? st[2].name : `3º Grp ${sorted[0].grp}`;
             }
 
-            // Retorna a LISTA de todas as possibilidades com suas chances
-            // Exemplo: "3º E (40%) | 3º F (30%) | 3º G (30%)"
-            return sorted
+            // Retorna a lista de probabilidades (Ex: 3º E (45%) | 3º F (30%))
+            return sorted.slice(0, 3)
                 .map(p => `3º ${p.grp} (${p.percent.toFixed(0)}%)`)
                 .join(' | ');
         }
+
+        console.warn("ALERTA: scenarios.length é 0. Verifique se COMBINACOES_FIFA está carregada.");
+        console.groupEnd();
     }
-    // O fallback de "Chave 1" só acontece se scenarios.length for 0
+    
+    // Se chegou aqui, o fallback é inevitável
     return typeof slotLabel === 'function' ? slotLabel(code) : code;
 }
   
