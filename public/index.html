@@ -473,10 +473,10 @@ function getPossibleScenarios() {
     }
 
     return COMBINACOES_FIFA.filter(function(c) {
-        for (var i = 0; i &lt; qualificados.length; i++) {
+        for (var i = 0; i < qualificados.length; i++) {
             if (c.classificados.indexOf(qualificados[i]) === -1) return false;
         }
-        for (var j = 0; j &lt; eliminados.length; j++) {
+        for (var j = 0; j < eliminados.length; j++) {
             if (c.classificados.indexOf(eliminados[j]) !== -1) return false;
         }
         return true;
