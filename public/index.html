@@ -312,6 +312,46 @@ const allCountries=Object.values(groupsBase).flat().filter(t=>!t.startsWith('Rep
   .concat(repDef.flatMap(r=>r.partidas.filter(p=>p.stage==='SF').flatMap(p=>[p.home,p.away])))
   .filter((v,i,a)=>a.indexOf(v)===i).sort();
 
+  // Mapeamento dos slots da FIFA para os líderes de grupo
+const SLOT_TO_LEADER = { 
+    '3-1': 'E1', '3-2': 'I1', '3-3': 'D1', '3-4': 'G1', 
+    '3-5': 'A1', '3-6': 'L1', '3-7': 'B1', '3-8': 'K1' 
+};
+
+// Definição de prioridades do Anexo C da FIFA
+const TERCEIROS_PRIORIDADE = [
+    { match: 'E1', grupos: ['A', 'B', 'C', 'D', 'F'] },
+    { match: 'I1', grupos: ['C', 'D', 'F', 'G', 'H'] },
+    { match: 'D1', grupos: ['B', 'E', 'F', 'I', 'J'] },
+    { match: 'G1', grupos: ['A', 'E', 'H', 'I', 'J'] },
+    { match: 'A1', grupos: ['C', 'E', 'F', 'H', 'I'] },
+    { match: 'L1', grupos: ['E', 'H', 'I', 'J', 'K'] },
+    { match: 'B1', grupos: ['E', 'F', 'G', 'I', 'J'] },
+    { match: 'K1', grupos: ['D', 'E', 'I', 'J', 'L'] }
+];
+
+// Geração automática das 495 combinações (Fonte da Verdade)
+const COMBINACOES_TERCEIROS = (function() {
+    const grupos = ['A','B','C','D','E','F','G','H','I','J','K','L'];
+    let results = [];
+    function helper(start, current) {
+        if (current.length === 8) {
+            const mapping = {};
+            const usados = new Set();
+            TERCEIROS_PRIORIDADE.forEach(prio => {
+                const found = prio.grupos.find(g => current.includes(g) && !usados.has(g)) || current.find(g => !usados.has(g));
+                mapping[prio.match] = found;
+                usados.add(found);
+            });
+            results.push({ grupos: current.join(''), mapping });
+            return;
+        }
+        for (let i = start; i < grupos.length; i++) helper(i + 1, [...current, grupos[i]]);
+    }
+    helper(0, []);
+    return results;
+})();
+
 // ══════════════════════════════════════════════════════
 // CHAVEAMENTO COPA 2026 — SLOTS DA RODADA DE 32
 // Chaveamento oficial FIFA (12 grupos, 48 times, 32 avançam)
@@ -345,115 +385,49 @@ const KO_R32_SLOTS = [
   { home: 'K1', away: '3-8' },  // Partida 16
 ];
 
-// Verifica se um valor é um código de slot
-function isSlotCode(val) {
-  if (!val) return false;
-  return /^[A-L][12]$/.test(val) || /^3-[1-8]$/.test(val) || val === '?';
+// Filtra os cenários baseados em quem já terminou e está no Top 8
+function getPossibleScenarios() {
+    const ranking = getThirdPlaceRanking(); // Use sua função que ordena os 3ºs por Pts, SG, GP
+    const finishedQualified = ranking.filter(r => r.finished).slice(0, 8).map(r => r.grupo);
+    const finishedEliminated = ranking.filter(r => r.finished).slice(8).map(r => r.grupo);
+
+    return COMBINACOES_TERCEIROS.filter(cen => {
+        for (let g of finishedQualified) if (!cen.grupos.includes(g)) return false;
+        for (let g of finishedEliminated) if (cen.grupos.includes(g)) return false;
+        return true;
+    });
 }
 
-// Label legível para um código de slot
-function slotLabel(code) {
-  if (!code || code === '?') return '?';
-  const gm = code.match(/^([A-L])([12])$/);
-  if (gm) {
-    const pos = gm[2] === '1' ? '1º' : '2º';
-    return `${pos} Grp ${gm[1]}`;
-  }
-  const tm = code.match(/^3-([1-8])$/);
-  if (tm) return `Chave ${tm[1]}`;
-  return code;
-}
-
-// Definição das chaves de terceiros (espelhada de renderTerceiros)
-const TERCEIROS_CHAVES = [
-  { id: 1, grupos: ['A', 'B', 'C', 'D', 'F'] },
-  { id: 2, grupos: ['C', 'D', 'F', 'G', 'H'] },
-  { id: 3, grupos: ['B', 'E', 'F', 'I', 'J'] },
-  { id: 4, grupos: ['A', 'E', 'H', 'I', 'J'] },
-  { id: 5, grupos: ['C', 'E', 'F', 'H', 'I'] },
-  { id: 6, grupos: ['E', 'H', 'I', 'J', 'K'] },
-  { id: 7, grupos: ['E', 'F', 'G', 'I', 'J'] },
-  { id: 8, grupos: ['D', 'E', 'I', 'J', 'L'] },
-];
-
-// Retorna o vencedor da Chave N de terceiros (não ranking global)
-// Lógica: cada chave usa 5 grupos; o melhor 3º desses grupos (excluindo
-// grupos já "consumidos" pelas chaves anteriores) vence a chave.
-function getBestThird(chaveNum) {
-  const terceirosMap = {};
-  Object.keys(groupsBase).forEach(g => {
-    const st = calcStandings(g);
-    if (st && st.length >= 3) {
-      const t = st[2];
-      if (t && t.pj > 0 && !isRepSlot(t.name) && t.name !== '?') {
-        terceirosMap[g] = { name: t.name, pts: t.pts, sg: t.sg, gp: t.gp };
-      }
-    }
-  });
-  const gruposJaUsados = new Set();
-  for (let i = 0; i < TERCEIROS_CHAVES.length; i++) {
-    const chave = TERCEIROS_CHAVES[i];
-    const candidatos = chave.grupos
-      .filter(g => !gruposJaUsados.has(g) && terceirosMap[g])
-      .map(g => ({ ...terceirosMap[g], grupo: g }))
-      .sort((a, b) => b.pts - a.pts || b.sg - a.sg || b.gp - a.gp);
-    if (candidatos.length > 0) gruposJaUsados.add(candidatos[0].grupo);
-    if (chave.id === chaveNum) {
-      return candidatos.length > 0 ? candidatos[0].name : null;
-    }
-  }
-  return null;
-}
-
-// Resolve um código de slot para o nome real do time.
-// Se o time ainda não está definido, retorna null (use slotLabel para exibição).
-function resolveSlotToName(code) {
-  if (!code || code === '?') return null;
-
-  // Já é nome de time real (não é código de slot)
-  if (!isSlotCode(code)) return code;
-
-  const gm = code.match(/^([A-L])([12])$/);
-  if (gm) {
-    const g = gm[1];
-    const pos = parseInt(gm[2]);
-    const st = calcStandings(g);
-    if (st && st.length >= pos) {
-      const team = st[pos - 1];
-      // Só retorna se o grupo tem pelo menos 1 jogo jogado
-      const hasGames = (state.groupMatches[g] || []).some(m => m.hs !== null);
-      if (team && team.pj > 0 && team.name && !isRepSlot(team.name) && team.name !== '?') {
-        return team.name;
-      }
-    }
-    return null;
-  }
-
-  const tm = code.match(/^3-([1-8])$/);
-  if (tm) {
-    return getBestThird(parseInt(tm[1]));
-  }
-
-  return null;
-}
-
-// Retorna o nome a exibir para um slot no mata-mata:
-// - nome real se definido
-// - label do slot caso contrário
+// Nova versão da displaySlot para mostrar probabilidades
 function displaySlot(code) {
-  if (!code || code === '?') return '?';
-  if (!isSlotCode(code)) return code; // já é nome real salvo
-  const resolved = resolveSlotToName(code);
-  return resolved || slotLabel(code);
-}
+    if (!code.startsWith('3-')) {
+        // Lógica normal para 1º e 2º (já existente no seu código)
+        return resolveNormalSlot(code); 
+    }
 
-// Verifica se um valor de exibição é ainda um slot pendente (não resolvido)
-function isDisplayPending(code) {
-  if (!code || code === '?') return true;
-  if (!isSlotCode(code)) return false;
-  return resolveSlotToName(code) === null;
-}
+    const leaderSlot = SLOT_TO_LEADER[code];
+    const scenarios = getPossibleScenarios();
+    if (scenarios.length === 0) return "A definir";
 
+    const counts = {};
+    scenarios.forEach(s => {
+        const g = s.mapping[leaderSlot];
+        counts[g] = (counts[g] || 0) + 1;
+    });
+
+    const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+    const [bestGrp, count] = sorted[0];
+    const prob = ((count / scenarios.length) * 100).toFixed(0);
+
+    // Se for 100%, mostra o nome do time real
+    if (prob === "100") {
+        const team = getTeamFromGroup(bestGrp, 3); // Função para pegar o nome do 3º colocado
+        return team;
+    }
+
+    return `3º Grp ${bestGrp} (${prob}%)`;
+}
+  
 // ══════════════════════════════════════════════════════
 // PONTUAÇÃO
 // ══════════════════════════════════════════════════════
