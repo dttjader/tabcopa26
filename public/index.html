@@ -313,7 +313,7 @@ const allCountries=Object.values(groupsBase).flat().filter(t=>!t.startsWith('Rep
   .concat(repDef.flatMap(r=>r.partidas.filter(p=>p.stage==='SF').flatMap(p=>[p.home,p.away])))
   .filter((v,i,a)=>a.indexOf(v)===i).sort();
 
-// 1. Definição dos Slots do Mata-Mata (Rodada de 32)
+// 1. ESTRUTURA DO MATA-MATA (RODADA DE 32)
 const KO_R32_SLOTS = [
   { id: 1, home: 'E1', away: '3-1' }, { id: 2, home: 'I1', away: '3-2' },
   { id: 3, home: 'A2', away: 'B2' },   { id: 4, home: 'F1', away: 'C2' },
@@ -325,13 +325,13 @@ const KO_R32_SLOTS = [
   { id: 15, home: 'B1', away: '3-7' }, { id: 16, home: 'K1', away: '3-8' }
 ];
 
-// Mapeamento de Slots para Líderes (Necessário para a lógica da FIFA)
+// 2. MAPEAMENTO DE SLOTS PARA LÍDERES
 const SLOT_TO_LEADER = { 
     '3-1': 'E1', '3-2': 'I1', '3-3': 'D1', '3-4': 'G1', 
     '3-5': 'A1', '3-6': 'L1', '3-7': 'B1', '3-8': 'K1' 
 };
 
-// 2. Geração matemática das 495 opções da FIFA (Fonte da Verdade)
+// 3. GERAÇÃO DAS 495 OPÇÕES (ORDEM OFICIAL FIFA: E, I, D, G, A, B, K, L)
 const COMBINACOES_FIFA = (function() {
     const grupos = ['A','B','C','D','E','F','G','H','I','J','K','L'];
     const chavesPrio = [
@@ -340,9 +340,9 @@ const COMBINACOES_FIFA = (function() {
         { match: 'D1', grupos: ['B', 'E', 'F', 'I', 'J'] },
         { match: 'G1', grupos: ['A', 'E', 'H', 'I', 'J'] },
         { match: 'A1', grupos: ['C', 'E', 'F', 'H', 'I'] },
-        { match: 'L1', grupos: ['E', 'H', 'I', 'J', 'K'] },
         { match: 'B1', grupos: ['E', 'F', 'G', 'I', 'J'] },
-        { match: 'K1', grupos: ['D', 'E', 'I', 'J', 'L'] }
+        { match: 'K1', grupos: ['D', 'E', 'I', 'J', 'L'] },
+        { match: 'L1', grupos: ['E', 'H', 'I', 'J', 'K'] }
     ];
     function getCombos(arr, k) {
         let res = [];
@@ -362,60 +362,34 @@ const COMBINACOES_FIFA = (function() {
     });
 })();
 
-// 3. Função de Filtragem com Log de Auditoria
+// 4. FILTRAGEM POR CLASSIFICADOS REAIS
 function getPossibleScenarios() {
     const ranking = [];
     ['A','B','C','D','E','F','G','H','I','J','K','L'].forEach(g => {
         const st = calcStandings(g);
         const matches = state.groupMatches[g] || [];
-        // Consideramos o grupo para o filtro se ele já tiver QUALQUER jogo preenchido
-        const hasGames = matches.some(m => m.hs !== null);
-        ranking.push({ grupo: g, pts: st[2].pts, sg: st[2].sg, gp: st[2].gp, hasGames });
+        // Consideramos o grupo "travado" se tiver jogos preenchidos
+        const finished = matches.length > 0 && matches.every(m => m.hs !== null);
+        ranking.push({ grupo: g, pts: st[2].pts, sg: st[2].sg, gp: st[2].gp, finished });
     });
 
-    // Ordena o ranking atual
     ranking.sort((a, b) => b.pts - a.pts || b.sg - a.sg || b.gp - a.gp);
 
-    // Filtramos as 495 opções baseadas em quem está no G8 AGORA
-    const qualificadosAtuais = ranking.slice(0, 8).map(r => r.grupo);
+    // Grupos que já estão matematicamente no Top 8 (ou eliminados)
+    const qualificados = ranking.filter(r => r.finished).slice(0, 8).map(r => r.grupo);
+    const eliminados = ranking.filter(r => r.finished).slice(8).map(r => r.grupo);
 
     const filtrados = COMBINACOES_FIFA.filter(c => {
-        // Retorna as opções do Anexo C que contêm os 8 times que estão no topo do seu ranking
-        return qualificadosAtuais.every(g => c.classificados.includes(g));
+        for (let g of qualificados) if (!c.classificados.includes(g)) return false;
+        for (let g of eliminados) if (c.classificados.includes(g)) return false;
+        return true;
     });
 
-    console.group("Log de Decisão FIFA - Anexo C");
-    console.log("Top 8 Atual:", qualificadosAtuais.join(', '));
-    console.log("Cenários compatíveis encontrados:", filtrados.length);
-    console.groupEnd();
-
+    console.log("Log FIFA:", { qualificados, eliminados, cenarios: filtrados.length });
     return filtrados;
 }
-// 4. Resolução do nome do time no Mata-Mata
-function resolveSlotToName(code) {
-    if (!code || code === '?') return null;
-    const gm = code.match(/^([A-L])([12])$/);
-    if (gm) {
-        const st = calcStandings(gm[1]);
-        const pos = parseInt(gm[2]) - 1;
-        const hasGames = (state.groupMatches[gm[1]] || []).some(m => m.hs !== null);
-        return (hasGames && st[pos]) ? st[pos].name : null;
-    }
-    if (code.startsWith('3-')) {
-        const scenarios = getPossibleScenarios();
-        // Se a lógica de ranking encontrar a combinação única (length === 1)
-        if (scenarios.length === 1) {
-            const leader = SLOT_TO_LEADER[code];
-            const targetGrp = scenarios[0].mapping[leader];
-            const st = calcStandings(targetGrp);
-            // Retorna o nome do time que está em 3º naquele grupo agora
-            return st[2] ? st[2].name : `3º Grp ${targetGrp}`;
-        }
-    }
-    return null;
-}
 
-// 5. Função de Exibição com Detalhamento
+// 5. EXIBIÇÃO DAS POSSIBILIDADES
 function displaySlot(code) {
     const resolved = resolveSlotToName(code);
     if (resolved) return resolved;
@@ -425,23 +399,47 @@ function displaySlot(code) {
         const scenarios = getPossibleScenarios();
         
         if (scenarios.length > 0) {
-            const counts = {};
-            scenarios.forEach(s => { 
-                const g = s.mapping[leader];
-                counts[g] = (counts[g] || 0) + 1; 
-            });
+            const possibleGroups = new Set();
+            scenarios.forEach(s => possibleGroups.add(s.mapping[leader]));
             
-            const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
-            const topGrp = sorted[0][0];
-            const total = scenarios.length;
-            const prob = ((sorted[0][1] / total) * 100).toFixed(0);
-
-            // Se a probabilidade for alta ou se houver poucos cenários, mostramos o grupo
-            // Isso remove o fallback de "Chave 1" e mostra a previsão real
-            return `3º ${topGrp} (${prob}%)`;
+            const list = Array.from(possibleGroups).sort();
+            
+            // Se houver apenas 1 possibilidade, mostra o grupo
+            if (list.length === 1) return `3º Grp ${list[0]}`;
+            
+            // Se houver várias, mostra a lista de opções (ex: 3º E, F ou G)
+            return `3º ${list.join(', ')}`;
         }
     }
     return typeof slotLabel === 'function' ? slotLabel(code) : code;
+}
+
+function resolveSlotToName(code) {
+    if (!code || code === '?') return null;
+    const gm = code.match(/^([A-L])([12])$/);
+    if (gm) {
+        const st = calcStandings(gm[1]);
+        const pos = parseInt(gm[2]) - 1;
+        const hasGames = (state.groupMatches[gm[1]] || []).some(m => m.hs !== null);
+        return (hasGames && st[pos]) ? st[pos].name : null;
+    }
+    const scenarios = getPossibleScenarios();
+    if (scenarios.length === 1 && code.startsWith('3-')) {
+        const leader = SLOT_TO_LEADER[code];
+        const targetGrp = scenarios[0].mapping[leader];
+        const st = calcStandings(targetGrp);
+        return st[2] ? st[2].name : `3º Grp ${targetGrp}`;
+    }
+    return null;
+}
+
+function slotLabel(code) {
+  if (!code || code === '?') return '?';
+  const gm = code.match(/^([A-L])([12])$/);
+  if (gm) return `${gm[2] === '1' ? '1º' : '2º'} Grp ${gm[1]}`;
+  const tm = code.match(/^3-([1-8])$/);
+  if (tm) return `Chave ${tm[1]}`;
+  return code;
 }
   
 // ══════════════════════════════════════════════════════
