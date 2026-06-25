@@ -367,22 +367,18 @@ const COMBINACOES_FIFA = (function() {
 })();
 
 // 4. Função de Filtragem (Quem está no G8 agora?)
-// LOG 0: Se isso não aparecer, o navegador nem leu o arquivo.
-console.log("--- [SISTEMA] Script de Probabilidades Iniciado ---");
+// 0. LOG DE CARREGAMENTO
+console.log("--- [SISTEMA FIFA] INICIANDO CARREGAMENTO DO SCRIPT ---");
 
-// 
 // 1. A MESTRA (A função que a interface chama)
-// 
 function displaySlot(code) {
-    // Este log prova se a interface está conseguindo chamar a função
     console.log(">>> [LOG MESTRA] Processando slot: " + code);
 
     try {
         // Passo A: Pergunta ao Filtro se é um nome fixo (1º ou 2º lugar)
         var fixed = resolveSlotToName(code);
-        console.log(">>> [LOG FILTRO] resolveSlotToName retornou: " + fixed);
-
-        // Se o Filtro retornar qualquer nome, a Mestra para aqui.
+        
+        // Se o Filtro retornar um nome, a Mestra encerra aqui.
         // Para códigos "3-X", o Filtro DEVE retornar null.
         if (fixed !== null) {
             return fixed;
@@ -390,25 +386,22 @@ function displaySlot(code) {
 
         // Passo B: Lógica de Probabilidades para 3ºs lugares
         if (code && code.indexOf('3-') === 0) {
-            console.log(">>> [LOG MOTOR] Acionando Motor para: " + code);
-            
             var scenarios = getPossibleScenarios();
             console.log(">>> [LOG MOTOR] Cenários ativos: " + scenarios.length);
 
-            // Verificação de Segurança do Mapeamento
             if (typeof SLOT_TO_LEADER === 'undefined') {
-                console.error(">>> [ERRO] Objeto SLOT_TO_LEADER não encontrado!");
+                console.error(">>> [ERRO] SLOT_TO_LEADER não definido!");
                 return "Erro: Mapeamento";
             }
 
             var leader = SLOT_TO_LEADER[code];
-            console.log(">>> [LOG MESTRA] Líder identificado: " + leader);
-
             if (scenarios.length > 0 && leader) {
                 var counts = {};
                 for (var i = 0; i < scenarios.length; i++) {
                     var g = scenarios[i].mapping[leader];
-                    if (g) counts[g] = (counts[g] || 0) + 1;
+                    if (g) {
+                        counts[g] = (counts[g] || 0) + 1;
+                    }
                 }
 
                 var total = scenarios.length;
@@ -421,31 +414,25 @@ function displaySlot(code) {
                 if (results.length > 0) {
                     var output = "";
                     var limit = Math.min(results.length, 3);
-                    for (var k = 0; k < limit; k++) {
-                        if (k > 0) output += " | ";
-                        output += "3º " + results[k].grp + " (" + results[k].percent.toFixed(0) + "%)";
+                    for (var j = 0; j < limit; j++) {
+                        if (j > 0) output += " | ";
+                        output += "3º " + results[j].grp + " (" + results[j].percent.toFixed(0) + "%)";
                     }
-                    console.log(">>> [LOG SUCESSO] Retornando: " + output);
                     return output;
                 }
             }
         }
     } catch (e) {
-        console.error(">>> [ERRO CRÍTICO] Falha na execução: " + e.message);
+        console.error(">>> [ERRO CRÍTICO] Falha na displaySlot: " + e.message);
     }
 
-    // Passo C: Fallback Final (Corrigido o fechamento de chaves aqui)
-    console.warn(">>> [LOG FALLBACK] Retornando slotLabel para: " + code);
     return (typeof slotLabel === 'function') ? slotLabel(code) : code;
 }
   
-// 
 // 2. O FILTRO (Auxiliar da Mestra)
-// 
 function resolveSlotToName(code) {
     if (!code || code === '?') return null;
     
-    // Resolve apenas 1º e 2º lugares (ex: A1, B2)
     var gm = code.match(/^([A-L])([12])$/);
     if (gm) {
         var st = calcStandings(gm[1]);
@@ -454,21 +441,16 @@ function resolveSlotToName(code) {
         return (hasGames && st[pos]) ? st[pos].name : null;
     }
     
-    // REGRA: Para 3ºs lugares, retorna NULL para a Mestra seguir para o Motor
     return null; 
 }
 
-// 
 // 3. O MOTOR (Cálculo dos Cenários)
-// 
 function getPossibleScenarios() {
-    // LÓGICA DE SEGURANÇA: Enquanto não houver certeza matemática, cenários = 495
-    // Mantemos os filtros vazios (A, B e C ainda podem ser ultrapassados)
     var qualificados = []; 
     var eliminados = [];
 
     if (typeof COMBINACOES_FIFA === 'undefined') {
-        console.error("MOTOR: Variável COMBINACOES_FIFA não encontrada!");
+        console.error("MOTOR: COMBINACOES_FIFA não encontrada!");
         return [];
     }
 
