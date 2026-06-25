@@ -313,24 +313,13 @@ const allCountries=Object.values(groupsBase).flat().filter(t=>!t.startsWith('Rep
   .concat(repDef.flatMap(r=>r.partidas.filter(p=>p.stage==='SF').flatMap(p=>[p.home,p.away])))
   .filter((v,i,a)=>a.indexOf(v)===i).sort();
 
-// 1. Definição dos Slots do Mata-Mata (Rodada de 32)
-const KO_R32_SLOTS = [
-  { id: 1, home: 'E1', away: '3-1' }, { id: 2, home: 'I1', away: '3-2' },
-  { id: 3, home: 'A2', away: 'B2' },   { id: 4, home: 'F1', away: 'C2' },
-  { id: 5, home: 'K2', away: 'L2' },   { id: 6, home: 'H1', away: 'J2' },
-  { id: 7, home: 'D1', away: '3-3' }, { id: 8, home: 'G1', away: '3-4' },
-  { id: 9, home: 'C1', away: 'F2' },   { id: 10, home: 'E2', away: 'I2' },
-  { id: 11, home: 'A1', away: '3-5' }, { id: 12, home: 'L1', away: '3-6' },
-  { id: 13, home: 'J1', away: 'H2' },  { id: 14, home: 'D2', away: 'G2' },
-  { id: 15, home: 'B1', away: '3-7' }, { id: 16, home: 'K1', away: '3-8' }
-];
-
+// 1. Mapeamento dos slots para os líderes (Anexo C)
 const SLOT_TO_LEADER = { 
     '3-1': 'E1', '3-2': 'I1', '3-3': 'D1', '3-4': 'G1', 
     '3-5': 'A1', '3-6': 'L1', '3-7': 'B1', '3-8': 'K1' 
 };
 
-// 2. Geração matemática das 495 opções da FIFA
+// 2. Geração matemática das 495 opções da FIFA (Fonte da Verdade)
 const COMBINACOES_FIFA = (function() {
     const grupos = ['A','B','C','D','E','F','G','H','I','J','K','L'];
     const chavesPrio = [
@@ -361,36 +350,34 @@ const COMBINACOES_FIFA = (function() {
     });
 })();
 
-// 3. Função para identificar quais grupos já definiram seus 3ºs colocados
-function getFinishedThirds() {
-    const qualificados = [];
-    const eliminados = [];
+// 3. Função de Filtragem (A que estava faltando)
+function getPossibleScenarios() {
     const ranking = [];
-
-    Object.keys(groupsBase).forEach(g => {
+    ['A','B','C','D','E','F','G','H','I','J','K','L'].forEach(g => {
         const st = calcStandings(g);
         const matches = state.groupMatches[g] || [];
+        // Um grupo só é considerado "finalizado" se tiver os 6 jogos preenchidos
         const finished = matches.length >= 6 && matches.every(m => m.hs !== null && m.as !== null);
         ranking.push({ grupo: g, pts: st[2].pts, sg: st[2].sg, gp: st[2].gp, finished });
     });
 
-    // Ordena o ranking geral
+    // Ordena o ranking geral dos terceiros
     ranking.sort((a, b) => b.pts - a.pts || b.sg - a.sg || b.gp - a.gp);
 
-    ranking.forEach((r, i) => {
-        if (r.finished) {
-            if (i < 8) qualificados.push(r.grupo);
-            else eliminados.push(r.grupo);
-        }
+    const qualificados = ranking.filter(r => r.finished).slice(0, 8).map(r => r.grupo);
+    const eliminados = ranking.filter(r => r.finished).slice(8).map(r => r.grupo);
+
+    // Filtra as 495 opções: elimina as que não batem com os classificados/eliminados reais
+    return COMBINACOES_FIFA.filter(c => {
+        for (let g of qualificados) if (!c.classificados.includes(g)) return false;
+        for (let g of eliminados) if (c.classificados.includes(g)) return false;
+        return true;
     });
-    return { qualificados, eliminados };
 }
 
-// 4. Resolução do nome do time (Corrigindo o erro de ReferenceError)
+// 4. Resolução do nome do time no Mata-Mata
 function resolveSlotToName(code) {
     if (!code || code === '?') return null;
-    
-    // Líderes e Vice-líderes
     const gm = code.match(/^([A-L])([12])$/);
     if (gm) {
         const st = calcStandings(gm[1]);
@@ -398,53 +385,40 @@ function resolveSlotToName(code) {
         const hasGames = (state.groupMatches[gm[1]] || []).some(m => m.hs !== null);
         return (hasGames && st[pos]) ? st[pos].name : null;
     }
-
-    // Terceiros Colocados via Anexo C
     if (code.startsWith('3-')) {
-        const leader = SLOT_TO_LEADER[code];
-        const { qualificados, eliminados } = getFinishedThirds();
-
-        const cenarios = COMBINACOES_FIFA.filter(c => {
-            for (let g of qualificados) if (!c.classificados.includes(g)) return false;
-            for (let g of eliminados) if (c.classificados.includes(g)) return false;
-            return true;
-        });
-
-        if (cenarios.length === 1) {
-            const grp = cenarios[0].mapping[leader];
-            const st = calcStandings(grp);
-            return st[2] ? st[2].name : `3º Grp ${grp}`;
+        const scenarios = getPossibleScenarios();
+        if (scenarios.length === 1) {
+            const leader = SLOT_TO_LEADER[code];
+            const targetGrp = scenarios[0].mapping[leader];
+            const st = calcStandings(targetGrp);
+            return st[2] ? st[2].name : `3º Grp ${targetGrp}`;
         }
     }
     return null;
 }
 
-// 5. Exibição visual com probabilidade
+// 5. Função de Exibição (Substitui "Chave 1" pelo resultado ou probabilidade)
 function displaySlot(code) {
-    // 1. Tenta resolver o nome real (se já estiver definido)
     const resolved = resolveSlotToName(code);
     if (resolved) return resolved;
 
-    // 2. Se for um slot de terceiro (3-1, 3-2...) e ainda não tiver nome real
     if (code.startsWith('3-')) {
-        const leader = SLOT_TO_LEADER[code]; // Precisa do mapeamento
-        const scenarios = getPossibleScenarios(); // Precisa filtrar as 495 opções
+        const leader = SLOT_TO_LEADER[code];
+        const scenarios = getPossibleScenarios();
         
+        // Se já houver filtros aplicados, mostra a probabilidade
         if (scenarios.length > 0 && scenarios.length < 495) {
             const counts = {};
-            scenarios.forEach(s => {
+            scenarios.forEach(s => { 
                 const g = s.mapping[leader];
-                counts[g] = (counts[g] || 0) + 1;
+                counts[g] = (counts[g] || 0) + 1; 
             });
-            // Pega o grupo com maior chance
             const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
             const prob = ((sorted[0][1] / scenarios.length) * 100).toFixed(0);
             return `3º ${sorted[0][0]} (${prob}%)`;
         }
     }
-    
-    // 3. Se tudo falhar, ele mostra o rótulo amigável (Chave 1)
-    return slotLabel(code); 
+    return typeof slotLabel === 'function' ? slotLabel(code) : code;
 }
   
 // ══════════════════════════════════════════════════════
