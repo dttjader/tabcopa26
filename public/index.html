@@ -367,81 +367,21 @@ const COMBINACOES_FIFA = (function() {
 })();
 
 // 4. Função de Filtragem (Quem está no G8 agora?)
-function getPossibleScenarios() {
-    const ranking = [];
-    const grupos = ['A','B','C','D','E','F','G','H','I','J','K','L'];
-    
-    grupos.forEach(g => {
-        const st = calcStandings(g);
-        const matches = state.groupMatches[g] || [];
-        const finished = matches.length >= 6 && matches.every(m => m.hs !== null && m.as !== null);
-        const third = st[2] || { pts: 0, sg: -99, gp: 0 };
-        ranking.push({ grupo: g, pts: third.pts, sg: third.sg, gp: third.gp, finished });
-    });
-
-    // 1. Cálculo de ELIMINAÇÃO MATEMÁTICA REAL:
-    // Um grupo só está eliminado se, mesmo que ele vença (se não terminou) ou com seus pontos atuais,
-    // existirem pelo menos 8 outros grupos que JÁ TÊM pontuação superior e não podem mais ser alcançados.
-    const eliminados = ranking.filter(r => {
-        if (!r.finished) return false; 
-        // Conta quantos grupos JÁ SÃO melhores que R e não podem mais cair abaixo dele
-        const garantidosMelhoresQueR = ranking.filter(outro => {
-            if (outro.grupo === r.grupo) return false;
-            // Um grupo é garantidamente melhor que R se já tem mais pontos 
-            // ou se tem os mesmos pontos e saldo inalcançável.
-            return outro.pts > r.pts || (outro.pts === r.pts && outro.sg > r.sg);
-        }).length;
-        
-        return garantidosMelhoresQueR >= 8;
-    }).map(r => r.grupo);
-
-    // 2. Cálculo de CLASSIFICAÇÃO MATEMÁTICA REAL:
-    const qualificados = ranking.filter(r => {
-        if (!r.finished) return false;
-        // Um grupo só está garantido se for impossível 8 grupos ficarem à frente dele
-        const potenciaisMelhoresQueR = ranking.filter(outro => {
-            if (outro.grupo === r.grupo) return false;
-            // Se o outro grupo ainda não terminou, assumimos que ele PODE superar R
-            if (!outro.finished) return true;
-            return outro.pts > r.pts || (outro.pts === r.pts && outro.sg > r.sg);
-        }).length;
-
-        return potenciaisMelhoresQueR < 8;
-    }).map(r => r.grupo);
-
-    const filtrados = COMBINACOES_FIFA.filter(c => {
-        for (let g of qualificados) if (!c.classificados.includes(g)) return false;
-        for (let g of eliminados) if (c.classificados.includes(g)) return false;
-        return true;
-    });
-
-    // LOG DE DIAGNÓSTICO PARA VERIFICAÇÃO
-    console.group("--- LOG DE SEGURANÇA MATEMÁTICA ---");
-    console.log("Grupos com jogos encerrados:", ranking.filter(r => r.finished).map(r => r.grupo));
-    console.log("Qualificados Matemáticos (Certeza):", qualificados.length > 0 ? qualificados : "ZERO");
-    console.log("Eliminados Matemáticos (Certeza):", eliminados.length > 0 ? eliminados : "ZERO");
-    console.log("Cenários Restantes:", filtrados.length);
-    console.groupEnd();
-
-    return filtrados;
-}
-  
-// 5. Exibição das Possibilidades (Substitui "Chave 1" pelas opções reais)
 function displaySlot(code) {
-    // LOG DE ENTRADA TOTAL - Nada acontece antes disso
+    // LOG DE ENTRADA TOTAL - Primeira linha da função
     console.group(`[ENTRADA CRÍTICA] Slot: ${code}`);
     
-    // 1. Verifica se resolveSlotToName está "roubando" a execução
+    // 1. Tenta resolver nomes fixos (1º e 2º lugares)
     const resolved = resolveSlotToName(code);
     console.log("Resultado de resolveSlotToName:", resolved);
 
-    if (resolved) {
-        console.log("Interrompendo: resolveSlotToName retornou um valor. Saindo...");
+    // Se resolveSlotToName retornar qualquer coisa que não seja null, o cálculo de 3ºs é abortado
+    if (resolved !== null) {
+        console.log("Interrompendo: resolveSlotToName bloqueou o cálculo de probabilidades.");
         console.groupEnd();
         return resolved;
     }
 
-    // 2. Se chegou aqui, resolveSlotToName retornou null (correto para terceiros)
     console.log("Iniciando cálculo de probabilidades para terceiros...");
     
     if (code.startsWith('3-')) {
@@ -466,7 +406,7 @@ function displaySlot(code) {
             console.log("Distribuição calculada:", sorted);
             console.groupEnd();
 
-            // REGRA: Se houver jogos, mostra probabilidade.
+            // REGRA: Se houver cenários, mostra probabilidade.
             if (sorted.length > 0) {
                 return sorted.slice(0, 3)
                     .map(p => `3º ${p.grp} (${p.percent.toFixed(0)}%)`)
@@ -475,10 +415,53 @@ function displaySlot(code) {
         }
     }
 
-    // 3. Se chegou aqui, algo falhou no mapeamento ou nos cenários
     console.error("FALHA NO FLUXO: Clicou no fallback final.");
     console.groupEnd();
     return typeof slotLabel === 'function' ? slotLabel(code) : code;
+}
+  
+function getPossibleScenarios() {
+    const ranking = [];
+    const grupos = ['A','B','C','D','E','F','G','H','I','J','K','L'];
+    
+    grupos.forEach(g => {
+        const st = calcStandings(g);
+        const matches = state.groupMatches[g] || [];
+        const finished = matches.length >= 6 && matches.every(m => m.hs !== null && m.as !== null);
+        const third = st[2] || { pts: 0, sg: -99, gp: 0 };
+        ranking.push({ grupo: g, pts: third.pts, sg: third.sg, gp: third.gp, finished });
+    });
+
+    // LÓGICA DE SEGURANÇA: Só filtra se houver certeza matemática absoluta
+    const eliminados = ranking.filter(r => {
+        if (!r.finished) return false;
+        // Um grupo só está eliminado se 8 outros grupos JÁ TÊM pontuação superior garantida
+        const garantidosMelhores = ranking.filter(outro => {
+            if (outro.grupo === r.grupo) return false;
+            return outro.pts > r.pts || (outro.pts === r.pts && outro.sg > r.sg);
+        }).length;
+        return garantidosMelhores >= 8;
+    }).map(r => r.grupo);
+
+    const qualificados = ranking.filter(r => {
+        if (!r.finished) return false;
+        // Um grupo só está garantido se for impossível 8 grupos ficarem à frente dele
+        const potenciaisMelhores = ranking.filter(outro => {
+            if (outro.grupo === r.grupo) return false;
+            // Se o outro não terminou, ele ainda pode superar R
+            if (!outro.finished) return true;
+            return outro.pts > r.pts || (outro.pts === r.pts && outro.sg > r.sg);
+        }).length;
+        return potenciaisMelhores < 8;
+    }).map(r => r.grupo);
+
+    const filtrados = COMBINACOES_FIFA.filter(c => {
+        for (let g of qualificados) if (!c.classificados.includes(g)) return false;
+        for (let g of eliminados) if (c.classificados.includes(g)) return false;
+        return true;
+    });
+
+    return filtrados;
 }
   
 // Ajuste na resolveSlotToName para não retornar fallback indevido
@@ -490,7 +473,6 @@ function resolveSlotToName(code) {
         const st = calcStandings(gm[1]);
         const pos = parseInt(gm[2]) - 1;
         const hasGames = (state.groupMatches[gm[1]] || []).some(m => m.hs !== null);
-        // Só retorna o nome se houver jogos, senão retorna null para o displaySlot tratar
         return (hasGames && st[pos]) ? st[pos].name : null;
     }
     
