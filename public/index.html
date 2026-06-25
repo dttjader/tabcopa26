@@ -266,6 +266,9 @@ nav.tabs{display:flex;justify-content:center;gap:.35rem;padding:1rem 1rem 0;flex
 </div>
 <div class="toast" id="toast"></div>
 <div id="modal-root"></div>
+<div data-slot-target onclick="displaySlot('3-1')">
+    Resultado aparecerá aqui
+</div>
 
 <script>
 // ══════════════════════════════════════════════════════
@@ -372,16 +375,20 @@ console.log("--- [SISTEMA FIFA] INICIANDO CARREGAMENTO DO SCRIPT ---");
 
 // 1. A MESTRA (A função que a interface chama)
 function displaySlot(code) {
-    console.log(">>> [LOG MESTRA] Processando slot: " + code);
+    // Encontra o elemento que disparou o evento
+    const target = event.target.closest('[data-slot-target]');
+    if (!target) {
+        console.error("Elemento alvo não encontrado");
+        return;
+    }
 
+    console.log(">>> [LOG MESTRA] Processando slot: " + code);
+    
     try {
-        // Passo A: Pergunta ao Filtro se é um nome fixo (1º ou 2º lugar)
         var fixed = resolveSlotToName(code);
-        
-        // Se o Filtro retornar um nome, a Mestra encerra aqui.
-        // Para códigos "3-X", o Filtro DEVE retornar null.
         if (fixed !== null) {
-            return fixed;
+            target.innerHTML = fixed;
+            return;
         }
 
         // Passo B: Lógica de Probabilidades para 3ºs lugares
