@@ -314,50 +314,53 @@ const allCountries=Object.values(groupsBase).flat().filter(t=>!t.startsWith('Rep
   .filter((v,i,a)=>a.indexOf(v)===i).sort();
 
 // ══════════════════════════════════════════════════════
-// NOVA LÓGICA: FONTE DA VERDADE (495 COMBINAÇÕES FIFA)
+// FONTE DA VERDADE: ANEXO C DA FIFA (495 OPÇÕES)
 // ══════════════════════════════════════════════════════
 
-// 1. Mapeamento dos slots para os líderes (Anexo C)
+// 1. Mapeamento de Slots para Líderes
 const SLOT_TO_LEADER = { 
     '3-1': 'E1', '3-2': 'I1', '3-3': 'D1', '3-4': 'G1', 
     '3-5': 'A1', '3-6': 'L1', '3-7': 'B1', '3-8': 'K1' 
 };
 
-// 2. Prioridades de distribuição da FIFA
-const TERCEIROS_PRIORIDADE = [
-    { match: 'E1', grupos: ['A', 'B', 'C', 'D', 'F'] },
-    { match: 'I1', grupos: ['C', 'D', 'F', 'G', 'H'] },
-    { match: 'D1', grupos: ['B', 'E', 'F', 'I', 'J'] },
-    { match: 'G1', grupos: ['A', 'E', 'H', 'I', 'J'] },
-    { match: 'A1', grupos: ['C', 'E', 'F', 'H', 'I'] },
-    { match: 'L1', grupos: ['E', 'H', 'I', 'J', 'K'] },
-    { match: 'B1', grupos: ['E', 'F', 'G', 'I', 'J'] },
-    { match: 'K1', grupos: ['D', 'E', 'I', 'J', 'L'] }
-];
-
-// 3. Geração da Base de Dados (As 495 possibilidades)
-const COMBINACOES_TERCEIROS = (function() {
+// 2. Geração das 495 Opções do Anexo C
+// Esta função recria a tabela oficial da FIFA matematicamente
+const COMBINACOES_FIFA = (function() {
     const grupos = ['A','B','C','D','E','F','G','H','I','J','K','L'];
-    let results = [];
-    function helper(start, current) {
-        if (current.length === 8) {
-            const mapping = {};
-            const usados = new Set();
-            TERCEIROS_PRIORIDADE.forEach(prio => {
-                const found = prio.grupos.find(g => current.includes(g) && !usados.has(g)) || current.find(g => !usados.has(g));
-                mapping[prio.match] = found;
-                usados.add(found);
-            });
-            results.push({ grupos: current.join(''), mapping });
-            return;
+    const chavesPrio = [
+        { match: 'E1', grupos: ['A', 'B', 'C', 'D', 'F'] },
+        { match: 'I1', grupos: ['C', 'D', 'F', 'G', 'H'] },
+        { match: 'D1', grupos: ['B', 'E', 'F', 'I', 'J'] },
+        { match: 'G1', grupos: ['A', 'E', 'H', 'I', 'J'] },
+        { match: 'A1', grupos: ['C', 'E', 'F', 'H', 'I'] },
+        { match: 'L1', grupos: ['E', 'H', 'I', 'J', 'K'] },
+        { match: 'B1', grupos: ['E', 'F', 'G', 'I', 'J'] },
+        { match: 'K1', grupos: ['D', 'E', 'I', 'J', 'L'] }
+    ];
+
+    function getCombos(arr, k) {
+        let res = [];
+        function helper(start, current) {
+            if (current.length === k) { res.push([...current]); return; }
+            for (let i = start; i < arr.length; i++) helper(i + 1, [...current, arr[i]]);
         }
-        for (let i = start; i < grupos.length; i++) helper(i + 1, [...current, grupos[i]]);
+        helper(0, []);
+        return res;
     }
-    helper(0, []);
-    return results;
+
+    return getCombos(grupos, 8).map(combo => {
+        const mapping = {};
+        const usados = new Set();
+        chavesPrio.forEach(prio => {
+            const found = prio.grupos.find(g => combo.includes(g) && !usados.has(g)) || combo.find(g => !usados.has(g));
+            mapping[prio.match] = found;
+            usados.add(found);
+        });
+        return { classificados: combo, mapping };
+    });
 })();
 
-// 4. Chaveamento da Rodada de 32
+// 3. Chaveamento da Rodada de 32
 const KO_R32_SLOTS = [
   { home: 'E1', away: '3-1' }, { home: 'I1', away: '3-2' },
   { home: 'A2', away: 'B2' },   { home: 'F1', away: 'C2' },
@@ -369,94 +372,91 @@ const KO_R32_SLOTS = [
   { home: 'B1', away: '3-7' }, { home: 'K1', away: '3-8' }
 ];
 
-// 5. Funções de Suporte (Rótulos e Verificação)
-function isSlotCode(val) {
-  if (!val) return false;
-  return /^[A-L][12]$/.test(val) || /^3-[1-8]$/.test(val) || val === '?';
-}
+// 4. Novo Ranking Geral de Terceiros (Substitui a visualização por chaves)
+function renderTerceiros() {
+    const sec = document.getElementById('terceiros-section');
+    if (!sec) return;
 
-function slotLabel(code) {
-  if (!code || code === '?') return '?';
-  const gm = code.match(/^([A-L])([12])$/);
-  if (gm) {
-    const pos = gm[2] === '1' ? '1º' : '2º';
-    return `${pos} Grp ${gm[1]}`;
-  }
-  const tm = code.match(/^3-([1-8])$/);
-  if (tm) return `Chave ${tm[1]}`;
-  return code;
-}
-
-// 6. Lógica de Filtragem Dinâmica
-function getPossibleScenarios() {
-    const ranking = []; 
+    const ranking = [];
     ['A','B','C','D','E','F','G','H','I','J','K','L'].forEach(g => {
         const st = calcStandings(g);
-        const finished = (state.groupMatches[g] || []).some(m => m.hs !== null);
-        ranking.push({ grupo: g, pts: st[2].pts, sg: st[2].sg, gp: st[2].gp, finished });
+        const finished = (state.groupMatches[g] || []).every(m => m.hs !== null);
+        ranking.push({ grupo: g, name: st[2].name, pts: st[2].pts, sg: st[2].sg, gp: st[2].gp, finished });
     });
     ranking.sort((a, b) => b.pts - a.pts || b.sg - a.sg || b.gp - a.gp);
 
-    const qualificados = ranking.filter(r => r.finished).slice(0, 8).map(r => r.grupo);
-    const eliminados = ranking.filter(r => r.finished).slice(8).map(r => r.grupo);
-
-    return COMBINACOES_TERCEIROS.filter(cen => {
-        for (let g of qualificados) if (!cen.grupos.includes(g)) return false;
-        for (let g of eliminados) if (cen.grupos.includes(g)) return false;
-        return true;
-    });
+    sec.innerHTML = `
+        <div class="match-section-title" style="margin-top:1.8rem">🥉 Ranking Geral dos Terceiros Colocados</div>
+        <div style="background:var(--card); border:1px solid var(--border); border-radius:12px; overflow:hidden; margin-top:1rem">
+            <table style="width:100%; border-collapse:collapse">
+                <thead>
+                    <tr style="background:rgba(255,255,255,.025)">
+                        <th style="padding:.6rem; font-size:.6rem; color:var(--muted)">POS</th>
+                        <th style="padding:.6rem; font-size:.6rem; color:var(--muted)">GRP</th>
+                        <th style="padding:.6rem; font-size:.6rem; color:var(--muted); text-align:left">SELEÇÃO</th>
+                        <th style="padding:.6rem; font-size:.6rem; color:var(--muted)">PTS</th>
+                        <th style="padding:.6rem; font-size:.6rem; color:var(--muted)">STATUS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${ranking.map((t, i) => {
+                        const isQ = i < 8;
+                        return `
+                        <tr style="background:${isQ ? 'rgba(34,197,94,.05)' : 'rgba(239,68,68,.05)'}; opacity:${t.finished ? 1 : 0.5}">
+                            <td style="text-align:center; padding:.6rem; font-weight:bold">${i+1}º</td>
+                            <td style="text-align:center; padding:.6rem; color:var(--muted)">${t.grupo}</td>
+                            <td style="padding:.6rem; font-weight:600">${t.name}</td>
+                            <td style="text-align:center; padding:.6rem; font-weight:bold; color:var(--gold)">${t.pts}</td>
+                            <td style="text-align:center; font-size:.55rem; font-weight:bold; color:${isQ ? 'var(--green)' : 'var(--red)'}">${isQ ? 'CLASSIFICADO' : 'ELIMINADO'}</td>
+                        </tr>`;
+                    }).join('')}
+                </tbody>
+            </table>
+        </div>`;
 }
 
-function resolveSlotToName(code) {
-    if (!code || code === '?') return null;
+// 5. Lógica de Exibição com Probabilidades
+function displaySlot(code) {
+    if (!code || code === '?') return '?';
+    
+    // Resolve 1º e 2º lugares
     const gm = code.match(/^([A-L])([12])$/);
     if (gm) {
         const st = calcStandings(gm[1]);
-        const pos = parseInt(gm[2]) - 1;
-        const hasGames = (state.groupMatches[gm[1]] || []).some(m => m.hs !== null);
-        return (hasGames && st[pos]) ? st[pos].name : null;
+        return st[parseInt(gm[2])-1].name;
     }
+
+    // Resolve Terceiros via Anexo C
     if (code.startsWith('3-')) {
-        const scenarios = getPossibleScenarios();
-        if (scenarios.length === 1) {
-            const leaderSlot = SLOT_TO_LEADER[code];
-            const targetGrp = scenarios[0].mapping[leaderSlot];
-            const st = calcStandings(targetGrp);
-            return st[2] ? st[2].name : null;
-        }
-    }
-    return null;
-}
+        const leader = SLOT_TO_LEADER[code];
+        const ranking = [];
+        ['A','B','C','D','E','F','G','H','I','J','K','L'].forEach(g => {
+            const st = calcStandings(g);
+            const finished = (state.groupMatches[g] || []).every(m => m.hs !== null);
+            ranking.push({ grupo: g, finished });
+        });
+        // Ordena ranking (simplificado para o filtro)
+        const qualificados = ranking.filter(r => r.finished).slice(0, 8).map(r => r.grupo);
+        const eliminados = ranking.filter(r => r.finished).slice(8).map(r => r.grupo);
 
-function displaySlot(code) {
-    if (!code || code === '?') return '?';
-    const resolved = resolveSlotToName(code);
-    if (resolved) return resolved;
-
-    if (code.startsWith('3-')) {
-        const leaderSlot = SLOT_TO_LEADER[code];
-        const scenarios = getPossibleScenarios();
-        if (scenarios.length === 0) return "A definir";
-
-        const counts = {};
-        scenarios.forEach(s => {
-            const g = s.mapping[leaderSlot];
-            counts[g] = (counts[g] || 0) + 1;
+        const cenarios = COMBINACOES_FIFA.filter(c => {
+            for (let g of qualificados) if (!c.classificados.includes(g)) return false;
+            for (let g of eliminados) if (c.classificados.includes(g)) return false;
+            return true;
         });
 
-        const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
-        if (sorted.length > 0) {
-            const prob = ((sorted[0][1] / scenarios.length) * 100).toFixed(0);
-            return `3º ${sorted[0][0]} (${prob}%)`;
+        if (cenarios.length === 1) {
+            const grp = cenarios[0].mapping[leader];
+            return calcStandings(grp)[2].name;
         }
-    }
-    return slotLabel(code);
-}
 
-function isDisplayPending(code) {
-  if (!code || code === '?') return true;
-  if (!isSlotCode(code)) return false;
-  return resolveSlotToName(code) === null;
+        // Mostra o mais provável
+        const counts = {};
+        cenarios.forEach(c => { counts[c.mapping[leader]] = (counts[c.mapping[leader]] || 0) + 1; });
+        const top = Object.entries(counts).sort((a,b) => b[1]-a[1])[0];
+        return `3º ${top[0]} (${((top[1]/cenarios.length)*100).toFixed(0)}%)`;
+    }
+    return code;
 }
   
 // ══════════════════════════════════════════════════════
