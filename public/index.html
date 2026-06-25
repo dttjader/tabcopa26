@@ -428,35 +428,34 @@ function getPossibleScenarios() {
   
 // 5. Exibição das Possibilidades (Substitui "Chave 1" pelas opções reais)
 function displaySlot(code) {
-    // 1. Tenta resolver nomes fixos (1º e 2º lugares)
+    // LOG DE ENTRADA TOTAL - Nada acontece antes disso
+    console.group(`[ENTRADA CRÍTICA] Slot: ${code}`);
+    
+    // 1. Verifica se resolveSlotToName está "roubando" a execução
     const resolved = resolveSlotToName(code);
-    if (resolved) return resolved;
+    console.log("Resultado de resolveSlotToName:", resolved);
 
-    // 2. Lógica para Terceiros (3-1 a 3-8)
+    if (resolved) {
+        console.log("Interrompendo: resolveSlotToName retornou um valor. Saindo...");
+        console.groupEnd();
+        return resolved;
+    }
+
+    // 2. Se chegou aqui, resolveSlotToName retornou null (correto para terceiros)
+    console.log("Iniciando cálculo de probabilidades para terceiros...");
+    
     if (code.startsWith('3-')) {
         const leader = SLOT_TO_LEADER[code];
         const scenarios = getPossibleScenarios();
         
-        console.group(`--- AUDITORIA DE FLUXO: SLOT ${code} ---`);
-        console.log("Líder identificado para este slot:", leader);
-        console.log("Cenários recebidos da filtragem:", scenarios.length);
+        console.log("Líder do Slot:", leader);
+        console.log("Cenários ativos recebidos:", scenarios.length);
 
         if (scenarios.length > 0) {
             const counts = {};
-            
-            // Auditoria da primeira iteração para ver se o mapping existe
-            if (scenarios[0]) {
-                console.log("Exemplo de mapping no primeiro cenário:", scenarios[0].mapping);
-                console.log("Valor para o líder neste cenário:", scenarios[0].mapping[leader]);
-            }
-
-            scenarios.forEach((s, index) => { 
+            scenarios.forEach(s => { 
                 const g = s.mapping[leader];
-                if (g) {
-                    counts[g] = (counts[g] || 0) + 1; 
-                } else if (index === 0) {
-                    console.error(`ERRO CRÍTICO: O líder ${leader} não existe no mapping do cenário!`);
-                }
+                if (g) counts[g] = (counts[g] || 0) + 1; 
             });
             
             const total = scenarios.length;
@@ -464,50 +463,39 @@ function displaySlot(code) {
                 .map(([grp, qtd]) => ({ grp, percent: (qtd / total) * 100 }))
                 .sort((a, b) => b.percent - a.percent);
 
-            console.log("Contagem final (counts):", counts);
-            console.log("Resultado formatado (sorted):", sorted);
+            console.log("Distribuição calculada:", sorted);
             console.groupEnd();
 
-            // Se chegamos aqui com dados, NÃO PODE haver fallback
+            // REGRA: Se houver jogos, mostra probabilidade.
             if (sorted.length > 0) {
-                if (sorted.length === 1 || sorted[0].percent === 100) {
-                    const st = calcStandings(sorted[0].grp);
-                    return st[2] ? st[2].name : `3º Grp ${sorted[0].grp}`;
-                }
-
-                // Retorna a lista de probabilidades
                 return sorted.slice(0, 3)
                     .map(p => `3º ${p.grp} (${p.percent.toFixed(0)}%)`)
                     .join(' | ');
             }
-        } else {
-            console.warn("Fluxo interrompido: scenarios.length é 0");
-            console.groupEnd();
         }
     }
-    
-    // Se o código chegar aqui, ele imprimirá o motivo no console antes de retornar o fallback
-    console.error(`FALLBACK ATIVADO para o slot ${code}. Verifique os logs acima.`);
+
+    // 3. Se chegou aqui, algo falhou no mapeamento ou nos cenários
+    console.error("FALHA NO FLUXO: Clicou no fallback final.");
+    console.groupEnd();
     return typeof slotLabel === 'function' ? slotLabel(code) : code;
 }
   
+// Ajuste na resolveSlotToName para não retornar fallback indevido
 function resolveSlotToName(code) {
     if (!code || code === '?') return null;
+    
     const gm = code.match(/^([A-L])([12])$/);
     if (gm) {
         const st = calcStandings(gm[1]);
         const pos = parseInt(gm[2]) - 1;
         const hasGames = (state.groupMatches[gm[1]] || []).some(m => m.hs !== null);
+        // Só retorna o nome se houver jogos, senão retorna null para o displaySlot tratar
         return (hasGames && st[pos]) ? st[pos].name : null;
     }
-    const scenarios = getPossibleScenarios();
-    if (scenarios.length === 1 && code.startsWith('3-')) {
-        const leader = SLOT_TO_LEADER[code];
-        const targetGrp = scenarios[0].mapping[leader];
-        const st = calcStandings(targetGrp);
-        return st[2] ? st[2].name : `3º Grp ${targetGrp}`;
-    }
-    return null;
+    
+    // Para códigos "3-X", SEMPRE retorna null aqui para forçar o cálculo no displaySlot
+    return null; 
 }
 
 function slotLabel(code) {
