@@ -375,32 +375,24 @@ console.log("--- [SISTEMA FIFA] INICIANDO CARREGAMENTO DO SCRIPT ---");
 
 // 1. A MESTRA (A função que a interface chama)
 function displaySlot(code) {
-    // Encontra o elemento que disparou o evento
-    const target = event.target.closest('[data-slot-target]');
-    if (!target) {
-        console.error("Elemento alvo não encontrado");
-        return;
-    }
-
     console.log(">>> [LOG MESTRA] Processando slot: " + code);
-    
     try {
+        // Passo A: Pergunta ao Filtro se é um nome fixo (1º ou 2º lugar)
         var fixed = resolveSlotToName(code);
         if (fixed !== null) {
-            target.innerHTML = fixed;
-            return;
+            return fixed;  // ✅ Retorna apenas a string
         }
-
+        
         // Passo B: Lógica de Probabilidades para 3ºs lugares
         if (code && code.indexOf('3-') === 0) {
             var scenarios = getPossibleScenarios();
             console.log(">>> [LOG MOTOR] Cenários ativos: " + scenarios.length);
-
+            
             if (typeof SLOT_TO_LEADER === 'undefined') {
                 console.error(">>> [ERRO] SLOT_TO_LEADER não definido!");
                 return "Erro: Mapeamento";
             }
-
+            
             var leader = SLOT_TO_LEADER[code];
             if (scenarios.length > 0 && leader) {
                 var counts = {};
@@ -410,14 +402,15 @@ function displaySlot(code) {
                         counts[g] = (counts[g] || 0) + 1;
                     }
                 }
-
+                
                 var total = scenarios.length;
                 var results = [];
                 for (var grp in counts) {
                     results.push({ grp: grp, percent: (counts[grp] / total) * 100 });
                 }
+                
                 results.sort(function(a, b) { return b.percent - a.percent; });
-
+                
                 if (results.length > 0) {
                     var output = "";
                     var limit = Math.min(results.length, 3);
@@ -425,14 +418,14 @@ function displaySlot(code) {
                         if (j > 0) output += " | ";
                         output += "3º " + results[j].grp + " (" + results[j].percent.toFixed(0) + "%)";
                     }
-                    return output;
+                    return output;  // ✅ Retorna apenas a string
                 }
             }
         }
     } catch (e) {
         console.error(">>> [ERRO CRÍTICO] Falha na displaySlot: " + e.message);
     }
-
+    
     return (typeof slotLabel === 'function') ? slotLabel(code) : code;
 }
   
@@ -861,29 +854,41 @@ function renderMatchesRep(){
 }
 
 function renderMatchesKO(){
-  const body=document.getElementById('matches-body');
-  const roundBtns=koRounds.map(r=>
-    `<button class="filter-btn${activeKoRound===r.key?' on':''}" onclick="setKoRound('${r.key}')">${r.label}</button>`
+  const body = document.getElementById('matches-body');
+  const roundBtns = koRounds.map(r =>
+    `<button class="filter-btn${activeKoRound === r.key ? ' on' : ''}" onclick="setKoRound('${r.key}')">${r.label}</button>`
   ).join('');
-  const rLabel=koRounds.find(r=>r.key===activeKoRound).label;
-  body.innerHTML=`<div class="filter-bar">${roundBtns}</div><div class="match-section-title">${rLabel}</div><div class="matches-grid" id="ko-grid"></div>`;
-  const grid=document.getElementById('ko-grid');
-    state.knockout[activeKoRound].forEach((m,mi)=>{
-    // REMOVIDO O IF: Agora ele tenta resolver o slot independente da rodada
+  const rLabel = koRounds.find(r => r.key === activeKoRound).label;
+  
+  body.innerHTML = `
+    <div class="filter-bar">${roundBtns}</div>
+    <div class="match-section-title">${rLabel}</div>
+    <div class="matches-grid" id="ko-grid"></div>
+  `;
+  
+  const grid = document.getElementById('ko-grid');
+  
+  state.knockout[activeKoRound].forEach((m, mi) => {
+    // ✅ CAPTURA OS RETORNOS
     let homeDisplay = displaySlot(m.home);
     let awayDisplay = displaySlot(m.away);
-
-    grid.appendChild(makeMatchCard({
-      label: rLabel + " · Partida " + (mi + 1),
-      badgeClass: 'badge-ko',
-      badgeText: 'MATA-MATA',
-      home: homeDisplay,
-      away: awayDisplay,
-      hs: m.hs,
-      as: m.as,
-      hpen: m.hpen,
-      apen: m.apen
-    }));
+    
+    // ✅ USA NO HTML
+    const matchHTML = `
+      <div class="match-card">
+        <div class="match-team home">
+          <span class="team-name">${homeDisplay}</span>
+          <input type="number" class="score" value="${m.homeScore || 0}">
+        </div>
+        <div class="match-vs">vs</div>
+        <div class="match-team away">
+          <input type="number" class="score" value="${m.awayScore || 0}">
+          <span class="team-name">${awayDisplay}</span>
+        </div>
+      </div>
+    `;
+    
+    grid.innerHTML += matchHTML;
   });
 }
 
