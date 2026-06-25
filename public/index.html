@@ -406,7 +406,6 @@ function displaySlot(code) {
             var leader = SLOT_TO_LEADER[code];
             
             if (leader && scenarios && scenarios.length > 0) {
-                // ✅ NOVO: Obter grupos permitidos para este líder
                 var allowedGroups = ALLOWED_THIRD_PLACE_GROUPS[leader];
                 console.log(">>> [LOG] Líder: " + leader + ", Grupos permitidos: " + allowedGroups.join(','));
                 
@@ -416,19 +415,24 @@ function displaySlot(code) {
                 }
                 
                 var counts = {};
+                var validCount = 0;  // ✅ NOVO: Contar cenários válidos
+                
                 for (var i = 0; i < scenarios.length; i++) {
                     var g = scenarios[i].mapping[leader];
                     
-                    // ✅ NOVO: Verificar se o grupo está na lista de permitidos
                     if (g && allowedGroups.indexOf(g) !== -1) {
                         counts[g] = (counts[g] || 0) + 1;
+                        validCount++;  // ✅ NOVO: Incrementar contador
                     }
                 }
                 
-                console.log(">>> [LOG] Contagens após filtro regulatório: ", counts);
+                console.log(">>> [LOG] Contagens após filtro: ", counts);
+                console.log(">>> [LOG] Cenários válidos: " + validCount + " de " + scenarios.length);
                 
-                var total = scenarios.length;
+                // ✅ NOVO: Usar validCount em vez de scenarios.length
+                var total = validCount > 0 ? validCount : scenarios.length;
                 var results = [];
+                
                 for (var grp in counts) {
                     results.push({ grp: grp, percent: (counts[grp] / total) * 100 });
                 }
