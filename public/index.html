@@ -421,34 +421,30 @@ function resolveSlotToName(code) {
 
 // 5. Exibição visual com probabilidade
 function displaySlot(code) {
+    // 1. Tenta resolver o nome real (se já estiver definido)
     const resolved = resolveSlotToName(code);
     if (resolved) return resolved;
 
+    // 2. Se for um slot de terceiro (3-1, 3-2...) e ainda não tiver nome real
     if (code.startsWith('3-')) {
-        const leader = SLOT_TO_LEADER[code];
-        const { qualificados, eliminados } = getFinishedThirds();
-
-        const cenarios = COMBINACOES_FIFA.filter(c => {
-            for (let g of qualificados) if (!c.classificados.includes(g)) return false;
-            for (let g of eliminados) if (c.classificados.includes(g)) return false;
-            return true;
-        });
-
-        if (cenarios.length > 0 && cenarios.length < 495) {
+        const leader = SLOT_TO_LEADER[code]; // Precisa do mapeamento
+        const scenarios = getPossibleScenarios(); // Precisa filtrar as 495 opções
+        
+        if (scenarios.length > 0 && scenarios.length < 495) {
             const counts = {};
-            cenarios.forEach(c => { 
-                const g = c.mapping[leader];
-                counts[g] = (counts[g] || 0) + 1; 
+            scenarios.forEach(s => {
+                const g = s.mapping[leader];
+                counts[g] = (counts[g] || 0) + 1;
             });
-            const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
-            const prob = ((top[1] / cenarios.length) * 100).toFixed(0);
-            return `3º ${top[0]} (${prob}%)`;
+            // Pega o grupo com maior chance
+            const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+            const prob = ((sorted[0][1] / scenarios.length) * 100).toFixed(0);
+            return `3º ${sorted[0][0]} (${prob}%)`;
         }
     }
     
-    // Fallback para o label amigável (ex: 1º Grp A)
-    if (typeof slotLabel === 'function') return slotLabel(code);
-    return code;
+    // 3. Se tudo falhar, ele mostra o rótulo amigável (Chave 1)
+    return slotLabel(code); 
 }
   
 // ══════════════════════════════════════════════════════
