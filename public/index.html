@@ -301,7 +301,23 @@ const repDef=[
    note:'Iraque entra direto na final (melhor ranking FIFA)',
    partidas:[{id:'sfm2a',stage:'SF',home:'Bolívia 🇧🇴',away:'Suriname 🇸🇷'},{id:'fim2',stage:'FIN',home:'Iraque 🇮🇶',away:null}]},
 ];
-    // Mapeamento dos slots da FIFA para os líderes de grupo
+
+const koRounds=[
+  {key:'r32',label:'Rodada de 32'},{key:'r16',label:'Oitavas de Final'},
+  {key:'qf',label:'Quartas de Final'},{key:'sf',label:'Semifinal'},
+  {key:'3p',label:'🥉 3º Lugar'},{key:'final',label:'🏆 Final'},
+];
+const POSICOES=['G','D','M','A'];
+const POS_LABELS={G:'Goleiro',D:'Defensor',M:'Meio-campo',A:'Atacante'};
+const allCountries=Object.values(groupsBase).flat().filter(t=>!t.startsWith('Repescagem'))
+  .concat(repDef.flatMap(r=>r.partidas.filter(p=>p.stage==='SF').flatMap(p=>[p.home,p.away])))
+  .filter((v,i,a)=>a.indexOf(v)===i).sort();
+
+// ========================================================
+// 1. CONFIGURAÇÕES E BASE DE DADOS (FONTE DA VERDADE)
+// ========================================================
+
+// Mapeamento dos slots da FIFA para os líderes de grupo
 const SLOT_TO_LEADER = { 
     '3-1': 'E1', '3-2': 'I1', '3-3': 'D1', '3-4': 'G1', 
     '3-5': 'A1', '3-6': 'L1', '3-7': 'B1', '3-8': 'K1' 
@@ -319,7 +335,7 @@ const TERCEIROS_PRIORIDADE = [
     { match: 'K1', grupos: ['D', 'E', 'I', 'J', 'L'] }
 ];
 
-// Geração automática das 495 combinações (Fonte da Verdade)
+// Geração automática das 495 combinações
 const COMBINACOES_TERCEIROS = (function() {
     const grupos = ['A','B','C','D','E','F','G','H','I','J','K','L'];
     let results = [];
@@ -340,52 +356,28 @@ const COMBINACOES_TERCEIROS = (function() {
     helper(0, []);
     return results;
 })();
-const koRounds=[
-  {key:'r32',label:'Rodada de 32'},{key:'r16',label:'Oitavas de Final'},
-  {key:'qf',label:'Quartas de Final'},{key:'sf',label:'Semifinal'},
-  {key:'3p',label:'🥉 3º Lugar'},{key:'final',label:'🏆 Final'},
-];
-const POSICOES=['G','D','M','A'];
-const POS_LABELS={G:'Goleiro',D:'Defensor',M:'Meio-campo',A:'Atacante'};
-const allCountries=Object.values(groupsBase).flat().filter(t=>!t.startsWith('Repescagem'))
-  .concat(repDef.flatMap(r=>r.partidas.filter(p=>p.stage==='SF').flatMap(p=>[p.home,p.away])))
-  .filter((v,i,a)=>a.indexOf(v)===i).sort();
 
-// ══════════════════════════════════════════════════════
-// CHAVEAMENTO COPA 2026 — SLOTS DA RODADA DE 32
-// Chaveamento oficial FIFA (12 grupos, 48 times, 32 avançam)
-// Códigos: "A1"=1ºGrupoA, "B2"=2ºGrupoB, "3-1"=1ºmelhor3º...
-// ══════════════════════════════════════════════════════
-// Chaveamento oficial Copa do Mundo 2026
-// Grupos de 4 partidas formam uma chave até o semifinalista:
-// Chave A (P1-P4) → QF1 → SF1, Chave B (P5-P8) → QF2 → SF1
-// Chave C (P9-P12) → QF3 → SF2, Chave D (P13-P16) → QF4 → SF2
-// 3-N = vencedor da Chave N de terceiros (não ranking geral)
-const KO_R32_SLOTS = [
-  // — Bloco 1 (Partidas 1–4) —
-  { home: 'E1', away: '3-1' },  // Partida 1
-  { home: 'I1', away: '3-2' },  // Partida 2
-  { home: 'A2', away: 'B2' },   // Partida 3
-  { home: 'F1', away: 'C2' },   // Partida 4
-  // — Bloco 2 (Partidas 5–8) —
-  { home: 'K2', away: 'L2' },   // Partida 5
-  { home: 'H1', away: 'J2' },   // Partida 6
-  { home: 'D1', away: '3-3' },  // Partida 7
-  { home: 'G1', away: '3-4' },  // Partida 8
-  // — Bloco 3 (Partidas 9–12) —
-  { home: 'C1', away: 'F2' },   // Partida 9
-  { home: 'E2', away: 'I2' },   // Partida 10
-  { home: 'A1', away: '3-5' },  // Partida 11
-  { home: 'L1', away: '3-6' },  // Partida 12
-  // — Bloco 4 (Partidas 13–16) —
-  { home: 'J1', away: 'H2' },   // Partida 13
-  { home: 'D2', away: 'G2' },   // Partida 14
-  { home: 'B1', away: '3-7' },  // Partida 15
-  { home: 'K1', away: '3-8' },  // Partida 16
-];
+// ========================================================
+// 2. FUNÇÕES DE APOIO E RÓTULOS (RESOLVE O ERRO DE SLOTLABEL)
+// ========================================================
+
+function slotLabel(code) {
+    if (!code || code === '?') return '?';
+    const gm = code.match(/^([A-L])([12])$/);
+    if (gm) {
+        const pos = gm[2] === '1' ? '1º' : '2º';
+        return `${pos} Grp ${gm[1]}`;
+    }
+    const tm = code.match(/^3-([1-8])$/);
+    if (tm) return `Chave ${tm[1]}`;
+    return code;
+}
+
+// ========================================================
+// 3. LÓGICA DE FILTRAGEM DINÂMICA
+// ========================================================
 
 function getPossibleScenarios() {
-    // 1. Pega o ranking atual de todos os terceiros
     const ranking = []; 
     ['A','B','C','D','E','F','G','H','I','J','K','L'].forEach(g => {
         const st = calcStandings(g);
@@ -394,11 +386,9 @@ function getPossibleScenarios() {
     });
     ranking.sort((a, b) => b.pts - a.pts || b.sg - a.sg || b.gp - a.gp);
 
-    // 2. Identifica quem está garantido e quem está fora
     const qualificados = ranking.filter(r => r.finished).slice(0, 8).map(r => r.grupo);
     const eliminados = ranking.filter(r => r.finished).slice(8).map(r => r.grupo);
 
-    // 3. Filtra a "Fonte da Verdade"
     return COMBINACOES_TERCEIROS.filter(cen => {
         for (let g of qualificados) if (!cen.grupos.includes(g)) return false;
         for (let g of eliminados) if (cen.grupos.includes(g)) return false;
@@ -406,13 +396,32 @@ function getPossibleScenarios() {
     });
 }
 
+function resolveSlotToName(code) {
+    if (!code || code === '?') return null;
+    const gm = code.match(/^([A-L])([12])$/);
+    if (gm) {
+        const st = calcStandings(gm[1]);
+        const pos = parseInt(gm[2]) - 1;
+        const hasGames = (state.groupMatches[gm[1]] || []).some(m => m.hs !== null);
+        return (hasGames && st[pos]) ? st[pos].name : null;
+    }
+    if (code.startsWith('3-')) {
+        const scenarios = getPossibleScenarios();
+        if (scenarios.length === 1) {
+            const leaderSlot = SLOT_TO_LEADER[code];
+            const targetGrp = scenarios[0].mapping[leaderSlot];
+            const st = calcStandings(targetGrp);
+            return st[2] ? st[2].name : null;
+        }
+    }
+    return null;
+}
+
 function displaySlot(code) {
     if (!code || code === '?') return '?';
-    
     const resolved = resolveSlotToName(code);
     if (resolved) return resolved;
 
-    // Se for um slot de terceiro ainda indefinido, mostra probabilidade
     if (code.startsWith('3-')) {
         const leaderSlot = SLOT_TO_LEADER[code];
         const scenarios = getPossibleScenarios();
@@ -430,35 +439,7 @@ function displaySlot(code) {
             return `3º ${sorted[0][0]} (${prob}%)`;
         }
     }
-    
-    // Fallback para o label original (ex: 1º Grp A)
-    return slotLabel ? slotLabel(code) : code;
-}
-  function resolveSlotToName(code) {
-    if (!code || code === '?') return null;
-    
-    // Lógica para 1º e 2º lugares (A1, B2, etc)
-    const gm = code.match(/^([A-L])([12])$/);
-    if (gm) {
-        const st = calcStandings(gm[1]);
-        const pos = parseInt(gm[2]) - 1;
-        // Verifica se o grupo já teve jogos para evitar nomes vazios
-        const hasGames = (state.groupMatches[gm[1]] || []).some(m => m.hs !== null);
-        return (hasGames && st[pos]) ? st[pos].name : null;
-    }
-
-    // Lógica para Terceiros Lugares (3-1, 3-2, etc)
-    if (code.startsWith('3-')) {
-        const leaderSlot = SLOT_TO_LEADER[code];
-        const scenarios = getPossibleScenarios();
-        
-        if (scenarios.length === 1) {
-            const targetGrp = scenarios[0].mapping[leaderSlot];
-            const st = calcStandings(targetGrp);
-            return st[2] ? st[2].name : `3º Grp ${targetGrp}`;
-        }
-    }
-    return null;
+    return slotLabel(code);
 }
   
 // ══════════════════════════════════════════════════════
