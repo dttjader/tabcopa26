@@ -369,21 +369,48 @@ const COMBINACOES_FIFA = (function() {
 // 4. Função de Filtragem (Quem está no G8 agora?)
 function getPossibleScenarios() {
     const ranking = [];
-    ['A','B','C','D','E','F','G','H','I','J','K','L'].forEach(g => {
+    const grupos = ['A','B','C','D','E','F','G','H','I','J','K','L'];
+    
+    grupos.forEach(g => {
         const st = calcStandings(g);
         const matches = state.groupMatches[g] || [];
-        // Um grupo só é considerado "Finalizado" se tiver os 6 jogos preenchidos
         const finished = matches.length >= 6 && matches.every(m => m.hs !== null && m.as !== null);
-        
-        // Segurança: garante que o objeto de terceiro lugar exista
-        const thirdPlace = st[2] || { pts: 0, sg: 0, gp: 0 };
-        ranking.push({ grupo: g, pts: thirdPlace.pts, sg: thirdPlace.sg, gp: thirdPlace.gp, finished });
+        const third = st[2] || { pts: 0, sg: 0, gp: 0 };
+        ranking.push({ grupo: g, pts: third.pts, sg: third.sg, gp: third.gp, finished });
     });
 
-    ranking.sort((a, b) => b.pts - a.pts || b.sg - a.sg || b.gp - a.gp);
+    // 1. Cálculo do Potencial Máximo de cada grupo (quem ainda pode pontuar)
+    const rankingComPotencial = ranking.map(r => {
+        if (r.finished) return { ...r, ptsMax: r.pts, sgMax: r.sg };
+        // Se não terminou, assumimos que pode chegar a uma pontuação maior (ex: +3 ou +6)
+        return { ...r, ptsMax: 9, sgMax: 10 }; 
+    });
 
-    const qualificados = ranking.filter(r => r.finished).slice(0, 8).map(r => r.grupo);
-    const eliminados = ranking.filter(r => r.finished).slice(8).map(r => r.grupo);
+    // 2. Definição de ELIMINADO MATEMÁTICO:
+    // Um grupo só está fora se o seu total (mesmo com 3 jogos) for menor que o 
+    // 8º colocado do ranking de "piores cenários possíveis".
+    const eliminados = ranking.filter(r => {
+        if (!r.finished) return false;
+        // Conta quantos grupos PODEM superar este grupo R
+        const superioresPossiveis = rankingComPotencial.filter(outro => {
+            if (outro.grupo === r.grupo) return false;
+            return outro.ptsMax > r.pts || (outro.ptsMax === r.pts && outro.sgMax > r.sg);
+        }).length;
+        // Se 8 ou mais grupos podem superá-lo com certeza, ele está fora
+        return superioresPossiveis >= 8;
+    }).map(r => r.grupo);
+
+    // 3. Definição de CLASSIFICADO MATEMÁTICO:
+    // Um grupo só está dentro se, mesmo no pior cenário, ele não cair para 9º.
+    const qualificados = ranking.filter(r => {
+        if (!r.finished) return false;
+        const podemFicarAtras = rankingComPotencial.filter(outro => {
+            if (outro.grupo === r.grupo) return false;
+            return outro.ptsMax < r.pts;
+        }).length;
+        // Se pelo menos 4 grupos (12-8) nunca puderem alcançá-lo, ele está dentro
+        return podemFicarAtras >= 4; 
+    }).map(r => r.grupo);
 
     const filtrados = COMBINACOES_FIFA.filter(c => {
         for (let g of qualificados) if (!c.classificados.includes(g)) return false;
@@ -391,12 +418,12 @@ function getPossibleScenarios() {
         return true;
     });
 
-    // LOG DE AUDITORIA CRÍTICO
-    console.group("--- AUDITORIA DE CENÁRIOS ---");
-    console.log("Ranking de Terceiros:", ranking);
-    console.log("Qualificados (G8 Travado):", qualificados);
-    console.log("Eliminados (Fora Travado):", eliminados);
-    console.log("Cenários Restantes (Filtrados):", filtrados.length);
+    // LOG DE DIAGNÓSTICO REAL
+    console.group("--- LOG DE SEGURANÇA MATEMÁTICA ---");
+    console.log("Grupos com 3 jogos:", ranking.filter(r => r.finished).map(r => r.grupo).join(', '));
+    console.log("Qualificados Matemáticos (Certeza):", qualificados.length > 0 ? qualificados : "NENHUM");
+    console.log("Eliminados Matemáticos (Certeza):", eliminados.length > 0 ? eliminados : "NENHUM");
+    console.log("Cenários Restantes:", filtrados.length);
     console.groupEnd();
 
     return filtrados;
@@ -404,20 +431,14 @@ function getPossibleScenarios() {
   
 // 5. Exibição das Possibilidades (Substitui "Chave 1" pelas opções reais)
 function displaySlot(code) {
-    // 1. Tenta resolver nomes fixos (1º e 2º lugares)
     const resolved = resolveSlotToName(code);
     if (resolved) return resolved;
 
-    // 2. Lógica para Terceiros (3-1 a 3-8)
     if (code.startsWith('3-')) {
         const leader = SLOT_TO_LEADER[code];
         const scenarios = getPossibleScenarios();
         
-        // LOG DE FALLBACK
-        console.group(`--- DIAGNÓSTICO SLOT ${code} ---`);
-        console.log("Líder associado:", leader);
-        console.log("Quantidade de cenários recebida:", scenarios.length);
-
+        // Se scenarios.length for 495, o log mostrará por que ninguém foi filtrado
         if (scenarios.length > 0) {
             const counts = {};
             scenarios.forEach(s => { 
@@ -425,33 +446,19 @@ function displaySlot(code) {
                 counts[g] = (counts[g] || 0) + 1; 
             });
             
-            console.log("Contagem de Grupos (counts):", counts);
-
             const total = scenarios.length;
             const sorted = Object.entries(counts)
                 .map(([grp, qtd]) => ({ grp, percent: (qtd / total) * 100 }))
                 .sort((a, b) => b.percent - a.percent);
 
-            console.log("Distribuição Final:", sorted);
-            console.groupEnd();
-
-            // Se houver apenas 1 cenário (100%), mostra o nome do time ou grupo
-            if (sorted.length === 1 || sorted[0].percent === 100) {
-                const st = calcStandings(sorted[0].grp);
-                return st[2] ? st[2].name : `3º Grp ${sorted[0].grp}`;
-            }
-
-            // Retorna a lista de probabilidades (Ex: 3º E (45%) | 3º F (30%))
-            return sorted.slice(0, 3)
+            // MOSTRA PROBABILIDADES SEMPRE (Remove fallback de "Chave 1")
+            const display = sorted.slice(0, 3)
                 .map(p => `3º ${p.grp} (${p.percent.toFixed(0)}%)`)
                 .join(' | ');
+            
+            return sorted.length > 3 ? `${display}...` : display;
         }
-
-        console.warn("ALERTA: scenarios.length é 0. Verifique se COMBINACOES_FIFA está carregada.");
-        console.groupEnd();
     }
-    
-    // Se chegou aqui, o fallback é inevitável
     return typeof slotLabel === 'function' ? slotLabel(code) : code;
 }
   
