@@ -362,31 +362,35 @@ const COMBINACOES_FIFA = (function() {
     });
 })();
 
-// 3. Função de Filtragem (Ajustada para Ranking em Tempo Real)
+// 3. Função de Filtragem com Log de Auditoria
 function getPossibleScenarios() {
     const ranking = [];
     ['A','B','C','D','E','F','G','H','I','J','K','L'].forEach(g => {
         const st = calcStandings(g);
-        // Removemos a trava do "finished" para permitir cálculo em tempo real
-        ranking.push({ 
-            grupo: g, 
-            pts: st[2].pts, 
-            sg: st[2].sg, 
-            gp: st[2].gp 
-        });
+        const matches = state.groupMatches[g] || [];
+        const finished = matches.length >= 6 && matches.every(m => m.hs !== null && m.as !== null);
+        ranking.push({ grupo: g, pts: st[2].pts, sg: st[2].sg, gp: st[2].gp, finished });
     });
 
-    // Ordena o ranking atual (quem seriam os 8 hoje)
     ranking.sort((a, b) => b.pts - a.pts || b.sg - a.sg || b.gp - a.gp);
 
-    // Pegamos os 8 que estão passando AGORA e os 4 que estão saindo AGORA
-    const qualificados = ranking.slice(0, 8).map(r => r.grupo);
-    
-    // Como o Anexo C da FIFA é uma tabela de busca baseada no SET de 8 times,
-    // ao passarmos os 8 atuais, o filtro encontrará exatamente 1 opção das 495.
-    return COMBINACOES_FIFA.filter(c => {
-        return qualificados.every(g => c.classificados.includes(g));
+    const qualificados = ranking.filter(r => r.finished).slice(0, 8).map(r => r.grupo);
+    const eliminados = ranking.filter(r => r.finished).slice(8).map(r => r.grupo);
+
+    const filtrados = COMBINACOES_FIFA.filter(c => {
+        for (let g of qualificados) if (!c.classificados.includes(g)) return false;
+        for (let g of eliminados) if (c.classificados.includes(g)) return false;
+        return true;
     });
+
+    // LOG DE AUDITORIA NO CONSOLE (Aperte F12 para ver)
+    console.group("Log de Decisão FIFA - Anexo C");
+    console.log("Grupos Finalizados (G8):", qualificados.join(', '));
+    console.log("Grupos Eliminados:", eliminados.join(', '));
+    console.log("Cenários Restantes das 495 opções:", filtrados.length);
+    console.groupEnd();
+
+    return filtrados;
 }
 
 // 4. Resolução do nome do time no Mata-Mata
@@ -413,7 +417,7 @@ function resolveSlotToName(code) {
     return null;
 }
 
-// 5. Função de Exibição
+// 5. Função de Exibição com Detalhamento
 function displaySlot(code) {
     const resolved = resolveSlotToName(code);
     if (resolved) return resolved;
@@ -422,17 +426,22 @@ function displaySlot(code) {
         const leader = SLOT_TO_LEADER[code];
         const scenarios = getPossibleScenarios();
         
-        // Se houver incerteza (mais de 1 cenário), mostra probabilidade
-        // Se houver apenas 1, o resolveSlotToName já teria retornado acima
-        if (scenarios.length > 1 && scenarios.length < 495) {
+        if (scenarios.length > 0 && scenarios.length < 495) {
             const counts = {};
             scenarios.forEach(s => { 
                 const g = s.mapping[leader];
                 counts[g] = (counts[g] || 0) + 1; 
             });
+            
             const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+            const topGrp = sorted[0][0];
             const prob = ((sorted[0][1] / scenarios.length) * 100).toFixed(0);
-            return `3º ${sorted[0][0]} (${prob}%)`;
+
+            // Se houver mais de uma opção, mostramos o log visual na interface
+            if (sorted.length > 1) {
+                return `<span title="Cenários possíveis: ${sorted.map(x => x[0]).join(', ')}">3º ${topGrp} (${prob}%)</span>`;
+            }
+            return `3º Grp ${topGrp}`;
         }
     }
     return typeof slotLabel === 'function' ? slotLabel(code) : code;
