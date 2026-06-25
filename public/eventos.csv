@@ -1,4 +1,14 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
+CZE,MEX,CZE01,0,0,0,0,0,2,0
+CZE,MEX,MEX01,0,0,0,0,0,1,0
+CZE,MEX,MEX02,0,1,0,0
+CZE,MEX,MEX04,0,0,1,0
+CZE,MEX,MEX07,0,1,0,0
+CZE,MEX,MEX08,1,0,0,0
+CZE,MEX,MEX16,1,0,0,0
+CZE,MEX,MEX20,1,0,0,0
+CZE,MEX,MEX13,0,0,0,0,0,0,0
+CZE,MEX,MEX25,0,1,0,0
 SCO,BRA,SCO01,0,0,0,0,0,6,0
 SCO,BRA,SCO11,0,0,1,0
 SCO,BRA,BRA01,0,0,0,0,0,5,0
