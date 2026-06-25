@@ -301,18 +301,7 @@ const repDef=[
    note:'Iraque entra direto na final (melhor ranking FIFA)',
    partidas:[{id:'sfm2a',stage:'SF',home:'Bolívia 🇧🇴',away:'Suriname 🇸🇷'},{id:'fim2',stage:'FIN',home:'Iraque 🇮🇶',away:null}]},
 ];
-const koRounds=[
-  {key:'r32',label:'Rodada de 32'},{key:'r16',label:'Oitavas de Final'},
-  {key:'qf',label:'Quartas de Final'},{key:'sf',label:'Semifinal'},
-  {key:'3p',label:'🥉 3º Lugar'},{key:'final',label:'🏆 Final'},
-];
-const POSICOES=['G','D','M','A'];
-const POS_LABELS={G:'Goleiro',D:'Defensor',M:'Meio-campo',A:'Atacante'};
-const allCountries=Object.values(groupsBase).flat().filter(t=>!t.startsWith('Repescagem'))
-  .concat(repDef.flatMap(r=>r.partidas.filter(p=>p.stage==='SF').flatMap(p=>[p.home,p.away])))
-  .filter((v,i,a)=>a.indexOf(v)===i).sort();
-
-  // Mapeamento dos slots da FIFA para os líderes de grupo
+    // Mapeamento dos slots da FIFA para os líderes de grupo
 const SLOT_TO_LEADER = { 
     '3-1': 'E1', '3-2': 'I1', '3-3': 'D1', '3-4': 'G1', 
     '3-5': 'A1', '3-6': 'L1', '3-7': 'B1', '3-8': 'K1' 
@@ -351,6 +340,16 @@ const COMBINACOES_TERCEIROS = (function() {
     helper(0, []);
     return results;
 })();
+const koRounds=[
+  {key:'r32',label:'Rodada de 32'},{key:'r16',label:'Oitavas de Final'},
+  {key:'qf',label:'Quartas de Final'},{key:'sf',label:'Semifinal'},
+  {key:'3p',label:'🥉 3º Lugar'},{key:'final',label:'🏆 Final'},
+];
+const POSICOES=['G','D','M','A'];
+const POS_LABELS={G:'Goleiro',D:'Defensor',M:'Meio-campo',A:'Atacante'};
+const allCountries=Object.values(groupsBase).flat().filter(t=>!t.startsWith('Repescagem'))
+  .concat(repDef.flatMap(r=>r.partidas.filter(p=>p.stage==='SF').flatMap(p=>[p.home,p.away])))
+  .filter((v,i,a)=>a.indexOf(v)===i).sort();
 
 // ══════════════════════════════════════════════════════
 // CHAVEAMENTO COPA 2026 — SLOTS DA RODADA DE 32
@@ -385,47 +384,81 @@ const KO_R32_SLOTS = [
   { home: 'K1', away: '3-8' },  // Partida 16
 ];
 
-// Filtra os cenários baseados em quem já terminou e está no Top 8
 function getPossibleScenarios() {
-    const ranking = getThirdPlaceRanking(); // Use sua função que ordena os 3ºs por Pts, SG, GP
-    const finishedQualified = ranking.filter(r => r.finished).slice(0, 8).map(r => r.grupo);
-    const finishedEliminated = ranking.filter(r => r.finished).slice(8).map(r => r.grupo);
+    // 1. Pega o ranking atual de todos os terceiros
+    const ranking = []; 
+    ['A','B','C','D','E','F','G','H','I','J','K','L'].forEach(g => {
+        const st = calcStandings(g);
+        const finished = (state.groupMatches[g] || []).every(m => m.hs !== null);
+        ranking.push({ grupo: g, pts: st[2].pts, sg: st[2].sg, gp: st[2].gp, finished });
+    });
+    ranking.sort((a, b) => b.pts - a.pts || b.sg - a.sg || b.gp - a.gp);
 
+    // 2. Identifica quem está garantido e quem está fora
+    const qualificados = ranking.filter(r => r.finished).slice(0, 8).map(r => r.grupo);
+    const eliminados = ranking.filter(r => r.finished).slice(8).map(r => r.grupo);
+
+    // 3. Filtra a "Fonte da Verdade"
     return COMBINACOES_TERCEIROS.filter(cen => {
-        for (let g of finishedQualified) if (!cen.grupos.includes(g)) return false;
-        for (let g of finishedEliminated) if (cen.grupos.includes(g)) return false;
+        for (let g of qualificados) if (!cen.grupos.includes(g)) return false;
+        for (let g of eliminados) if (cen.grupos.includes(g)) return false;
         return true;
     });
 }
 
-// Nova versão da displaySlot para mostrar probabilidades
 function displaySlot(code) {
-    if (!code.startsWith('3-')) {
-        // Lógica normal para 1º e 2º (já existente no seu código)
-        return resolveNormalSlot(code); 
+    if (!code || code === '?') return '?';
+    
+    const resolved = resolveSlotToName(code);
+    if (resolved) return resolved;
+
+    // Se for um slot de terceiro ainda indefinido, mostra probabilidade
+    if (code.startsWith('3-')) {
+        const leaderSlot = SLOT_TO_LEADER[code];
+        const scenarios = getPossibleScenarios();
+        if (scenarios.length === 0) return "A definir";
+
+        const counts = {};
+        scenarios.forEach(s => {
+            const g = s.mapping[leaderSlot];
+            counts[g] = (counts[g] || 0) + 1;
+        });
+
+        const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+        if (sorted.length > 0) {
+            const prob = ((sorted[0][1] / scenarios.length) * 100).toFixed(0);
+            return `3º ${sorted[0][0]} (${prob}%)`;
+        }
+    }
+    
+    // Fallback para o label original (ex: 1º Grp A)
+    return slotLabel ? slotLabel(code) : code;
+}
+  function resolveSlotToName(code) {
+    if (!code || code === '?') return null;
+    
+    // Lógica para 1º e 2º lugares (A1, B2, etc)
+    const gm = code.match(/^([A-L])([12])$/);
+    if (gm) {
+        const st = calcStandings(gm[1]);
+        const pos = parseInt(gm[2]) - 1;
+        // Verifica se o grupo já teve jogos para evitar nomes vazios
+        const hasGames = (state.groupMatches[gm[1]] || []).some(m => m.hs !== null);
+        return (hasGames && st[pos]) ? st[pos].name : null;
     }
 
-    const leaderSlot = SLOT_TO_LEADER[code];
-    const scenarios = getPossibleScenarios();
-    if (scenarios.length === 0) return "A definir";
-
-    const counts = {};
-    scenarios.forEach(s => {
-        const g = s.mapping[leaderSlot];
-        counts[g] = (counts[g] || 0) + 1;
-    });
-
-    const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
-    const [bestGrp, count] = sorted[0];
-    const prob = ((count / scenarios.length) * 100).toFixed(0);
-
-    // Se for 100%, mostra o nome do time real
-    if (prob === "100") {
-        const team = getTeamFromGroup(bestGrp, 3); // Função para pegar o nome do 3º colocado
-        return team;
+    // Lógica para Terceiros Lugares (3-1, 3-2, etc)
+    if (code.startsWith('3-')) {
+        const leaderSlot = SLOT_TO_LEADER[code];
+        const scenarios = getPossibleScenarios();
+        
+        if (scenarios.length === 1) {
+            const targetGrp = scenarios[0].mapping[leaderSlot];
+            const st = calcStandings(targetGrp);
+            return st[2] ? st[2].name : `3º Grp ${targetGrp}`;
+        }
     }
-
-    return `3º Grp ${bestGrp} (${prob}%)`;
+    return null;
 }
   
 // ══════════════════════════════════════════════════════
