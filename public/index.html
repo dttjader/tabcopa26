@@ -861,25 +861,21 @@ function renderMatchesKO(){
   const rLabel=koRounds.find(r=>r.key===activeKoRound).label;
   body.innerHTML=`<div class="filter-bar">${roundBtns}</div><div class="match-section-title">${rLabel}</div><div class="matches-grid" id="ko-grid"></div>`;
   const grid=document.getElementById('ko-grid');
-  state.knockout[activeKoRound].forEach((m,mi)=>{
-    // Para R32, resolver os slots dinamicamente
-    let homeDisplay = m.home;
-    let awayDisplay = m.away;
-    if(activeKoRound === 'r32') {
-      homeDisplay = displaySlot(m.home);
-      awayDisplay = displaySlot(m.away);
-    }
+    state.knockout[activeKoRound].forEach((m,mi)=>{
+    // REMOVIDO O IF: Agora ele tenta resolver o slot independente da rodada
+    let homeDisplay = displaySlot(m.home);
+    let awayDisplay = displaySlot(m.away);
+
     grid.appendChild(makeMatchCard({
-      label:`${rLabel} · Partida ${mi+1}`,badgeClass:'badge-ko',badgeText:'MATA-MATA',
-      home:homeDisplay,away:awayDisplay,hs:m.hs,as:m.as,hpen:m.hpen,apen:m.apen,
-      allowPen:true,editTeams:activeKoRound!=='r32', // R32 não edita times manualmente
-      onSave:(hs,as,hpen,apen,home,away)=>{
-        if(home&&activeKoRound!=='r32')m.home=home;
-        if(away&&activeKoRound!=='r32')m.away=away;
-        m.hs=hs;m.as=as;m.hpen=hpen;m.apen=apen;
-        saveState();renderKnockout();renderMatches();toast('✓ Salvo!');
-      },
-      onClear:()=>{m.hs=null;m.as=null;m.hpen=null;m.apen=null;saveState();renderKnockout();renderMatches();}
+      label: rLabel + " · Partida " + (mi + 1),
+      badgeClass: 'badge-ko',
+      badgeText: 'MATA-MATA',
+      home: homeDisplay,
+      away: awayDisplay,
+      hs: m.hs,
+      as: m.as,
+      hpen: m.hpen,
+      apen: m.apen
     }));
   });
 }
