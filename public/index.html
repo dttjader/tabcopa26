@@ -458,7 +458,7 @@ function displaySlot(code) {
         console.error(">>> [ERRO CRÍTICO] Falha na displaySlot: " + e.message);
     }
     
-    return (typeof slotLabel === 'function') ? slotLabel(code) : code;
+    return code;
 }
   
 // 2. O FILTRO (Auxiliar da Mestra)
