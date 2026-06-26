@@ -425,20 +425,6 @@ function displaySlot(code) {
             return fixed;
         }
         
-        // ✅ Buscar no CSV
-        if (code && code.indexOf('3-') === 0) {
-            var slotNum = parseInt(code.substring(2));
-            var csvId = 'KO_R32_' + slotNum;
-            
-            var csvMatch = resultadosCSV.find(row => row.id === csvId);
-            
-            if (csvMatch) {
-                if (csvMatch.mandante !== '?' && csvMatch.mandante !== '') {
-                    return csvMatch.mandante;
-                }
-            }
-        }
-        
         // ✅ Calcular probabilidades (LÓGICA ORIGINAL)
         if (code && code.indexOf('3-') === 0) {
             var scenarios = getPossibleScenarios();
