@@ -347,6 +347,36 @@ async function carregarResultados() {
 // ✅ NOVO: Chamar ao inicializar a página
 carregarResultados();
 
+// Adicione isto ao seu HTML (próximo aos slots):
+function createSlotEditor(slotCode, currentValue) {
+    const newValue = prompt(`Editar ${slotCode}:\n(deixe em branco para usar probabilidades)`, currentValue);
+    
+    if (newValue !== null) {
+        // Atualizar o CSV
+        const slotNum = parseInt(slotCode.split('-')[1]);
+        const csvId = `KO_R32_${slotNum}`;
+        
+        const match = resultadosCSV.find(row => row.Partida === csvId);
+        if (match) {
+            match.Mandante = newValue || '?';
+            console.log(`✅ Atualizado ${csvId}: ${newValue}`);
+        } else {
+            resultadosCSV.push({
+                Partida: csvId,
+                Mandante: newValue || '?',
+                Visitante: '?'
+            });
+            console.log(`✅ Criado novo registro ${csvId}: ${newValue}`);
+        }
+        
+        // Recarregar a renderização
+        renderKnockout();
+    }
+}
+
+// Adicione um botão ao lado de cada slot:
+// <button onclick="createSlotEditor('3-1', 'Alemanha 🇩🇪')">✏️ Editar</button>
+  
 // ══════════════════════════════════════════════════════
 // LÓGICA DO MATA-MATA (ANEXO C FIFA)
 // ══════════════════════════════════════════════════════
@@ -416,66 +446,158 @@ const ALLOWED_THIRD_PLACE_GROUPS = {
 // 0. LOG DE CARREGAMENTO
 console.log("--- [SISTEMA FIFA] INICIANDO CARREGAMENTO DO SCRIPT ---");
 
-// 1. A MESTRA (A função que a interface chama)
+// =============================================================================
+// CONFIGURAÇÃO / DADOS ESPERADOS (substituir pelos valores reais do app)
+// =============================================================================
+const resultadosCSV = []; // ex: [{ Partida: 'KO_R32_1', Mandante: 'BRA', Visitante: '?' }]
+const SLOT_TO_LEADER = {}; // ex: { '3-1': 'A', '3-2': 'B', ... }
+const ALLOWED_THIRD_PLACE_GROUPS = {}; // ex: { 'A': ['A','B','C'], ... }
+
+function getPossibleScenarios() {
+  // Deve retornar array de cenários (array de grupos ou string de grupo)
+  return [];
+}
+
+function calcStandings(groupLetter) {
+  // Deve retornar array ordenado da classificação do grupo (índice 2 = 3º colocado)
+  return [];
+}
+
+// =============================================================================
+// HELPERS
+// =============================================================================
+function getTeamName(team) {
+  if (team == null) return '';
+  if (typeof team === 'string') return team;
+  return team.name || team.team || team.country || team.nome || '';
+}
+
+function getTeamFlag(team) {
+  if (team == null) return '';
+  if (typeof team === 'string') return '';
+  return team.flag || team.emoji || team.countryFlag || team.bandeira || '';
+}
+
+function getThirdPlaceTeam(groupLetter) {
+  const standings = calcStandings(groupLetter);
+  if (!Array.isArray(standings) || standings.length < 3) return null;
+  return standings[2];
+}
+
+// =============================================================================
+// FUNÇÃO PRINCIPAL
+// =============================================================================
 function displaySlot(code) {
-    console.log(">>> [LOG MESTRA] Processando slot: " + code);
-    try {
-        var fixed = resolveSlotToName(code);
-        if (fixed !== null) {
-            return fixed;
-        }
-        
-        // ✅ Calcular probabilidades (LÓGICA ORIGINAL)
-        if (code && code.indexOf('3-') === 0) {
-            var scenarios = getPossibleScenarios();
-            console.log(">>> [LOG MOTOR] Cenários ativos: " + scenarios.length);  // ← ADICIONE
-            
-            var leader = SLOT_TO_LEADER[code];
-            if (leader && scenarios && scenarios.length > 0) {
-                var allowedGroups = ALLOWED_THIRD_PLACE_GROUPS[leader];
-                console.log(">>> [LOG] Líder: " + leader + ", Grupos permitidos: " + allowedGroups.join(','));  // ← ADICIONE
-                
-                var counts = {};
-                var validCount = 0;
-                for (var i = 0; i < scenarios.length; i++) {
-                    var g = scenarios[i].mapping[leader];
-                    if (g && allowedGroups.indexOf(g) !== -1) {
-                        counts[g] = (counts[g] || 0) + 1;
-                        validCount++;
-                    }
-                }
-                console.log(">>> [LOG] Contagens após filtro: ", counts);  // ← ADICIONE
-                console.log(">>> [LOG] Cenários válidos: " + validCount + " de " + scenarios.length);  // ← ADICIONE
-                
-                var total = validCount > 0 ? validCount : scenarios.length;
-                var results = [];
-                for (var grp in counts) {
-                    results.push({ grp: grp, percent: (counts[grp] / total) * 100 });
-                }
-                results.sort(function(a, b) { return b.percent - a.percent; });
-                if (results.length > 0) {
-                    var output = "";
-                    var limit = Math.min(results.length, 3);
-                    for (var j = 0; j < limit; j++) {
-                        if (j > 0) output += " | ";
-                        var groupLetter = results[j].grp;
-                        var groupStandings = calcStandings(groupLetter);
-                        var thirdPlace = groupStandings[2];
-                        var teamName = thirdPlace ? thirdPlace.name : groupLetter;
-                        output += teamName + " (" + results[j].percent.toFixed(0) + "%)";
-                    }
-                    console.log(">>> [LOG SUCESSO] Retornando probabilidades: " + output);  // ← ADICIONE
-                    return output;
-                } else {
-                    console.log(">>> [LOG] Nenhum resultado após filtro regulatório");  // ← ADICIONE
-                }
-            }
-        }
-    } catch (e) {
-        console.error(">>> [ERRO CRÍTICO] Falha na displaySlot: " + e.message);
+  console.log(`[displaySlot] Iniciando para código: ${code}`);
+
+  // 1. Busca no CSV ----------------------------------------------------------------
+  const mappedCode = code.startsWith('KO_R32_')
+    ? code
+    : `KO_R32_${code.split('-').pop()}`;
+
+  console.log(`[displaySlot] Código mapeado para busca no CSV: ${mappedCode}`);
+
+  const match = resultadosCSV.find((row) => {
+    return String(row.Partida).trim() === mappedCode;
+  });
+
+  if (match) {
+    console.log(`[displaySlot] Partida encontrada no CSV:`, match);
+
+    const mandante = match.Mandante != null ? String(match.Mandante).trim() : '';
+    const visitante = match.Visitante != null ? String(match.Visitante).trim() : '';
+
+    if (mandante && mandante !== '?') {
+      console.log(`[displaySlot] Retornando mandante do CSV: ${mandante}`);
+      return mandante;
     }
-    console.log(">>> [LOG] Retornando código original: " + code);  // ← ADICIONE
-    return code;
+
+    if (visitante && visitante !== '?') {
+      console.log(`[displaySlot] Retornando visitante do CSV (mandante indefinido): ${visitante}`);
+      return visitante;
+    }
+
+    console.log(`[displaySlot] Partida encontrada no CSV, mas ambos ainda indefinidos.`);
+  } else {
+    console.log(`[displaySlot] Partida não encontrada no CSV. Calculando probabilidades...`);
+  }
+
+  // 2. Cálculo de probabilidades ---------------------------------------------------
+  const scenarios = getPossibleScenarios();
+  console.log(`[displaySlot] Total de cenários disponíveis: ${scenarios.length}`);
+
+  const leader = SLOT_TO_LEADER[code];
+  console.log(`[displaySlot] Líder para ${code}: ${leader}`);
+
+  const allowedGroups = leader ? ALLOWED_THIRD_PLACE_GROUPS[leader] : null;
+
+  if (!Array.isArray(allowedGroups) || allowedGroups.length === 0) {
+    console.warn(`[displaySlot] Nenhum grupo permitido encontrado para o líder: ${leader}`);
+    return '?';
+  }
+
+  console.log(`[displaySlot] Grupos permitidos para ${leader}: ${allowedGroups.join(', ')}`);
+
+  // Conta quantas vezes cada grupo permitido aparece nos cenários
+  const counts = {};
+  let total = 0;
+
+  scenarios.forEach((scenario, idx) => {
+    if (Array.isArray(scenario)) {
+      scenario.forEach((group) => {
+        if (allowedGroups.includes(group)) {
+          counts[group] = (counts[group] || 0) + 1;
+          total++;
+        }
+      });
+    } else if (typeof scenario === 'string' && allowedGroups.includes(scenario)) {
+      counts[scenario] = (counts[scenario] || 0) + 1;
+      total++;
+    }
+  });
+
+  console.log(`[displaySlot] Contagens de grupos:`, counts, `| total: ${total}`);
+
+  if (total === 0) {
+    console.log(`[displaySlot] Nenhum cenário aplicável para os grupos permitidos.`);
+    return '?';
+  }
+
+  // Monta ranking com 3º colocados e percentuais
+  const ranked = Object.entries(counts)
+    .map(([group, count]) => {
+      const team = getThirdPlaceTeam(group);
+      return {
+        group,
+        team,
+        percent: Math.round((count / total) * 100),
+      };
+    })
+    .filter((item) => item.team != null && getTeamName(item.team) !== '')
+    .sort((a, b) => {
+      return b.percent - a.percent || a.group.localeCompare(b.group);
+    })
+    .slice(0, 3);
+
+  console.log(`[displaySlot] Top 3 calculado:`, ranked);
+
+  if (ranked.length === 0) {
+    return '?';
+  }
+
+  return ranked
+    .map((item) => {
+      const name = getTeamName(item.team);
+      const flag = getTeamFlag(item.team);
+      const parts = [name, flag].filter(Boolean);
+      return `${parts.join(' ')} (${item.percent}%)`;
+    })
+    .join(' | ');
+}
+
+// Exporta para testes/Node.js
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { displaySlot };
 }
   
 // 2. O FILTRO (Auxiliar da Mestra)
