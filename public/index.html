@@ -1356,191 +1356,190 @@ function slotLabel(code) {
   return code;
 }
   
-function renderKnockout() {
-  const container = document.getElementById('view-matamata');
-  if (!container) return;
-  container.innerHTML = '';
-
-  const processedSlots = new Set();
-
-  koRounds.forEach((round, roundIndex) => {
-    const roundDiv = document.createElement('div');
-    roundDiv.className = 'round';
-    roundDiv.dataset.round = round;
-
-    const r32 = state.knockout.r32 || {};
-
-    if (round === 'r32') {
-      KO_R32_SLOTS.forEach(slot => {
-        const block = document.createElement('div');
-        block.className = 'match-block';
-        block.dataset.slot = slot;
-
-        const preview = document.createElement('div');
-        preview.className = 'match-preview';
-
-        let homeName = '?';
-        let awayName = '?';
-        let homeProb = null;
-        let awayProb = null;
-        let homeFlag = '';
-        let awayFlag = '';
-        let csvRow = null;
-
-        if (resultadosCSV && resultadosCSV.length) {
-          csvRow = resultadosCSV.find(r => String(r.slot || r.Slot || r.Jogo || '').toUpperCase() === slot);
-        }
-
-        const csvHomeRaw = csvRow ? (csvRow.mandante || csvRow.Mandante || csvRow.home || csvRow.Home || csvRow[1] || '') : '';
-        const csvAwayRaw = csvRow ? (csvRow.visitante || csvRow.Visitante || csvRow.away || csvRow.Away || csvRow[2] || '') : '';
-        const csvHome = String(csvHomeRaw).trim();
-        const csvAway = String(csvAwayRaw).trim();
-
-        if (csvHome && csvHome !== '?') {
-          homeName = resolveSlotToName(csvHome);
-          homeFlag = getFlagEmoji(homeName);
-          if (csvAway && csvAway !== '?') {
-            awayName = resolveSlotToName(csvAway);
-            awayFlag = getFlagEmoji(awayName);
-          } else {
-            const p = displaySlot(slot);
-            if (p && p.away) {
-              awayName = p.away.name || '?';
-              awayProb = p.away.prob;
-              awayFlag = getFlagEmoji(awayName);
+function renderKnockout(){
+    const v=document.getElementById('view-matamata');
+    const slotsProcessados = new Set();  // ✅ NOVO: rastrear slots
+    
+    const r32Resolved = KO_R32_SLOTS.filter(s =>
+        resolveSlotToName(s.home) !== null && resolveSlotToName(s.away) !== null
+    ).length;
+    const r32Total = KO_R32_SLOTS.length;
+    const allResolved = r32Resolved === r32Total;
+    
+    let previewHtml = `
+    <div style="margin-bottom:1.5rem">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;flex-wrap:wrap;gap:.5rem">
+        <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.08em;color:var(--gold)">
+          ⚔️ Chaveamento — Rodada de 32
+        </h3>
+        <span style="font-size:.7rem;color:${allResolved?'var(--green)':'var(--muted)'}">
+          ${allResolved ? '✓ Todos os times definidos' : `${r32Resolved}/${r32Total} times definidos`}
+        </span>
+      </div>
+      <div class="slot-legend">
+        <strong>Legenda:</strong>
+        <span><strong style="color:var(--gold)">A1</strong> = 1º Grupo A</span>
+        <span><strong style="color:var(--gold)">B2</strong> = 2º Grupo B</span>
+        <span><strong style="color:var(--gold)">Chave N</strong> = vencedor da Chave N de 3ºs colocados</span>
+        <span style="color:var(--green)">Nome em verde = time já definido</span>
+        <span style="color:var(--slot-color);font-style:italic">Itálico dourado = aguardando grupos</span>
+      </div>
+      <div class="r32-preview">`;
+    
+    const BLOCO_LABELS = ['Bloco 1', 'Bloco 2', 'Bloco 3', 'Bloco 4'];
+    
+    KO_R32_SLOTS.forEach((slot, i) => {
+        const homeName = resolveSlotToName(slot.home);
+        const awayName = resolveSlotToName(slot.away);
+        
+        // ✅ Buscar no CSV UMA VEZ
+        const slotNum = parseInt(slot.home.split('-')[1]);
+        const csvId = 'KO_R32_' + slotNum;
+        const csvMatch = resultadosCSV.find(row => row.id === csvId);
+        
+        let homeDisplay, awayDisplay;
+        
+        if (csvMatch && csvMatch.mandante && csvMatch.mandante !== '?') {
+            homeDisplay = csvMatch.mandante;
+            if (csvMatch.visitante && csvMatch.visitante !== '?') {
+                awayDisplay = csvMatch.visitante;
+            } else {
+                awayDisplay = awayName || displaySlot(slot.away);
             }
-          }
         } else {
-          const p = displaySlot(slot);
-          if (p && p.home) {
-            homeName = p.home.name || '?';
-            homeProb = p.home.prob;
-            homeFlag = getFlagEmoji(homeName);
-          }
-          if (p && p.away) {
-            awayName = p.away.name || '?';
-            awayProb = p.away.prob;
-            awayFlag = getFlagEmoji(awayName);
-          }
+            homeDisplay = homeName || displaySlot(slot.home);
+            awayDisplay = awayName || displaySlot(slot.away);
         }
-
-        processedSlots.add(slot);
-
-        const homeRow = document.createElement('div');
-        homeRow.className = 'team-row';
-        homeRow.innerHTML = `<span class="flag">${homeFlag}</span><span class="team">${homeName}</span>${homeProb !== null ? '<span class="prob">' + homeProb + '%</span>' : ''}`;
-
-        const awayRow = document.createElement('div');
-        awayRow.className = 'team-row';
-        awayRow.innerHTML = `<span class="flag">${awayFlag}</span><span class="team">${awayName}</span>${awayProb !== null ? '<span class="prob">' + awayProb + '%</span>' : ''}`;
-
-        preview.appendChild(homeRow);
-        preview.appendChild(awayRow);
-
-        const bracket = document.createElement('div');
-        bracket.className = 'bracket';
-
-        const label = document.createElement('div');
-        label.className = 'slot-label';
-        label.textContent = slot;
-
-        block.appendChild(preview);
-        block.appendChild(bracket);
-        block.appendChild(label);
-        roundDiv.appendChild(block);
-      });
-    } else {
-      const slotsForRound = state.knockout[round] || [];
-      slotsForRound.forEach(slot => {
-        const block = document.createElement('div');
-        block.className = 'match-block';
-        block.dataset.slot = slot;
-
-        const preview = document.createElement('div');
-        preview.className = 'match-preview';
-
-        let homeName = '?';
-        let awayName = '?';
-        let homeProb = null;
-        let awayProb = null;
-        let homeFlag = '';
-        let awayFlag = '';
-        let csvRow = null;
-
-        if (resultadosCSV && resultadosCSV.length) {
-          csvRow = resultadosCSV.find(r => String(r.slot || r.Slot || r.Jogo || '').toUpperCase() === slot);
+        
+        const homeClass = homeName || csvMatch?.mandante ? 'r32-team-name' : 'r32-team-name is-slot';
+        const awayClass = awayName || csvMatch?.visitante ? 'r32-team-name' : 'r32-team-name is-slot';
+        
+        const m = state.knockout.r32[i];
+        const hasResult = m && m.hs !== null;
+        const resHtml = hasResult
+          ? `<span style="font-family:'Bebas Neue',sans-serif;font-size:.85rem;color:var(--gold2);margin-left:auto;white-space:nowrap">${m.hs}×${m.as}</span>`
+          : '';
+        
+        if (i > 0 && i % 4 === 0) {
+          previewHtml += `
+          <div style="grid-column:1/-1;display:flex;align-items:center;gap:.6rem;margin:.2rem 0">
+            <div style="flex:1;height:1px;background:rgba(212,160,23,.2)"></div>
+            <span style="font-family:'Bebas Neue',sans-serif;font-size:.75rem;letter-spacing:.12em;color:var(--gold);opacity:.7">${BLOCO_LABELS[i/4]}</span>
+            <div style="flex:1;height:1px;background:rgba(212,160,23,.2)"></div>
+          </div>`;
         }
-
-        const csvHomeRaw = csvRow ? (csvRow.mandante || csvRow.Mandante || csvRow.home || csvRow.Home || csvRow[1] || '') : '';
-        const csvAwayRaw = csvRow ? (csvRow.visitante || csvRow.Visitante || csvRow.away || csvRow.Away || csvRow[2] || '') : '';
-        const csvHome = String(csvHomeRaw).trim();
-        const csvAway = String(csvAwayRaw).trim();
-
-        if (csvHome && csvHome !== '?') {
-          homeName = resolveSlotToName(csvHome);
-          homeFlag = getFlagEmoji(homeName);
-          if (csvAway && csvAway !== '?') {
-            awayName = resolveSlotToName(csvAway);
-            awayFlag = getFlagEmoji(awayName);
-          } else {
-            if (!processedSlots.has(slot)) {
-              const p = displaySlot(slot);
-              if (p && p.away) {
-                awayName = p.away.name || '?';
-                awayProb = p.away.prob;
-                awayFlag = getFlagEmoji(awayName);
-              }
-              processedSlots.add(slot);
+        
+        previewHtml += `
+          <div class="r32-preview-card" style="${hasResult?'border-color:rgba(34,197,94,.3)':''}">
+            <span class="r32-preview-num">${i+1}</span>
+            <div class="r32-preview-teams">
+              <span style="display:inline-flex;align-items:center;gap:.3rem;flex-wrap:wrap">
+                <span class="slot-badge">${slot.home}</span><span class="${homeClass}">${homeDisplay}</span>
+              </span>
+              <span class="r32-vs">vs</span>
+              <span style="display:inline-flex;align-items:center;gap:.3rem;flex-wrap:wrap">
+                <span class="slot-badge">${slot.away}</span><span class="${awayClass}">${awayDisplay}</span>
+              </span>
+            </div>
+            ${resHtml}
+          </div>`;
+    });
+    
+    previewHtml += `</div></div>`;
+    
+    v.innerHTML=`<div class="readonly-note">👁 Somente leitura — insira resultados na aba Partidas</div>
+    ${previewHtml}
+    <div class="bracket-outer"><div class="bracket" id="brk"></div></div>`;
+    
+    const brk=document.getElementById('brk');
+    
+    koRounds.forEach(round=>{
+        const col=document.createElement('div');
+        col.className='bracket-round';
+        col.innerHTML=`<div class="round-title">${round.label}</div>`;
+        const wrap=document.createElement('div');
+        wrap.className='bracket-matches';
+        
+        state.knockout[round.key].forEach((m, mi)=>{
+            let homeVal = m.home;
+            let awayVal = m.away;
+            
+            if(round.key === 'r32') {
+                const slot = KO_R32_SLOTS[mi];
+                if(slot) {
+                    homeVal = resolveSlotToName(slot.home) || slot.home;
+                    awayVal = resolveSlotToName(slot.away) || slot.away;
+                }
             }
-          }
-        } else {
-          if (!processedSlots.has(slot)) {
-            const p = displaySlot(slot);
-            if (p && p.home) {
-              homeName = p.home.name || '?';
-              homeProb = p.home.prob;
-              homeFlag = getFlagEmoji(homeName);
+            
+            const w=getWinner({...m, home:homeVal, away:awayVal});
+            const hWin=w!==null&&w===homeVal,aWin=w!==null&&w===awayVal;
+            const isDraw=m.hs!==null&&m.as!==null&&m.hs===m.as;
+            const hPen=isDraw&&m.hpen!==null?`<span class="bracket-pen">(${m.hpen})</span>`:'';
+            const aPen=isDraw&&m.apen!==null?`<span class="bracket-pen">(${m.apen})</span>`:'';
+            
+            const homeIsPending = round.key === 'r32' && resolveSlotToName(KO_R32_SLOTS[mi]?.home) === null;
+            const awayIsPending = round.key === 'r32' && resolveSlotToName(KO_R32_SLOTS[mi]?.away) === null;
+            
+            // ✅ Buscar no CSV para os labels também
+            const slotForLabel = KO_R32_SLOTS[mi];
+            const slotNumForLabel = parseInt(slotForLabel?.home?.split('-')[1]);
+            const csvIdForLabel = 'KO_R32_' + slotNumForLabel;
+            const csvMatchForLabel = resultadosCSV.find(row => row.id === csvIdForLabel);
+            
+            let homeLabel, awayLabel;
+            
+            if (homeIsPending) {
+                if (csvMatchForLabel && csvMatchForLabel.mandante && csvMatchForLabel.mandante !== '?') {
+                    homeLabel = csvMatchForLabel.mandante;
+                } else {
+                    if (!slotsProcessados.has(slotForLabel?.home)) {
+                        homeLabel = displaySlot(KO_R32_SLOTS[mi]?.home);
+                        slotsProcessados.add(slotForLabel?.home);
+                    } else {
+                        homeLabel = homeVal;
+                    }
+                }
+            } else {
+                homeLabel = homeVal;
             }
-            if (p && p.away) {
-              awayName = p.away.name || '?';
-              awayProb = p.away.prob;
-              awayFlag = getFlagEmoji(awayName);
+            
+            if (awayIsPending) {
+                if (csvMatchForLabel && csvMatchForLabel.visitante && csvMatchForLabel.visitante !== '?') {
+                    awayLabel = csvMatchForLabel.visitante;
+                } else {
+                    if (!slotsProcessados.has(slotForLabel?.away)) {
+                        awayLabel = displaySlot(KO_R32_SLOTS[mi]?.away);
+                        slotsProcessados.add(slotForLabel?.away);
+                    } else {
+                        awayLabel = awayVal;
+                    }
+                }
+            } else {
+                awayLabel = awayVal;
             }
-            processedSlots.add(slot);
-          }
-        }
-
-        if (!processedSlots.has(slot)) {
-          processedSlots.add(slot);
-        }
-
-        const homeRow = document.createElement('div');
-        homeRow.className = 'team-row';
-        homeRow.innerHTML = `<span class="flag">${homeFlag}</span><span class="team">${homeName}</span>${homeProb !== null ? '<span class="prob">' + homeProb + '%</span>' : ''}`;
-
-        const awayRow = document.createElement('div');
-        awayRow.className = 'team-row';
-        awayRow.innerHTML = `<span class="flag">${awayFlag}</span><span class="team">${awayName}</span>${awayProb !== null ? '<span class="prob">' + awayProb + '%</span>' : ''}`;
-
-        preview.appendChild(homeRow);
-        preview.appendChild(awayRow);
-
-        const bracket = document.createElement('div');
-        bracket.className = 'bracket';
-
-        const label = document.createElement('div');
-        label.className = 'slot-label';
-        label.textContent = slot;
-
-        block.appendChild(preview);
-        block.appendChild(bracket);
-        block.appendChild(label);
-        roundDiv.appendChild(block);
-      });
-    }
-
-    container.appendChild(roundDiv);
-  });
+            
+            const el=document.createElement('div');
+            el.className='bracket-match';
+            el.innerHTML=`
+              <div class="bracket-team${hWin?' winner':''}${homeIsPending?' slot-pending':''}">
+                <span>${homeLabel}</span>
+                <span style="display:flex;align-items:center;gap:2px">
+                  <span class="bracket-score-k">${m.hs!==null?m.hs:''}</span>${hPen}
+                </span>
+              </div>
+              <div class="bracket-team${aWin?' winner':''}${awayIsPending?' slot-pending':''}">
+                <span>${awayLabel}</span>
+                <span style="display:flex;align-items:center;gap:2px">
+                  <span class="bracket-score-k">${m.as!==null?m.as:''}</span>${aPen}
+                </span>
+              </div>`;
+            wrap.appendChild(el);
+        });
+        
+        col.appendChild(wrap);
+        brk.appendChild(col);
+    });
 }
 
 // ══════════════════════════════════════════════════════
