@@ -1508,8 +1508,33 @@ const awayClass = awayName || csvMatch?.visitante ? 'r32-team-name' : 'r32-team-
       // Para R32: verificar se slot ainda não está resolvido
       const homeIsPending = round.key === 'r32' && resolveSlotToName(KO_R32_SLOTS[mi]?.home) === null;
       const awayIsPending = round.key === 'r32' && resolveSlotToName(KO_R32_SLOTS[mi]?.away) === null;
-      const homeLabel = homeIsPending ? displaySlot(KO_R32_SLOTS[mi]?.home) : homeVal;
-      const awayLabel = awayIsPending ? displaySlot(KO_R32_SLOTS[mi]?.away) : awayVal;
+// ✅ Buscar no CSV para os labels também
+const slotForLabel = KO_R32_SLOTS[mi];
+const slotNumForLabel = parseInt(slotForLabel?.home?.split('-')[1]);
+const csvIdForLabel = 'KO_R32_' + slotNumForLabel;
+const csvMatchForLabel = resultadosCSV.find(row => row.id === csvIdForLabel);
+
+let homeLabel, awayLabel;
+
+if (homeIsPending) {
+    if (csvMatchForLabel && csvMatchForLabel.mandante && csvMatchForLabel.mandante !== '?') {
+        homeLabel = csvMatchForLabel.mandante;
+    } else {
+        homeLabel = displaySlot(KO_R32_SLOTS[mi]?.home);
+    }
+} else {
+    homeLabel = homeVal;
+}
+
+if (awayIsPending) {
+    if (csvMatchForLabel && csvMatchForLabel.visitante && csvMatchForLabel.visitante !== '?') {
+        awayLabel = csvMatchForLabel.visitante;
+    } else {
+        awayLabel = displaySlot(KO_R32_SLOTS[mi]?.away);
+    }
+} else {
+    awayLabel = awayVal;
+}
 
       const el=document.createElement('div');el.className='bracket-match';
       el.innerHTML=`
