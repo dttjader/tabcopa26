@@ -1330,8 +1330,8 @@ function slotLabel(code) {
   KO_R32_SLOTS.forEach((slot, i) => {
     const homeName = resolveSlotToName(slot.home);
     const awayName = resolveSlotToName(slot.away);
-    const homeDisplay = homeName || displaySlot(slot.home);
-    const awayDisplay = awayName || displaySlot(slot.away);
+    const homeDisplay = homeName;
+    const awayDisplay = awayName;
     const homeClass = homeName ? 'r32-team-name' : 'r32-team-name is-slot';
     const awayClass = awayName ? 'r32-team-name' : 'r32-team-name is-slot';
     const m = state.knockout.r32[i];
@@ -1396,8 +1396,8 @@ function slotLabel(code) {
       // Para R32: verificar se slot ainda não está resolvido
       const homeIsPending = round.key === 'r32' && resolveSlotToName(KO_R32_SLOTS[mi]?.home) === null;
       const awayIsPending = round.key === 'r32' && resolveSlotToName(KO_R32_SLOTS[mi]?.away) === null;
-      const homeLabel = homeIsPending ? displaySlot(KO_R32_SLOTS[mi]?.home) : homeVal;
-      const awayLabel = awayIsPending ? displaySlot(KO_R32_SLOTS[mi]?.away) : awayVal;
+      const homeLabel = homeVal;
+      const awayLabel = awayVal;
 
       const el=document.createElement('div');el.className='bracket-match';
       el.innerHTML=`
