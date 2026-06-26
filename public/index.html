@@ -418,110 +418,78 @@ console.log("--- [SISTEMA FIFA] INICIANDO CARREGAMENTO DO SCRIPT ---");
 
 // 1. A MESTRA (A função que a interface chama)
 function displaySlot(code) {
-  console.log('[displaySlot] code:', code);
-
-  // 1. Buscar no CSV
-  const csvKey = slotCodeToCsvKey(code);
-  if (csvKey) {
-    const csvMatch = findCsvMatch(csvKey);
-    if (csvMatch) {
-      if (csvMatch.mandante && csvMatch.mandante !== '?') {
-        console.log('[displaySlot] retornando mandante:', csvMatch.mandante);
-        return csvMatch.mandante;
-      }
-      if (csvMatch.visitante && csvMatch.visitante !== '?') {
-        console.log('[displaySlot] retornando visitante:', csvMatch.visitante);
-        return csvMatch.visitante;
-      }
+    console.log(">>> [LOG MESTRA] Processando slot: " + code);
+    try {
+        var fixed = resolveSlotToName(code);
+        if (fixed !== null) {
+            return fixed;
+        }
+        
+        // ✅ Buscar no CSV
+        if (code && code.indexOf('3-') === 0) {
+            var slotNum = parseInt(code.substring(2));
+            var csvId = 'KO_R32_' + slotNum;
+            
+            var csvMatch = resultadosCSV.find(row => row.id === csvId);
+            
+            if (csvMatch) {
+                if (csvMatch.mandante !== '?' && csvMatch.mandante !== '') {
+                    return csvMatch.mandante;
+                }
+            }
+        }
+        
+        // ✅ Calcular probabilidades (LÓGICA ORIGINAL)
+        if (code && code.indexOf('3-') === 0) {
+            var scenarios = getPossibleScenarios();
+            var leader = SLOT_TO_LEADER[code];
+            
+            if (leader && scenarios && scenarios.length > 0) {
+                var allowedGroups = ALLOWED_THIRD_PLACE_GROUPS[leader];
+                
+                var counts = {};
+                var validCount = 0;
+                
+                for (var i = 0; i < scenarios.length; i++) {
+                    var g = scenarios[i].mapping[leader];
+                    
+                    if (g && allowedGroups.indexOf(g) !== -1) {
+                        counts[g] = (counts[g] || 0) + 1;
+                        validCount++;
+                    }
+                }
+                
+                var total = validCount > 0 ? validCount : scenarios.length;
+                var results = [];
+                
+                for (var grp in counts) {
+                    results.push({ grp: grp, percent: (counts[grp] / total) * 100 });
+                }
+                
+                results.sort(function(a, b) { return b.percent - a.percent; });
+                
+                if (results.length > 0) {
+                    var output = "";
+                    var limit = Math.min(results.length, 3);
+                    for (var j = 0; j < limit; j++) {
+                        if (j > 0) output += " | ";
+                        
+                        var groupLetter = results[j].grp;
+                        var groupStandings = calcStandings(groupLetter);
+                        var thirdPlace = groupStandings[2];
+                        var teamName = thirdPlace ? thirdPlace.name : groupLetter;
+                        
+                        output += teamName + " (" + results[j].percent.toFixed(0) + "%)";
+                    }
+                    return output;
+                }
+            }
+        }
+    } catch (e) {
+        console.error(">>> [ERRO CRÍTICO] Falha na displaySlot: " + e.message);
     }
-  }
-
-  // 2. Calcular probabilidades
-  const leader = SLOT_TO_LEADER[code];
-  if (!leader) {
-    console.log('[displaySlot] sem líder, retornando código original:', code);
-    return code;
-  }
-
-  const allowedGroups = ALLOWED_THIRD_PLACE_GROUPS[leader];
-  if (!allowedGroups || allowedGroups.length === 0) {
-    console.log('[displaySlot] sem grupos permitidos, retornando código original:', code);
-    return code;
-  }
-
-  const scenarios = getPossibleScenarios();
-  if (!scenarios || scenarios.length === 0) {
-    console.log('[displaySlot] sem cenários, retornando código original:', code);
-    return code;
-  }
-
-  // ✅ CORRIGIDO: Contar grupos usando scenario.mapping[leader]
-  const counts = {};
-  for (let i = 0; i < scenarios.length; i++) {
-    const scenario = scenarios[i];
-    const group = scenario.mapping[leader];  // ← Pegar o grupo do mapeamento
     
-    if (group && allowedGroups.indexOf(group) !== -1) {
-      counts[group] = (counts[group] || 0) + 1;
-    }
-  }
-
-  console.log('[displaySlot] group counts:', counts);
-
-  const total = scenarios.length;
-  const top3 = Object.entries(counts)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 3);
-
-  console.log('[displaySlot] top3:', top3);
-
-  if (top3.length === 0) {
-    console.log('[displaySlot] nenhum grupo no top3, retornando código original:', code);
     return code;
-  }
-
-  // ✅ Formatar resultado com emoji e percentual
-  const result = top3
-    .map(([groupLetter, count]) => {
-      const groupStandings = calcStandings(groupLetter);
-      const thirdPlace = groupStandings[2];
-      const teamName = thirdPlace ? thirdPlace.name : groupLetter;
-      const percentage = Math.round((count / total) * 100);
-      return `${teamName} (${percentage}%)`;
-    })
-    .join(' | ');
-
-  console.log('[displaySlot] retornando probabilidades:', result);
-  return result;
-}
-
-function slotCodeToCsvKey(code) {
-  const match = String(code).match(/^3-(\d+)$/);
-  if (!match) return null;
-  return `KO_R32_${match[1]}`;
-}
-
-function findCsvMatch(csvKey) {
-  if (!Array.isArray(resultadosCSV) || !csvKey) return null;
-
-  for (const row of resultadosCSV) {
-    if (!row || typeof row !== 'object') continue;
-
-    const keys = Object.keys(row);
-    const keyField = keys.find(k => /jogo|game|partida|match|key|ko|id/i.test(k));
-    if (!keyField) continue;
-    if (String(row[keyField]).trim() !== csvKey) continue;
-
-    const mandanteField = keys.find(k => /mandante|home|time1|team1|casa/i.test(k));
-    const visitanteField = keys.find(k => /visitante|away|time2|team2|fora/i.test(k));
-
-    const mandante = mandanteField ? String(row[mandanteField]).trim() : '?';
-    const visitante = visitanteField ? String(row[visitanteField]).trim() : '?';
-
-    return { mandante, visitante };
-  }
-
-  return null;
 }
   
 // 2. O FILTRO (Auxiliar da Mestra)
