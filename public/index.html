@@ -1393,8 +1393,7 @@ function renderKnockout(){
         const awayName = resolveSlotToName(slot.away);
         
         // ✅ Buscar no CSV UMA VEZ
-        const slotNum = parseInt(slot.home.split('-')[1]);
-        const csvId = 'KO_R32_' + slotNum;
+        const csvId = 'KO_R32_' + (i + 1);
         const csvMatch = resultadosCSV.find(row => row.id === csvId);
         
 let homeDisplay, awayDisplay;
@@ -1495,8 +1494,7 @@ if (csvMatch) {
             const awayIsPending = round.key === 'r32' && resolveSlotToName(KO_R32_SLOTS[mi]?.away) === null;
             
             const slotForLabel = KO_R32_SLOTS[mi];
-            const slotNumForLabel = parseInt(slotForLabel?.home?.split('-')[1]);
-            const csvIdForLabel = 'KO_R32_' + slotNumForLabel;
+            const csvIdForLabel = 'KO_R32_' + (mi + 1);
             const csvMatchForLabel = resultadosCSV.find(row => row.id === csvIdForLabel);
             
             let homeLabel, awayLabel;
