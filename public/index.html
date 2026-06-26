@@ -483,6 +483,27 @@ function getThirdPlaceTeam(groupLetter) {
   return standings[2];
 }
 
+// ✅ NOVA FUNÇÃO: Buscar CSV SEM contar chamadas
+function getTeamFromCSV(code, isAway) {
+    if (!code || code.indexOf('3-') !== 0) return null;
+    
+    var slotNum = parseInt(code.substring(2));
+    var csvId = 'KO_R32_' + slotNum;
+    var csvMatch = resultadosCSV.find(row => row.id === csvId);
+    
+    if (!csvMatch) return null;
+    
+    // Se é away (visitante), retornar visitante
+    if (isAway) {
+        var visitante = csvMatch.visitante ? String(csvMatch.visitante).trim() : '';
+        return (visitante && visitante !== '?') ? visitante : null;
+    }
+    
+    // Se é home (mandante), retornar mandante
+    var mandante = csvMatch.mandante ? String(csvMatch.mandante).trim() : '';
+    return (mandante && mandante !== '?') ? mandante : null;
+}
+  
 // =============================================================================
 // FUNÇÃO PRINCIPAL
 // =============================================================================
@@ -494,57 +515,7 @@ function displaySlot(code) {
             return fixed;
         }
         
-        // ✅ NOVO: Buscar no CSV PRIMEIRO
-        if (code && code.indexOf('3-') === 0) {
-            var slotNum = parseInt(code.substring(2));
-            var csvId = 'KO_R32_' + slotNum;
-            
-            console.log(">>> [LOG CSV] Procurando no CSV por ID: " + csvId);
-            
-            var csvMatch = resultadosCSV.find(row => row.id === csvId);
-            
-            if (csvMatch) {
-                console.log(">>> [LOG CSV] Partida encontrada no CSV:", csvMatch);
-                
-                var mandante = csvMatch.mandante ? String(csvMatch.mandante).trim() : '';
-                var visitante = csvMatch.visitante ? String(csvMatch.visitante).trim() : '';
-                
-                console.log(">>> [LOG CSV] Mandante: " + mandante + ", Visitante: " + visitante);
-                
-                // ✅ Contar quantas vezes este slot foi chamado
-                if (!slotCallCount[csvId]) {
-                    slotCallCount[csvId] = 0;
-                }
-                slotCallCount[csvId]++;
-                
-                var callNumber = slotCallCount[csvId];
-                console.log(">>> [LOG CSV] Chamada #" + callNumber + " para " + csvId);
-                
-// ✅ Primeira chamada = mandante, Segunda chamada = visitante
-if (callNumber === 1) {
-    // Primeira chamada: retornar mandante
-    if (mandante && mandante !== '?') {
-        console.log(">>> [LOG CSV] Chamada 1: Retornando mandante: " + mandante);
-        return mandante;
-    }
-} else if (callNumber === 2) {
-    // Segunda chamada: retornar visitante
-    slotCallCount[csvId] = 0;  // ✅ RESETAR ANTES DE RETORNAR
-    
-    if (visitante && visitante !== '?') {
-        console.log(">>> [LOG CSV] Chamada 2: Retornando visitante: " + visitante);
-        return visitante;
-    }
-}
-                
-                // Se chegou aqui, algum valor é "?", calcular probabilidades
-                console.log(">>> [LOG CSV] Valor é '?', calculando probabilidades...");
-            } else {
-                console.log(">>> [LOG CSV] Partida não encontrada no CSV, calculando probabilidades...");
-            }
-        }
-        
-        // ✅ Calcular probabilidades (LÓGICA ORIGINAL)
+        // ✅ Calcular probabilidades (SEM BUSCA NO CSV)
         if (code && code.indexOf('3-') === 0) {
             var scenarios = getPossibleScenarios();
             console.log(">>> [LOG MOTOR] Cenários ativos: " + scenarios.length);
@@ -562,7 +533,7 @@ if (callNumber === 1) {
                 }
                 var counts = {};
                 var validCount = 0;
-                for (var i = 0; i < scenarios.length; i++) {
+                for (var i = 0; i &lt; scenarios.length; i++) {
                     var g = scenarios[i].mapping[leader];
                     if (g && allowedGroups.indexOf(g) !== -1) {
                         counts[g] = (counts[g] || 0) + 1;
@@ -580,7 +551,7 @@ if (callNumber === 1) {
                 if (results.length > 0) {
                     var output = "";
                     var limit = Math.min(results.length, 3);
-                    for (var j = 0; j < limit; j++) {
+                    for (var j = 0; j &lt; limit; j++) {
                         if (j > 0) output += " | ";
                         var groupLetter = results[j].grp;
                         var groupStandings = calcStandings(groupLetter);
@@ -1385,176 +1356,190 @@ function slotLabel(code) {
   return code;
 }
   
-function renderKnockout(){
-    const v=document.getElementById('view-matamata');
-    
-    // ✅ NOVO: Resetar o contador no início de cada renderização
-    slotCallCount = {};
-    
-    // Contar quantos slots R32 já estão resolvidos
-    const r32Resolved = KO_R32_SLOTS.filter(s =>
-        resolveSlotToName(s.home) !== null && resolveSlotToName(s.away) !== null
-    ).length;  const r32Total = KO_R32_SLOTS.length;
-  const allResolved = r32Resolved === r32Total;
+function renderKnockout() {
+  const container = document.getElementById('knockout-stage');
+  if (!container) return;
+  container.innerHTML = '';
 
-  // Preview do chaveamento R32 com slots e nomes
-  let previewHtml = `
-    <div style="margin-bottom:1.5rem">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;flex-wrap:wrap;gap:.5rem">
-        <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.08em;color:var(--gold)">
-          ⚔️ Chaveamento — Rodada de 32
-        </h3>
-        <span style="font-size:.7rem;color:${allResolved?'var(--green)':'var(--muted)'}">
-          ${allResolved ? '✓ Todos os times definidos' : `${r32Resolved}/${r32Total} times definidos`}
-        </span>
-      </div>
-      <div class="slot-legend">
-        <strong>Legenda:</strong>
-        <span><strong style="color:var(--gold)">A1</strong> = 1º Grupo A</span>
-        <span><strong style="color:var(--gold)">B2</strong> = 2º Grupo B</span>
-        <span><strong style="color:var(--gold)">Chave N</strong> = vencedor da Chave N de 3ºs colocados</span>
-        <span style="color:var(--green)">Nome em verde = time já definido</span>
-        <span style="color:var(--slot-color);font-style:italic">Itálico dourado = aguardando grupos</span>
-      </div>
-      <div class="r32-preview">`;
+  const processedSlots = new Set();
 
-  const BLOCO_LABELS = ['Bloco 1', 'Bloco 2', 'Bloco 3', 'Bloco 4'];
-  KO_R32_SLOTS.forEach((slot, i) => {
-    const homeName = resolveSlotToName(slot.home);
-    const awayName = resolveSlotToName(slot.away);
-// ✅ NOVO: Buscar no CSV UMA VEZ
-const slotNum = parseInt(slot.home.split('-')[1]);
-const csvId = 'KO_R32_' + slotNum;
-const csvMatch = resultadosCSV.find(row => row.id === csvId);
+  koRounds.forEach((round, roundIndex) => {
+    const roundDiv = document.createElement('div');
+    roundDiv.className = 'round';
+    roundDiv.dataset.round = round;
 
-let homeDisplay, awayDisplay;
+    const r32 = state.knockout.r32 || {};
 
-if (csvMatch && csvMatch.mandante && csvMatch.mandante !== '?') {
-    // CSV tem mandante definido
-    homeDisplay = csvMatch.mandante;
-    
-    if (csvMatch.visitante && csvMatch.visitante !== '?') {
-        // CSV tem visitante definido também
-        awayDisplay = csvMatch.visitante;
-    } else {
-        // Visitante é "?", calcular probabilidades
-        awayDisplay = homeName ? homeName : displaySlot(slot.away);
-    }
-} else {
-    // CSV não tem mandante, calcular probabilidades para ambos
-    homeDisplay = homeName || displaySlot(slot.home);
-    awayDisplay = awayName || displaySlot(slot.away);
-}
+    if (round === 'r32') {
+      KO_R32_SLOTS.forEach(slot => {
+        const block = document.createElement('div');
+        block.className = 'match-block';
+        block.dataset.slot = slot;
 
-const homeClass = homeName || csvMatch?.mandante ? 'r32-team-name' : 'r32-team-name is-slot';
-const awayClass = awayName || csvMatch?.visitante ? 'r32-team-name' : 'r32-team-name is-slot';
-    const m = state.knockout.r32[i];
-    const hasResult = m && m.hs !== null;
-    const resHtml = hasResult
-      ? `<span style="font-family:'Bebas Neue',sans-serif;font-size:.85rem;color:var(--gold2);margin-left:auto;white-space:nowrap">${m.hs}×${m.as}</span>`
-      : '';
-    // Separador de bloco a cada 4 partidas (exceto antes da 1ª)
-    if (i > 0 && i % 4 === 0) {
-      previewHtml += `
-      <div style="grid-column:1/-1;display:flex;align-items:center;gap:.6rem;margin:.2rem 0">
-        <div style="flex:1;height:1px;background:rgba(212,160,23,.2)"></div>
-        <span style="font-family:'Bebas Neue',sans-serif;font-size:.75rem;letter-spacing:.12em;color:var(--gold);opacity:.7">${BLOCO_LABELS[i/4]}</span>
-        <div style="flex:1;height:1px;background:rgba(212,160,23,.2)"></div>
-      </div>`;
-    }
-    previewHtml += `
-      <div class="r32-preview-card" style="${hasResult?'border-color:rgba(34,197,94,.3)':''}">
-        <span class="r32-preview-num">${i+1}</span>
-        <div class="r32-preview-teams">
-          <span style="display:inline-flex;align-items:center;gap:.3rem;flex-wrap:wrap">
-            <span class="slot-badge">${slot.home}</span><span class="${homeClass}">${homeDisplay}</span>
-          </span>
-          <span class="r32-vs">vs</span>
-          <span style="display:inline-flex;align-items:center;gap:.3rem;flex-wrap:wrap">
-            <span class="slot-badge">${slot.away}</span><span class="${awayClass}">${awayDisplay}</span>
-          </span>
-        </div>
-        ${resHtml}
-      </div>`;
-  });
+        const preview = document.createElement('div');
+        preview.className = 'match-preview';
 
-  previewHtml += `</div></div>`;
+        let homeName = '?';
+        let awayName = '?';
+        let homeProb = null;
+        let awayProb = null;
+        let homeFlag = '';
+        let awayFlag = '';
+        let csvRow = null;
 
-  v.innerHTML=`<div class="readonly-note">👁 Somente leitura — insira resultados na aba Partidas</div>
-    ${previewHtml}
-    <div class="bracket-outer"><div class="bracket" id="brk"></div></div>`;
-
-  const brk=document.getElementById('brk');
-  koRounds.forEach(round=>{
-    const col=document.createElement('div');col.className='bracket-round';
-    col.innerHTML=`<div class="round-title">${round.label}</div>`;
-    const wrap=document.createElement('div');wrap.className='bracket-matches';
-    state.knockout[round.key].forEach((m, mi)=>{
-      // Para R32: resolver os slots para nomes reais (se disponíveis)
-      let homeVal = m.home;
-      let awayVal = m.away;
-      if(round.key === 'r32') {
-        const slot = KO_R32_SLOTS[mi];
-        if(slot) {
-          homeVal = resolveSlotToName(slot.home) || slot.home;
-          awayVal = resolveSlotToName(slot.away) || slot.away;
+        if (resultadosCSV && resultadosCSV.length) {
+          csvRow = resultadosCSV.find(r => String(r.slot || r.Slot || r.Jogo || '').toUpperCase() === slot);
         }
-      }
 
-      const w=getWinner({...m, home:homeVal, away:awayVal});
-      const hWin=w!==null&&w===homeVal,aWin=w!==null&&w===awayVal;
-      const isDraw=m.hs!==null&&m.as!==null&&m.hs===m.as;
-      const hPen=isDraw&&m.hpen!==null?`<span class="bracket-pen">(${m.hpen})</span>`:'';
-      const aPen=isDraw&&m.apen!==null?`<span class="bracket-pen">(${m.apen})</span>`:'';
+        const csvHomeRaw = csvRow ? (csvRow.mandante || csvRow.Mandante || csvRow.home || csvRow.Home || csvRow[1] || '') : '';
+        const csvAwayRaw = csvRow ? (csvRow.visitante || csvRow.Visitante || csvRow.away || csvRow.Away || csvRow[2] || '') : '';
+        const csvHome = String(csvHomeRaw).trim();
+        const csvAway = String(csvAwayRaw).trim();
 
-      // Para R32: verificar se slot ainda não está resolvido
-      const homeIsPending = round.key === 'r32' && resolveSlotToName(KO_R32_SLOTS[mi]?.home) === null;
-      const awayIsPending = round.key === 'r32' && resolveSlotToName(KO_R32_SLOTS[mi]?.away) === null;
-// ✅ Buscar no CSV para os labels também
-const slotForLabel = KO_R32_SLOTS[mi];
-const slotNumForLabel = parseInt(slotForLabel?.home?.split('-')[1]);
-const csvIdForLabel = 'KO_R32_' + slotNumForLabel;
-const csvMatchForLabel = resultadosCSV.find(row => row.id === csvIdForLabel);
+        if (csvHome && csvHome !== '?') {
+          homeName = resolveSlotToName(csvHome);
+          homeFlag = getFlagEmoji(homeName);
+          if (csvAway && csvAway !== '?') {
+            awayName = resolveSlotToName(csvAway);
+            awayFlag = getFlagEmoji(awayName);
+          } else {
+            const p = displaySlot(slot);
+            if (p && p.away) {
+              awayName = p.away.name || '?';
+              awayProb = p.away.prob;
+              awayFlag = getFlagEmoji(awayName);
+            }
+          }
+        } else {
+          const p = displaySlot(slot);
+          if (p && p.home) {
+            homeName = p.home.name || '?';
+            homeProb = p.home.prob;
+            homeFlag = getFlagEmoji(homeName);
+          }
+          if (p && p.away) {
+            awayName = p.away.name || '?';
+            awayProb = p.away.prob;
+            awayFlag = getFlagEmoji(awayName);
+          }
+        }
 
-let homeLabel, awayLabel;
+        processedSlots.add(slot);
 
-if (homeIsPending) {
-    if (csvMatchForLabel && csvMatchForLabel.mandante && csvMatchForLabel.mandante !== '?') {
-        homeLabel = csvMatchForLabel.mandante;
+        const homeRow = document.createElement('div');
+        homeRow.className = 'team-row';
+        homeRow.innerHTML = `<span class="flag">${homeFlag}</span><span class="team">${homeName}</span>${homeProb !== null ? '<span class="prob">' + homeProb + '%</span>' : ''}`;
+
+        const awayRow = document.createElement('div');
+        awayRow.className = 'team-row';
+        awayRow.innerHTML = `<span class="flag">${awayFlag}</span><span class="team">${awayName}</span>${awayProb !== null ? '<span class="prob">' + awayProb + '%</span>' : ''}`;
+
+        preview.appendChild(homeRow);
+        preview.appendChild(awayRow);
+
+        const bracket = document.createElement('div');
+        bracket.className = 'bracket';
+
+        const label = document.createElement('div');
+        label.className = 'slot-label';
+        label.textContent = slot;
+
+        block.appendChild(preview);
+        block.appendChild(bracket);
+        block.appendChild(label);
+        roundDiv.appendChild(block);
+      });
     } else {
-        homeLabel = displaySlot(KO_R32_SLOTS[mi]?.home);
-    }
-} else {
-    homeLabel = homeVal;
-}
+      const slotsForRound = state.knockout[round] || [];
+      slotsForRound.forEach(slot => {
+        const block = document.createElement('div');
+        block.className = 'match-block';
+        block.dataset.slot = slot;
 
-if (awayIsPending) {
-    if (csvMatchForLabel && csvMatchForLabel.visitante && csvMatchForLabel.visitante !== '?') {
-        awayLabel = csvMatchForLabel.visitante;
-    } else {
-        awayLabel = displaySlot(KO_R32_SLOTS[mi]?.away);
-    }
-} else {
-    awayLabel = awayVal;
-}
+        const preview = document.createElement('div');
+        preview.className = 'match-preview';
 
-      const el=document.createElement('div');el.className='bracket-match';
-      el.innerHTML=`
-        <div class="bracket-team${hWin?' winner':''}${homeIsPending?' slot-pending':''}">
-          <span>${homeLabel}</span>
-          <span style="display:flex;align-items:center;gap:2px">
-            <span class="bracket-score-k">${m.hs!==null?m.hs:''}</span>${hPen}
-          </span>
-        </div>
-        <div class="bracket-team${aWin?' winner':''}${awayIsPending?' slot-pending':''}">
-          <span>${awayLabel}</span>
-          <span style="display:flex;align-items:center;gap:2px">
-            <span class="bracket-score-k">${m.as!==null?m.as:''}</span>${aPen}
-          </span>
-        </div>`;
-      wrap.appendChild(el);
-    });
-    col.appendChild(wrap);brk.appendChild(col);
+        let homeName = '?';
+        let awayName = '?';
+        let homeProb = null;
+        let awayProb = null;
+        let homeFlag = '';
+        let awayFlag = '';
+        let csvRow = null;
+
+        if (resultadosCSV && resultadosCSV.length) {
+          csvRow = resultadosCSV.find(r => String(r.slot || r.Slot || r.Jogo || '').toUpperCase() === slot);
+        }
+
+        const csvHomeRaw = csvRow ? (csvRow.mandante || csvRow.Mandante || csvRow.home || csvRow.Home || csvRow[1] || '') : '';
+        const csvAwayRaw = csvRow ? (csvRow.visitante || csvRow.Visitante || csvRow.away || csvRow.Away || csvRow[2] || '') : '';
+        const csvHome = String(csvHomeRaw).trim();
+        const csvAway = String(csvAwayRaw).trim();
+
+        if (csvHome && csvHome !== '?') {
+          homeName = resolveSlotToName(csvHome);
+          homeFlag = getFlagEmoji(homeName);
+          if (csvAway && csvAway !== '?') {
+            awayName = resolveSlotToName(csvAway);
+            awayFlag = getFlagEmoji(awayName);
+          } else {
+            if (!processedSlots.has(slot)) {
+              const p = displaySlot(slot);
+              if (p && p.away) {
+                awayName = p.away.name || '?';
+                awayProb = p.away.prob;
+                awayFlag = getFlagEmoji(awayName);
+              }
+              processedSlots.add(slot);
+            }
+          }
+        } else {
+          if (!processedSlots.has(slot)) {
+            const p = displaySlot(slot);
+            if (p && p.home) {
+              homeName = p.home.name || '?';
+              homeProb = p.home.prob;
+              homeFlag = getFlagEmoji(homeName);
+            }
+            if (p && p.away) {
+              awayName = p.away.name || '?';
+              awayProb = p.away.prob;
+              awayFlag = getFlagEmoji(awayName);
+            }
+            processedSlots.add(slot);
+          }
+        }
+
+        if (!processedSlots.has(slot)) {
+          processedSlots.add(slot);
+        }
+
+        const homeRow = document.createElement('div');
+        homeRow.className = 'team-row';
+        homeRow.innerHTML = `<span class="flag">${homeFlag}</span><span class="team">${homeName}</span>${homeProb !== null ? '<span class="prob">' + homeProb + '%</span>' : ''}`;
+
+        const awayRow = document.createElement('div');
+        awayRow.className = 'team-row';
+        awayRow.innerHTML = `<span class="flag">${awayFlag}</span><span class="team">${awayName}</span>${awayProb !== null ? '<span class="prob">' + awayProb + '%</span>' : ''}`;
+
+        preview.appendChild(homeRow);
+        preview.appendChild(awayRow);
+
+        const bracket = document.createElement('div');
+        bracket.className = 'bracket';
+
+        const label = document.createElement('div');
+        label.className = 'slot-label';
+        label.textContent = slot;
+
+        block.appendChild(preview);
+        block.appendChild(bracket);
+        block.appendChild(label);
+        roundDiv.appendChild(block);
+      });
+    }
+
+    container.appendChild(roundDiv);
   });
 }
 
