@@ -1397,31 +1397,32 @@ function renderKnockout(){
         const csvId = 'KO_R32_' + slotNum;
         const csvMatch = resultadosCSV.find(row => row.id === csvId);
         
-        let homeDisplay, awayDisplay;
-        
-        // ✅ LÓGICA CORRIGIDA
-        if (csvMatch) {
-            const csvMandante = csvMatch.mandante ? String(csvMatch.mandante).trim() : '';
-            const csvVisitante = csvMatch.visitante ? String(csvMatch.visitante).trim() : '';
-            
-            if (csvMandante && csvMandante !== '?') {
-                homeDisplay = csvMandante;
-                if (csvVisitante && csvVisitante !== '?') {
-                    awayDisplay = csvVisitante;
-                } else {
-                    // Mandante definido, visitante é "?" → calcular probabilidades
-                    awayDisplay = displaySlot(slot.away);
-                }
-            } else {
-                // Mandante é "?" → calcular probabilidades para ambos
-                homeDisplay = displaySlot(slot.home);
-                awayDisplay = displaySlot(slot.away);
-            }
-        } else {
-            // CSV não encontrado → calcular probabilidades
-            homeDisplay = homeName || displaySlot(slot.home);
-            awayDisplay = awayName || displaySlot(slot.away);
-        }
+let homeDisplay, awayDisplay;
+
+if (csvMatch) {
+    const csvMandante = csvMatch.mandante ? String(csvMatch.mandante).trim() : '';
+    const csvVisitante = csvMatch.visitante ? String(csvMatch.visitante).trim() : '';
+    
+    // ✅ PRIORIDADE: CSV > resolveSlotToName > displaySlot
+    if (csvMandante && csvMandante !== '?') {
+        homeDisplay = csvMandante;
+    } else if (homeName) {
+        homeDisplay = homeName;
+    } else {
+        homeDisplay = displaySlot(slot.home);
+    }
+    
+    if (csvVisitante && csvVisitante !== '?') {
+        awayDisplay = csvVisitante;
+    } else if (awayName) {
+        awayDisplay = awayName;
+    } else {
+        awayDisplay = displaySlot(slot.away);
+    }
+} else {
+    homeDisplay = homeName || displaySlot(slot.home);
+    awayDisplay = awayName || displaySlot(slot.away);
+}
         
         const homeClass = homeName || (csvMatch?.mandante && csvMatch.mandante !== '?') ? 'r32-team-name' : 'r32-team-name is-slot';
         const awayClass = awayName || (csvMatch?.visitante && csvMatch.visitante !== '?') ? 'r32-team-name' : 'r32-team-name is-slot';
