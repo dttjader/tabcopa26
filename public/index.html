@@ -1420,8 +1420,32 @@ function slotLabel(code) {
   KO_R32_SLOTS.forEach((slot, i) => {
     const homeName = resolveSlotToName(slot.home);
     const awayName = resolveSlotToName(slot.away);
-    const homeDisplay = homeName || displaySlot(slot.home);
-    const awayDisplay = awayName || displaySlot(slot.away);
+// ✅ NOVO: Buscar no CSV UMA VEZ
+const slotNum = parseInt(slot.home.split('-')[1]);
+const csvId = 'KO_R32_' + slotNum;
+const csvMatch = resultadosCSV.find(row => row.id === csvId);
+
+let homeDisplay, awayDisplay;
+
+if (csvMatch && csvMatch.mandante && csvMatch.mandante !== '?') {
+    // CSV tem mandante definido
+    homeDisplay = csvMatch.mandante;
+    
+    if (csvMatch.visitante && csvMatch.visitante !== '?') {
+        // CSV tem visitante definido também
+        awayDisplay = csvMatch.visitante;
+    } else {
+        // Visitante é "?", calcular probabilidades
+        awayDisplay = homeName ? homeName : displaySlot(slot.away);
+    }
+} else {
+    // CSV não tem mandante, calcular probabilidades para ambos
+    homeDisplay = homeName || displaySlot(slot.home);
+    awayDisplay = awayName || displaySlot(slot.away);
+}
+
+const homeClass = homeName || csvMatch?.mandante ? 'r32-team-name' : 'r32-team-name is-slot';
+const awayClass = awayName || csvMatch?.visitante ? 'r32-team-name' : 'r32-team-name is-slot';
     const homeClass = homeName ? 'r32-team-name' : 'r32-team-name is-slot';
     const awayClass = awayName ? 'r32-team-name' : 'r32-team-name is-slot';
     const m = state.knockout.r32[i];
