@@ -450,6 +450,7 @@ console.log("--- [SISTEMA FIFA] INICIANDO CARREGAMENTO DO SCRIPT ---");
 // CONFIGURAÇÃO / DADOS ESPERADOS (substituir pelos valores reais do app)
 // =============================================================================
 var lastProcessedSlot = null;
+var slotCallCount = {};  // Contar quantas vezes cada slot foi chamado
 var slotResults = {};  // Cache dos resultados
 function getPossibleScenarios() {
   // Deve retornar array de cenários (array de grupos ou string de grupo)
@@ -510,35 +511,34 @@ function displaySlot(code) {
                 
                 console.log(">>> [LOG CSV] Mandante: " + mandante + ", Visitante: " + visitante);
                 
-                // ✅ Se AMBOS foram definidos (não são "?"), retornar o resultado em cache
-                if (mandante && mandante !== '?' && visitante && visitante !== '?') {
-                    // Armazenar no cache para a próxima chamada
-                    if (!slotResults[csvId]) {
-                        slotResults[csvId] = { mandante: mandante, visitante: visitante, index: 0 };
+                // ✅ Contar quantas vezes este slot foi chamado
+                if (!slotCallCount[csvId]) {
+                    slotCallCount[csvId] = 0;
+                }
+                slotCallCount[csvId]++;
+                
+                var callNumber = slotCallCount[csvId];
+                console.log(">>> [LOG CSV] Chamada #" + callNumber + " para " + csvId);
+                
+                // ✅ Primeira chamada = mandante, Segunda chamada = visitante
+                if (callNumber === 1) {
+                    // Primeira chamada: retornar mandante
+                    if (mandante && mandante !== '?') {
+                        console.log(">>> [LOG CSV] Chamada 1: Retornando mandante: " + mandante);
+                        return mandante;
                     }
-                    
-                    // Retornar alternadamente mandante e visitante
-                    var result = slotResults[csvId].index === 0 ? mandante : visitante;
-                    slotResults[csvId].index = 1 - slotResults[csvId].index;  // Alternar entre 0 e 1
-                    
-                    console.log(">>> [LOG CSV] Retornando do cache: " + result);
-                    return result;
+                } else if (callNumber === 2) {
+                    // Segunda chamada: retornar visitante
+                    if (visitante && visitante !== '?') {
+                        console.log(">>> [LOG CSV] Chamada 2: Retornando visitante: " + visitante);
+                        return visitante;
+                    }
+                    // Resetar contador para próxima renderização
+                    slotCallCount[csvId] = 0;
                 }
                 
-                // Se apenas mandante foi definido, retornar mandante
-                if (mandante && mandante !== '?') {
-                    console.log(">>> [LOG CSV] Retornando mandante do CSV: " + mandante);
-                    return mandante;
-                }
-                
-                // Se apenas visitante foi definido, retornar visitante
-                if (visitante && visitante !== '?') {
-                    console.log(">>> [LOG CSV] Retornando visitante do CSV: " + visitante);
-                    return visitante;
-                }
-                
-                // Se ambos são "?", continuar para calcular probabilidades
-                console.log(">>> [LOG CSV] Ambos indefinidos no CSV, calculando probabilidades...");
+                // Se chegou aqui, algum valor é "?", calcular probabilidades
+                console.log(">>> [LOG CSV] Valor é '?', calculando probabilidades...");
             } else {
                 console.log(">>> [LOG CSV] Partida não encontrada no CSV, calculando probabilidades...");
             }
@@ -562,7 +562,7 @@ function displaySlot(code) {
                 }
                 var counts = {};
                 var validCount = 0;
-                for (var i = 0; i < scenarios.length; i++) {
+                for (var i = 0; i &lt; scenarios.length; i++) {
                     var g = scenarios[i].mapping[leader];
                     if (g && allowedGroups.indexOf(g) !== -1) {
                         counts[g] = (counts[g] || 0) + 1;
@@ -580,7 +580,7 @@ function displaySlot(code) {
                 if (results.length > 0) {
                     var output = "";
                     var limit = Math.min(results.length, 3);
-                    for (var j = 0; j < limit; j++) {
+                    for (var j = 0; j &lt; limit; j++) {
                         if (j > 0) output += " | ";
                         var groupLetter = results[j].grp;
                         var groupStandings = calcStandings(groupLetter);
