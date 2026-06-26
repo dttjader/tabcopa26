@@ -1446,8 +1446,6 @@ if (csvMatch && csvMatch.mandante && csvMatch.mandante !== '?') {
 
 const homeClass = homeName || csvMatch?.mandante ? 'r32-team-name' : 'r32-team-name is-slot';
 const awayClass = awayName || csvMatch?.visitante ? 'r32-team-name' : 'r32-team-name is-slot';
-    const homeClass = homeName ? 'r32-team-name' : 'r32-team-name is-slot';
-    const awayClass = awayName ? 'r32-team-name' : 'r32-team-name is-slot';
     const m = state.knockout.r32[i];
     const hasResult = m && m.hs !== null;
     const resHtml = hasResult
