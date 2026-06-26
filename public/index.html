@@ -421,8 +421,8 @@ function displaySlot(code) {
   const slotId = code === '3-1' ? 'KO_R32_1' : code;
 
   // 1. Busca no CSV se o mandante já foi decidido
-  if (Array.isArray(csvData)) {
-    const row = csvData.find(r => String(r.id) === slotId);
+  if (Array.isArray(resultadosCSV)) {
+    const row = resultadosCSV.find(r => String(r.id) === slotId);
     if (row && (row.home || row.mandante)) {
       return String(row.home || row.mandante);
     }
