@@ -418,123 +418,81 @@ console.log("--- [SISTEMA FIFA] INICIANDO CARREGAMENTO DO SCRIPT ---");
 
 // 1. A MESTRA (A função que a interface chama)
 function displaySlot(code) {
-    console.log(">>> [LOG MESTRA] Processando slot: " + code);
+  const slotId = code === '3-1' ? 'KO_R32_1' : code;
+
+  // 1. Busca no CSV se o mandante já foi decidido
+  if (Array.isArray(csvData)) {
+    const row = csvData.find(r => String(r.id) === slotId);
+    if (row && (row.home || row.mandante)) {
+      return String(row.home || row.mandante);
+    }
+  }
+
+  // 2. Calcula as probabilidades dos 3º colocados
+  if (typeof getPossibleScenarios === 'function' && typeof calcStandings === 'function') {
     try {
-        var fixed = resolveSlotToName(code);
-        if (fixed !== null) {
-            return fixed;
-        }
-        
-// ✅ NOVO: Buscar no CSV e retornar o nome se já foi decidido
-// ✅ NOVO: Buscar no CSV e retornar AMBOS os times
-if (code && code.indexOf('3-') === 0) {
-    var slotNum = parseInt(code.substring(2));
-    var csvId = 'KO_R32_' + slotNum;
-    
-    console.log(">>> [LOG] Procurando no CSV por ID: " + csvId);
-    
-    // Buscar no CSV
-    var csvMatch = resultadosCSV.find(row => row.id === csvId);
-    
-    if (csvMatch) {
-        console.log(">>> [LOG] Partida encontrada no CSV:", csvMatch);
-        
-        // ✅ NOVO: Retornar AMBOS os times (mandante e visitante)
-        var mandante = csvMatch.mandante !== '?' ? csvMatch.mandante : '?';
-        var visitante = csvMatch.visitante !== '?' ? csvMatch.visitante : '?';
-        
-        // Se AMBOS foram decididos, retornar a partida completa
-        if (mandante !== '?' && visitante !== '?') {
-            console.log(">>> [LOG] Partida completa decidida: " + mandante + " vs " + visitante);
-            return mandante + " vs " + visitante;
-        }
-        
-        // Se apenas um foi decidido, retornar esse time
-        if (mandante !== '?') {
-            console.log(">>> [LOG] Mandante decidido: " + mandante);
-            return mandante;
-        }
-        
-        if (visitante !== '?') {
-            console.log(">>> [LOG] Visitante decidido: " + visitante);
-            return visitante;
-        }
-    }
-}
-        
-        // ✅ Calcular probabilidades
-        if (code && code.indexOf('3-') === 0) {
-            var scenarios = getPossibleScenarios();
-            console.log(">>> [LOG MOTOR] Cenários ativos: " + scenarios.length);
-            
-            if (typeof SLOT_TO_LEADER === 'undefined') {
-                console.error(">>> [ERRO] SLOT_TO_LEADER não definido!");
-                return "Erro: Mapeamento";
+      const scenarios = getPossibleScenarios();
+      const rankMatch = String(code).match(/^3-(\d+)$/);
+      const rank = rankMatch ? parseInt(rankMatch[1], 10) : 1;
+      const counts = new Map();
+
+      if (Array.isArray(ALLOWED_THIRD_PLACE_GROUPS)) {
+        for (const scenario of scenarios) {
+          const standings = calcStandings(scenario);
+          const thirds = [];
+
+          for (const groupId of ALLOWED_THIRD_PLACE_GROUPS) {
+            const group = standings[groupId];
+            if (Array.isArray(group) && group[2]) {
+              thirds.push(group[2]);
             }
-            
-            var leader = SLOT_TO_LEADER[code];
-            
-            if (leader && scenarios && scenarios.length > 0) {
-                var allowedGroups = ALLOWED_THIRD_PLACE_GROUPS[leader];
-                console.log(">>> [LOG] Líder: " + leader + ", Grupos permitidos: " + allowedGroups.join(','));
-                
-                if (!allowedGroups) {
-                    console.error(">>> [ERRO] Líder " + leader + " não tem mapeamento de grupos permitidos!");
-                    return "Erro: Regulamento";
-                }
-                
-                var counts = {};
-                var validCount = 0;
-                
-                for (var i = 0; i < scenarios.length; i++) {
-                    var g = scenarios[i].mapping[leader];
-                    
-                    if (g && allowedGroups.indexOf(g) !== -1) {
-                        counts[g] = (counts[g] || 0) + 1;
-                        validCount++;
-                    }
-                }
-                
-                console.log(">>> [LOG] Contagens após filtro: ", counts);
-                console.log(">>> [LOG] Cenários válidos: " + validCount + " de " + scenarios.length);
-                
-                var total = validCount > 0 ? validCount : scenarios.length;
-                var results = [];
-                
-                for (var grp in counts) {
-                    results.push({ grp: grp, percent: (counts[grp] / total) * 100 });
-                }
-                
-                results.sort(function(a, b) { return b.percent - a.percent; });
-                
-                if (results.length > 0) {
-                    var output = "";
-                    var limit = Math.min(results.length, 3);
-                    for (var j = 0; j < limit; j++) {
-                        if (j > 0) output += " | ";
-                        
-                        var groupLetter = results[j].grp;
-                        var groupStandings = calcStandings(groupLetter);
-                        var thirdPlace = groupStandings[2];
-                        var teamName = thirdPlace ? thirdPlace.name : groupLetter;
-                        
-                        output += teamName + " (" + results[j].percent.toFixed(0) + "%)";
-                    }
-                    console.log(">>> [LOG SUCESSO] Retornando probabilidades: " + output);
-                    return output;
-                } else {
-                    console.log(">>> [LOG] Nenhum resultado após filtro regulatório");
-                }
-            }
+          }
+
+          thirds.sort((a, b) => {
+            const ap = a.points || 0;
+            const bp = b.points || 0;
+            if (bp !== ap) return bp - ap;
+
+            const agd = a.goalDifference || 0;
+            const bgd = b.goalDifference || 0;
+            if (bgd !== agd) return bgd - agd;
+
+            const agf = a.goalsFor || 0;
+            const bgf = b.goalsFor || 0;
+            if (bgf !== agf) return bgf - agf;
+
+            return String(a.name).localeCompare(String(b.name));
+          });
+
+          if (thirds.length >= rank) {
+            const team = thirds[rank - 1];
+            counts.set(team.name, (counts.get(team.name) || 0) + 1);
+          }
         }
+      }
+
+      if (counts.size > 0) {
+        const total = scenarios.length || 1;
+        let bestTeam = null;
+        let bestProb = -1;
+
+        for (const [team, count] of counts) {
+          const prob = count / total;
+          if (prob > bestProb) {
+            bestProb = prob;
+            bestTeam = team;
+          }
+        }
+
+        if (bestTeam) return bestTeam;
+      }
     } catch (e) {
-        console.error(">>> [ERRO CRÍTICO] Falha na displaySlot: " + e.message);
-        console.error(e.stack);
+      // fallback silencioso para o código original
     }
-    
-    // ✅ Retornar apenas o código, SEM chamar slotLabel()
-    console.log(">>> [LOG] Retornando código original: " + code);
-    return code;
+  }
+
+  // 3. Se nada funcionar, retorna o código original
+  return code;
 }
   
 // 2. O FILTRO (Auxiliar da Mestra)
