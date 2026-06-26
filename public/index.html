@@ -876,7 +876,8 @@ function renderMatches(){
 // Quando mudar de fase, resetar a flag
 function setPhase(phase) {
   activePhase = phase;
-  window.koRendered = false;  // ← Resetar para próxima vez
+  window.koRendered = false;  // ← Resetar ANTES de renderizar
+  renderMatches();
 }
 }
 function setView(v){activeView=v;renderMatches();}
