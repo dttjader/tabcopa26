@@ -941,45 +941,61 @@ function renderMatchesRep(){
   });
 }
 
+// ✅ NOVO: Flag global para evitar múltiplas renderizações
+let koRenderInProgress = false;
+
 function renderMatchesKO(){
-  const body = document.getElementById('matches-body');
-  const roundBtns = koRounds.map(r =>
-    `<button class="filter-btn${activeKoRound === r.key ? ' on' : ''}" onclick="setKoRound('${r.key}')">${r.label}</button>`
-  ).join('');
-  const rLabel = koRounds.find(r => r.key === activeKoRound).label;
+  // ✅ NOVO: Evitar múltiplas renderizações simultâneas
+  if (koRenderInProgress) {
+    console.log(">>> [LOG] renderMatchesKO já está em progresso, ignorando chamada duplicada");
+    return;
+  }
   
-  body.innerHTML = `
-    <div class="filter-bar">${roundBtns}</div>
-    <div class="match-section-title">${rLabel}</div>
-    <div class="matches-grid" id="ko-grid"></div>
-  `;
+  koRenderInProgress = true;
   
-  const grid = document.getElementById('ko-grid');
-  
-  state.knockout[activeKoRound].forEach((m, mi) => {
-    // ✅ CAPTURA OS RETORNOS
-    let homeDisplay = displaySlot(m.home);
-    let awayDisplay = displaySlot(m.away);
+  try {
+    const body = document.getElementById('matches-body');
+    const roundBtns = koRounds.map(r =>
+      `<button class="filter-btn${activeKoRound === r.key ? ' on' : ''}" onclick="setKoRound('${r.key}')">${r.label}</button>`
+    ).join('');
+    const rLabel = koRounds.find(r => r.key === activeKoRound).label;
     
-    // ✅ USA NO HTML DO CARD
-    const matchHTML = `
-      <div class="match-card">
-        <div class="match-team home">
-          <span class="slot-badge">${m.home}</span>
-          <span class="r32-team-name is-slot">${homeDisplay}</span>
-          <input type="number" class="score" value="${m.homeScore || 0}">
-        </div>
-        <div class="match-vs">vs</div>
-        <div class="match-team away">
-          <input type="number" class="score" value="${m.awayScore || 0}">
-          <span class="slot-badge">${m.away}</span>
-          <span class="r32-team-name is-slot">${awayDisplay}</span>
-        </div>
-      </div>
+    body.innerHTML = `
+      <div class="filter-bar">${roundBtns}</div>
+      <div class="match-section-title">${rLabel}</div>
+      <div class="matches-grid" id="ko-grid"></div>
     `;
     
-    grid.innerHTML += matchHTML;
-  });
+    const grid = document.getElementById('ko-grid');
+    
+    const matchesHTML = state.knockout[activeKoRound].map((m, mi) => {
+      let homeDisplay = displaySlot(m.home);
+      let awayDisplay = displaySlot(m.away);
+      
+      return `
+        <div class="match-card">
+          <div class="match-team home">
+            <span class="slot-badge">${m.home}</span>
+            <span class="r32-team-name is-slot">${homeDisplay}</span>
+            <input type="number" class="score" value="${m.homeScore || 0}">
+          </div>
+          <div class="match-vs">vs</div>
+          <div class="match-team away">
+            <input type="number" class="score" value="${m.awayScore || 0}">
+            <span class="slot-badge">${m.away}</span>
+            <span class="r32-team-name is-slot">${awayDisplay}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+    
+    grid.innerHTML = matchesHTML;
+    
+    console.log(">>> [LOG] renderMatchesKO concluído com sucesso");
+  } finally {
+    // ✅ NOVO: Resetar a flag após renderização
+    koRenderInProgress = false;
+  }
 }
   
 function setPhase(p){activePhase=p;renderMatches();}
