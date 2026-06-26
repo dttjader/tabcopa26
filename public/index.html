@@ -417,121 +417,125 @@ const ALLOWED_THIRD_PLACE_GROUPS = {
 console.log("--- [SISTEMA FIFA] INICIANDO CARREGAMENTO DO SCRIPT ---");
 
 // 1. A MESTRA (A função que a interface chama)
-function displaySlot(slotCode) {
-  console.log('[displaySlot] Chamado com slotCode:', slotCode);
+function displaySlot(code) {
+  console.log('[displaySlot] code:', code);
 
-  // 1. Mapeamento completo dos slots 3-1 a 3-8
-  const slotMapping = {
-    '3-1': 'KO_R32_1',
-    '3-2': 'KO_R32_2',
-    '3-3': 'KO_R32_3',
-    '3-4': 'KO_R32_4',
-    '3-5': 'KO_R32_5',
-    '3-6': 'KO_R32_6',
-    '3-7': 'KO_R32_7',
-    '3-8': 'KO_R32_8'
-  };
+  // 1. Buscar no CSV (resultadosCSV)
+  const csvKey = slotCodeToCsvKey(code);
+  console.log('[displaySlot] csvKey:', csvKey);
 
-  const mappedSlot = slotMapping[slotCode];
-  if (!mappedSlot) {
-    console.log('[displaySlot] Slot não mapeado, retornando código original:', slotCode);
-    return slotCode;
+  if (csvKey) {
+    const csvMatch = findCsvMatch(csvKey);
+    console.log('[displaySlot] csvMatch:', csvMatch);
+
+    if (csvMatch) {
+      if (csvMatch.mandante && csvMatch.mandante !== '?') {
+        console.log('[displaySlot] retornando mandante:', csvMatch.mandante);
+        return csvMatch.mandante;
+      }
+      if (csvMatch.visitante && csvMatch.visitante !== '?') {
+        console.log('[displaySlot] retornando visitante:', csvMatch.visitante);
+        return csvMatch.visitante;
+      }
+    }
   }
 
-  console.log('[displaySlot] Slot mapeado:', slotCode, '→', mappedSlot);
+  // 2. Calcular probabilidades
+  const leader = SLOT_TO_LEADER[code];
+  console.log('[displaySlot] leader:', leader);
 
-  // 2. Buscar no CSV de resultados reais
-  if (typeof resultadosCSV !== 'undefined' && Array.isArray(resultadosCSV)) {
-    const match = resultadosCSV.find(r => r && r.slot === mappedSlot);
-
-    if (match) {
-      console.log('[displaySlot] Partida encontrada no CSV:', match);
-
-      const mandante = match.home || match.mandante || '?';
-      const visitante = match.away || match.visitante || '?';
-
-      // Se mandante definido, retorna apenas ele (displaySlot é chamada separadamente para home/away)
-      if (mandante !== '?') {
-        console.log('[displaySlot] Retornando mandante do CSV:', mandante);
-        return mandante;
-      }
-
-      // Se mandante é "?" e visitante definido, retorna apenas o visitante
-      if (visitante !== '?') {
-        console.log('[displaySlot] Mandante ausente, retornando visitante do CSV:', visitante);
-        return visitante;
-      }
-    } else {
-      console.log('[displaySlot] Nenhuma partida encontrada no CSV para slot:', mappedSlot);
-    }
-  } else {
-    console.log('[displaySlot] resultadosCSV não disponível');
+  if (!leader) {
+    console.log('[displaySlot] sem líder, retornando código original:', code);
+    return code;
   }
 
-  // 3. Se não encontrou no CSV, calcula probabilidades
-  try {
-    if (typeof getPossibleScenarios !== 'function' || typeof calcStandings !== 'function') {
-      console.log('[displaySlot] Funções auxiliares não disponíveis, retornando código original:', slotCode);
-      return slotCode;
-    }
+  const allowedGroups = ALLOWED_THIRD_PLACE_GROUPS[leader];
+  console.log('[displaySlot] allowedGroups:', allowedGroups);
 
-    console.log('[displaySlot] Calculando probabilidades via getPossibleScenarios e calcStandings');
+  if (!allowedGroups || allowedGroups.length === 0) {
+    console.log('[displaySlot] sem grupos permitidos, retornando código original:', code);
+    return code;
+  }
 
-    const scenarios = getPossibleScenarios();
-    const standings = scenarios.map(scenario => calcStandings(scenario));
+  const scenarios = getPossibleScenarios();
+  console.log('[displaySlot] total scenarios:', scenarios.length);
 
-    console.log('[displaySlot] Standings calculados:', standings);
+  if (!scenarios || scenarios.length === 0) {
+    console.log('[displaySlot] sem cenários, retornando código original:', code);
+    return code;
+  }
 
-    // Conta ocorrências do slot em cada posição classificatória
-    const counts = {};
-    let total = 0;
-
-    standings.forEach(standing => {
-      standing.forEach((team, index) => {
-        const position = index + 1;
-        const teamSlot = team.slot;
-
-        if (teamSlot === mappedSlot) {
-          counts[team.name] = (counts[team.name] || 0) + 1;
-          total++;
+  const counts = {};
+  for (const scenario of scenarios) {
+    if (Array.isArray(scenario)) {
+      for (const group of scenario) {
+        if (allowedGroups.includes(group)) {
+          counts[group] = (counts[group] || 0) + 1;
         }
-      });
-    });
-
-    console.log('[displaySlot] Contagens para', mappedSlot, ':', counts, 'total:', total);
-
-    if (total === 0) {
-      console.log('[displaySlot] Nenhuma ocorrência encontrada, retornando código original:', slotCode);
-      return slotCode;
+      }
+    } else if (scenario && typeof scenario === 'object') {
+      for (const group of allowedGroups) {
+        if (scenario[group]) {
+          counts[group] = (counts[group] || 0) + 1;
+        }
+      }
     }
-
-    // Ordena por probabilidade decrescente e pega TOP 3
-    const probabilities = Object.entries(counts)
-      .map(([name, count]) => {
-        const percentage = ((count / total) * 100).toFixed(1);
-        return { name, percentage: parseFloat(percentage), count };
-      })
-      .sort((a, b) => b.percentage - a.percentage || b.count - a.count)
-      .slice(0, 3);
-
-    console.log('[displaySlot] TOP 3 probabilidades:', probabilities);
-
-    // Formata: "Time 🇧🇷 (XX%)" com emoji e percentual
-    const formatted = probabilities.map(p => {
-      const teamInfo = timesData && timesData[p.name];
-      const emoji = teamInfo && teamInfo.emoji ? teamInfo.emoji : '🇧🇷';
-      return `${p.name} ${emoji} (${p.percentage}%)`;
-    });
-
-    const result = formatted.join(' | ');
-    console.log('[displaySlot] Resultado final:', result);
-    return result;
-
-  } catch (error) {
-    console.error('[displaySlot] Erro ao calcular probabilidades:', error);
-    console.log('[displaySlot] Retornando código original por segurança:', slotCode);
-    return slotCode;
   }
+
+  console.log('[displaySlot] group counts:', counts);
+
+  const total = scenarios.length;
+  const top3 = Object.entries(counts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3);
+
+  console.log('[displaySlot] top3:', top3);
+
+  if (top3.length === 0) {
+    console.log('[displaySlot] nenhum grupo no top3, retornando código original:', code);
+    return code;
+  }
+
+  const result = top3
+    .map(([groupLetter, count]) => {
+      const team = calcStandings(groupLetter);
+      const percentage = total > 0 ? Math.round((count / total) * 100) : 0;
+      return `${team} 🇧🇷 (${percentage}%)`;
+    })
+    .join(' | ');
+
+  console.log('[displaySlot] retornando probabilidades:', result);
+  return result;
+}
+
+function slotCodeToCsvKey(code) {
+  const match = String(code).match(/^3-(\d+)$/);
+  if (!match) return null;
+  return `KO_R32_${match[1]}`;
+}
+
+function findCsvMatch(csvKey) {
+  if (!Array.isArray(resultadosCSV) || !csvKey) return null;
+
+  for (const row of resultadosCSV) {
+    if (!row || typeof row !== 'object') continue;
+
+    const keys = Object.keys(row);
+
+    const keyField = keys.find(k => /jogo|game|partida|match|key|ko/i.test(k));
+    if (!keyField) continue;
+    if (String(row[keyField]).trim() !== csvKey) continue;
+
+    const mandanteField = keys.find(k => /mandante|home|time1|team1|casa/i.test(k));
+    const visitanteField = keys.find(k => /visitante|away|time2|team2|fora/i.test(k));
+
+    const mandante = mandanteField ? String(row[mandanteField]).trim() : '?';
+    const visitante = visitanteField ? String(row[visitanteField]).trim() : '?';
+
+    return { mandante, visitante };
+  }
+
+  return null;
 }
   
 // 2. O FILTRO (Auxiliar da Mestra)
