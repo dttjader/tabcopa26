@@ -425,26 +425,31 @@ function displaySlot(code) {
             return fixed;
         }
         
-        // ✅ Mapear código para ID do CSV
-        if (code && code.indexOf('3-') === 0) {
-            var slotNum = parseInt(code.substring(2));
-            var csvId = 'KO_R32_' + slotNum;
-            
-            console.log(">>> [LOG] Procurando no CSV por ID: " + csvId);
-            
-            // ✅ Buscar no CSV
-            var csvMatch = resultadosCSV.find(row => row.id === csvId);
-            
-            if (csvMatch) {
-                console.log(">>> [LOG] Partida encontrada no CSV:", csvMatch);
-                
-                // Se o time já foi decidido, retornar o nome
-                if (csvMatch.mandante !== '?' && csvMatch.visitante !== '?') {
-                    console.log(">>> [LOG] Times já decididos no CSV");
-                    // Aqui você pode retornar o nome do time
-                }
-            }
+// ✅ NOVO: Buscar no CSV e retornar o nome se já foi decidido
+if (code && code.indexOf('3-') === 0) {
+    var slotNum = parseInt(code.substring(2));
+    var csvId = 'KO_R32_' + slotNum;
+    
+    console.log(">>> [LOG] Procurando no CSV por ID: " + csvId);
+    
+    // Buscar no CSV
+    var csvMatch = resultadosCSV.find(row => row.id === csvId);
+    
+    if (csvMatch) {
+        console.log(">>> [LOG] Partida encontrada no CSV:", csvMatch);
+        
+        // ✅ NOVO: Se o time já foi decidido, retornar o nome
+        if (csvMatch.mandante !== '?' && csvMatch.mandante !== '') {
+            console.log(">>> [LOG] Mandante decidido: " + csvMatch.mandante);
+            return csvMatch.mandante;
         }
+        
+        if (csvMatch.visitante !== '?' && csvMatch.visitante !== '') {
+            console.log(">>> [LOG] Visitante decidido: " + csvMatch.visitante);
+            return csvMatch.visitante;
+        }
+    }
+}
         
         // ✅ Calcular probabilidades
         if (code && code.indexOf('3-') === 0) {
