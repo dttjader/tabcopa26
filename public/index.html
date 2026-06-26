@@ -316,6 +316,37 @@ const allCountries=Object.values(groupsBase).flat().filter(t=>!t.startsWith('Rep
   .concat(repDef.flatMap(r=>r.partidas.filter(p=>p.stage==='SF').flatMap(p=>[p.home,p.away])))
   .filter((v,i,a)=>a.indexOf(v)===i).sort();
 
+// ✅ NOVO: Variável global para armazenar os resultados
+let resultadosCSV = [];
+
+// ✅ NOVO: Função para carregar o CSV
+async function carregarResultados() {
+  try {
+    const response = await fetch('resultados.csv');
+    const text = await response.text();
+    
+    // Parse CSV
+    const lines = text.trim().split('\n');
+    const headers = lines[0].split(',');
+    
+    resultadosCSV = lines.slice(1).map(line => {
+      const values = line.split(',');
+      const obj = {};
+      headers.forEach((header, idx) => {
+        obj[header.trim()] = values[idx]?.trim() || '';
+      });
+      return obj;
+    });
+    
+    console.log("✅ Resultados carregados:", resultadosCSV.length, "partidas");
+  } catch (e) {
+    console.error("❌ Erro ao carregar resultados.csv:", e);
+  }
+}
+
+// ✅ NOVO: Chamar ao inicializar a página
+carregarResultados();
+
 // ══════════════════════════════════════════════════════
 // LÓGICA DO MATA-MATA (ANEXO C FIFA)
 // ══════════════════════════════════════════════════════
@@ -394,6 +425,21 @@ function displaySlot(code) {
             return fixed;
         }
         
+        // ✅ NOVO: Procurar no CSV se o time já foi decidido
+        if (code && code.indexOf('3-') === 0) {
+            var csvMatch = resultadosCSV.find(row => {
+                return row.id && row.id.includes('KO_R32') && 
+                       (row.mandante === code || row.visitante === code);
+            });
+            
+            if (csvMatch && csvMatch.mandante !== '?' && csvMatch.visitante !== '?') {
+                // Time já foi decidido no CSV
+                var teamName = csvMatch.mandante === code ? csvMatch.mandante : csvMatch.visitante;
+                console.log(">>> [LOG] Time encontrado no CSV: " + teamName);
+                return teamName;
+            }
+        }
+        
         if (code && code.indexOf('3-') === 0) {
             var scenarios = getPossibleScenarios();
             console.log(">>> [LOG MOTOR] Cenários ativos: " + scenarios.length);
@@ -415,21 +461,20 @@ function displaySlot(code) {
                 }
                 
                 var counts = {};
-                var validCount = 0;  // ✅ NOVO: Contar cenários válidos
+                var validCount = 0;
                 
-                for (var i = 0; i < scenarios.length; i++) {
+                for (var i = 0; i &lt; scenarios.length; i++) {
                     var g = scenarios[i].mapping[leader];
                     
                     if (g && allowedGroups.indexOf(g) !== -1) {
                         counts[g] = (counts[g] || 0) + 1;
-                        validCount++;  // ✅ NOVO: Incrementar contador
+                        validCount++;
                     }
                 }
                 
                 console.log(">>> [LOG] Contagens após filtro: ", counts);
                 console.log(">>> [LOG] Cenários válidos: " + validCount + " de " + scenarios.length);
                 
-                // ✅ NOVO: Usar validCount em vez de scenarios.length
                 var total = validCount > 0 ? validCount : scenarios.length;
                 var results = [];
                 
@@ -442,7 +487,7 @@ function displaySlot(code) {
                 if (results.length > 0) {
                     var output = "";
                     var limit = Math.min(results.length, 3);
-                    for (var j = 0; j < limit; j++) {
+                    for (var j = 0; j &lt; limit; j++) {
                         if (j > 0) output += " | ";
                         
                         var groupLetter = results[j].grp;
