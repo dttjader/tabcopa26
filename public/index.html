@@ -425,39 +425,99 @@ function displaySlot(code) {
             return fixed;
         }
         
-        // ✅ NOVO: Mapear código para ID do CSV
-        // Código '3-1' → ID 'KO_R32_1'
-        // Código '3-2' → ID 'KO_R32_2', etc.
+        // ✅ Mapear código para ID do CSV
         if (code && code.indexOf('3-') === 0) {
-            var slotNum = parseInt(code.substring(2));  // '3-1' → 1
-            var csvId = 'KO_R32_' + slotNum;  // 'KO_R32_1'
+            var slotNum = parseInt(code.substring(2));
+            var csvId = 'KO_R32_' + slotNum;
             
             console.log(">>> [LOG] Procurando no CSV por ID: " + csvId);
             
-            // ✅ NOVO: Buscar no CSV pelo ID correto
+            // ✅ Buscar no CSV
             var csvMatch = resultadosCSV.find(row => row.id === csvId);
             
             if (csvMatch) {
                 console.log(">>> [LOG] Partida encontrada no CSV:", csvMatch);
                 
-                // Se o time já foi decidido (não é '?'), retornar o nome
+                // Se o time já foi decidido, retornar o nome
                 if (csvMatch.mandante !== '?' && csvMatch.visitante !== '?') {
                     console.log(">>> [LOG] Times já decididos no CSV");
                     // Aqui você pode retornar o nome do time
-                    // Por enquanto, continuar com as probabilidades
                 }
             }
         }
         
-        // ... resto do código de probabilidades ...
+        // ✅ Calcular probabilidades
         if (code && code.indexOf('3-') === 0) {
             var scenarios = getPossibleScenarios();
-            // ... resto do código ...
+            console.log(">>> [LOG MOTOR] Cenários ativos: " + scenarios.length);
+            
+            if (typeof SLOT_TO_LEADER === 'undefined') {
+                console.error(">>> [ERRO] SLOT_TO_LEADER não definido!");
+                return "Erro: Mapeamento";
+            }
+            
+            var leader = SLOT_TO_LEADER[code];
+            
+            if (leader && scenarios && scenarios.length > 0) {
+                var allowedGroups = ALLOWED_THIRD_PLACE_GROUPS[leader];
+                console.log(">>> [LOG] Líder: " + leader + ", Grupos permitidos: " + allowedGroups.join(','));
+                
+                if (!allowedGroups) {
+                    console.error(">>> [ERRO] Líder " + leader + " não tem mapeamento de grupos permitidos!");
+                    return "Erro: Regulamento";
+                }
+                
+                var counts = {};
+                var validCount = 0;
+                
+                for (var i = 0; i < scenarios.length; i++) {
+                    var g = scenarios[i].mapping[leader];
+                    
+                    if (g && allowedGroups.indexOf(g) !== -1) {
+                        counts[g] = (counts[g] || 0) + 1;
+                        validCount++;
+                    }
+                }
+                
+                console.log(">>> [LOG] Contagens após filtro: ", counts);
+                console.log(">>> [LOG] Cenários válidos: " + validCount + " de " + scenarios.length);
+                
+                var total = validCount > 0 ? validCount : scenarios.length;
+                var results = [];
+                
+                for (var grp in counts) {
+                    results.push({ grp: grp, percent: (counts[grp] / total) * 100 });
+                }
+                
+                results.sort(function(a, b) { return b.percent - a.percent; });
+                
+                if (results.length > 0) {
+                    var output = "";
+                    var limit = Math.min(results.length, 3);
+                    for (var j = 0; j < limit; j++) {
+                        if (j > 0) output += " | ";
+                        
+                        var groupLetter = results[j].grp;
+                        var groupStandings = calcStandings(groupLetter);
+                        var thirdPlace = groupStandings[2];
+                        var teamName = thirdPlace ? thirdPlace.name : groupLetter;
+                        
+                        output += teamName + " (" + results[j].percent.toFixed(0) + "%)";
+                    }
+                    console.log(">>> [LOG SUCESSO] Retornando probabilidades: " + output);
+                    return output;
+                } else {
+                    console.log(">>> [LOG] Nenhum resultado após filtro regulatório");
+                }
+            }
         }
     } catch (e) {
         console.error(">>> [ERRO CRÍTICO] Falha na displaySlot: " + e.message);
+        console.error(e.stack);
     }
     
+    // ✅ Retornar apenas o código, SEM chamar slotLabel()
+    console.log(">>> [LOG] Retornando código original: " + code);
     return code;
 }
   
