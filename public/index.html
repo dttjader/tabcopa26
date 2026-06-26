@@ -492,34 +492,41 @@ function displaySlot(code) {
             return fixed;
         }
         
-        // ✅ NOVO: Buscar no CSV PRIMEIRO
+        // ✅ CORRIGIDO: Buscar no CSV com ID correto
         if (code && code.indexOf('3-') === 0) {
             var slotNum = parseInt(code.substring(2));
             var csvId = 'KO_R32_' + slotNum;
             
             console.log(">>> [LOG CSV] Procurando no CSV por ID: " + csvId);
             
+            // ✅ CORRIGIDO: Procurar pelo campo 'id' (não 'Partida')
             var csvMatch = resultadosCSV.find(row => row.id === csvId);
             
             if (csvMatch) {
                 console.log(">>> [LOG CSV] Partida encontrada no CSV:", csvMatch);
                 
+                // ✅ Usar campos corretos: 'mandante' e 'visitante'
+                var mandante = csvMatch.mandante ? String(csvMatch.mandante).trim() : '';
+                var visitante = csvMatch.visitante ? String(csvMatch.visitante).trim() : '';
+                
+                console.log(">>> [LOG CSV] Mandante: " + mandante + ", Visitante: " + visitante);
+                
                 // Se mandante foi definido (não é "?"), retornar
-                if (csvMatch.mandante && csvMatch.mandante !== '?' && csvMatch.mandante !== '') {
-                    console.log(">>> [LOG CSV] Retornando mandante do CSV: " + csvMatch.mandante);
-                    return csvMatch.mandante;
+                if (mandante && mandante !== '?' && mandante !== '') {
+                    console.log(">>> [LOG CSV] Retornando mandante do CSV: " + mandante);
+                    return mandante;
                 }
                 
                 // Se visitante foi definido (não é "?") E mandante é "?", retornar visitante
-                if (csvMatch.visitante && csvMatch.visitante !== '?' && csvMatch.visitante !== '') {
-                    console.log(">>> [LOG CSV] Retornando visitante do CSV: " + csvMatch.visitante);
-                    return csvMatch.visitante;
+                if (visitante && visitante !== '?' && visitante !== '') {
+                    console.log(">>> [LOG CSV] Retornando visitante do CSV: " + visitante);
+                    return visitante;
                 }
                 
                 // Se ambos são "?", continuar para calcular probabilidades
                 console.log(">>> [LOG CSV] Ambos indefinidos no CSV, calculando probabilidades...");
             } else {
-                console.log(">>> [LOG CSV] Partida não encontrada no CSV, calculando probabilidades...");
+                console.log(">>> [LOG CSV] Partida não encontrada no CSV (ID: " + csvId + "), calculando probabilidades...");
             }
         }
         
