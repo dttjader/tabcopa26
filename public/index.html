@@ -420,14 +420,10 @@ console.log("--- [SISTEMA FIFA] INICIANDO CARREGAMENTO DO SCRIPT ---");
 function displaySlot(code) {
   console.log('[displaySlot] code:', code);
 
-  // 1. Buscar no CSV (resultadosCSV)
+  // 1. Buscar no CSV
   const csvKey = slotCodeToCsvKey(code);
-  console.log('[displaySlot] csvKey:', csvKey);
-
   if (csvKey) {
     const csvMatch = findCsvMatch(csvKey);
-    console.log('[displaySlot] csvMatch:', csvMatch);
-
     if (csvMatch) {
       if (csvMatch.mandante && csvMatch.mandante !== '?') {
         console.log('[displaySlot] retornando mandante:', csvMatch.mandante);
@@ -442,43 +438,31 @@ function displaySlot(code) {
 
   // 2. Calcular probabilidades
   const leader = SLOT_TO_LEADER[code];
-  console.log('[displaySlot] leader:', leader);
-
   if (!leader) {
     console.log('[displaySlot] sem líder, retornando código original:', code);
     return code;
   }
 
   const allowedGroups = ALLOWED_THIRD_PLACE_GROUPS[leader];
-  console.log('[displaySlot] allowedGroups:', allowedGroups);
-
   if (!allowedGroups || allowedGroups.length === 0) {
     console.log('[displaySlot] sem grupos permitidos, retornando código original:', code);
     return code;
   }
 
   const scenarios = getPossibleScenarios();
-  console.log('[displaySlot] total scenarios:', scenarios.length);
-
   if (!scenarios || scenarios.length === 0) {
     console.log('[displaySlot] sem cenários, retornando código original:', code);
     return code;
   }
 
+  // ✅ CORRIGIDO: Contar grupos usando scenario.mapping[leader]
   const counts = {};
-  for (const scenario of scenarios) {
-    if (Array.isArray(scenario)) {
-      for (const group of scenario) {
-        if (allowedGroups.includes(group)) {
-          counts[group] = (counts[group] || 0) + 1;
-        }
-      }
-    } else if (scenario && typeof scenario === 'object') {
-      for (const group of allowedGroups) {
-        if (scenario[group]) {
-          counts[group] = (counts[group] || 0) + 1;
-        }
-      }
+  for (let i = 0; i < scenarios.length; i++) {
+    const scenario = scenarios[i];
+    const group = scenario.mapping[leader];  // ← Pegar o grupo do mapeamento
+    
+    if (group && allowedGroups.indexOf(group) !== -1) {
+      counts[group] = (counts[group] || 0) + 1;
     }
   }
 
@@ -496,11 +480,14 @@ function displaySlot(code) {
     return code;
   }
 
+  // ✅ Formatar resultado com emoji e percentual
   const result = top3
     .map(([groupLetter, count]) => {
-      const team = calcStandings(groupLetter);
-      const percentage = total > 0 ? Math.round((count / total) * 100) : 0;
-      return `${team} 🇧🇷 (${percentage}%)`;
+      const groupStandings = calcStandings(groupLetter);
+      const thirdPlace = groupStandings[2];
+      const teamName = thirdPlace ? thirdPlace.name : groupLetter;
+      const percentage = Math.round((count / total) * 100);
+      return `${teamName} (${percentage}%)`;
     })
     .join(' | ');
 
@@ -521,8 +508,7 @@ function findCsvMatch(csvKey) {
     if (!row || typeof row !== 'object') continue;
 
     const keys = Object.keys(row);
-
-    const keyField = keys.find(k => /jogo|game|partida|match|key|ko/i.test(k));
+    const keyField = keys.find(k => /jogo|game|partida|match|key|ko|id/i.test(k));
     if (!keyField) continue;
     if (String(row[keyField]).trim() !== csvKey) continue;
 
