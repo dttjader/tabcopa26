@@ -520,22 +520,22 @@ function displaySlot(code) {
                 var callNumber = slotCallCount[csvId];
                 console.log(">>> [LOG CSV] Chamada #" + callNumber + " para " + csvId);
                 
-                // ✅ Primeira chamada = mandante, Segunda chamada = visitante
-                if (callNumber === 1) {
-                    // Primeira chamada: retornar mandante
-                    if (mandante && mandante !== '?') {
-                        console.log(">>> [LOG CSV] Chamada 1: Retornando mandante: " + mandante);
-                        return mandante;
-                    }
-                } else if (callNumber === 2) {
-                    // Segunda chamada: retornar visitante
-                    if (visitante && visitante !== '?') {
-                        console.log(">>> [LOG CSV] Chamada 2: Retornando visitante: " + visitante);
-                        return visitante;
-                    }
-                    // Resetar contador para próxima renderização
-                    slotCallCount[csvId] = 0;
-                }
+// ✅ Primeira chamada = mandante, Segunda chamada = visitante
+if (callNumber === 1) {
+    // Primeira chamada: retornar mandante
+    if (mandante && mandante !== '?') {
+        console.log(">>> [LOG CSV] Chamada 1: Retornando mandante: " + mandante);
+        return mandante;
+    }
+} else if (callNumber === 2) {
+    // Segunda chamada: retornar visitante
+    slotCallCount[csvId] = 0;  // ✅ RESETAR ANTES DE RETORNAR
+    
+    if (visitante && visitante !== '?') {
+        console.log(">>> [LOG CSV] Chamada 2: Retornando visitante: " + visitante);
+        return visitante;
+    }
+}
                 
                 // Se chegou aqui, algum valor é "?", calcular probabilidades
                 console.log(">>> [LOG CSV] Valor é '?', calculando probabilidades...");
