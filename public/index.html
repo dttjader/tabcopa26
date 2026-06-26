@@ -428,53 +428,53 @@ function displaySlot(code) {
         // ✅ Calcular probabilidades (LÓGICA ORIGINAL)
         if (code && code.indexOf('3-') === 0) {
             var scenarios = getPossibleScenarios();
-            var leader = SLOT_TO_LEADER[code];
+            console.log(">>> [LOG MOTOR] Cenários ativos: " + scenarios.length);  // ← ADICIONE
             
+            var leader = SLOT_TO_LEADER[code];
             if (leader && scenarios && scenarios.length > 0) {
                 var allowedGroups = ALLOWED_THIRD_PLACE_GROUPS[leader];
+                console.log(">>> [LOG] Líder: " + leader + ", Grupos permitidos: " + allowedGroups.join(','));  // ← ADICIONE
                 
                 var counts = {};
                 var validCount = 0;
-                
                 for (var i = 0; i < scenarios.length; i++) {
                     var g = scenarios[i].mapping[leader];
-                    
                     if (g && allowedGroups.indexOf(g) !== -1) {
                         counts[g] = (counts[g] || 0) + 1;
                         validCount++;
                     }
                 }
+                console.log(">>> [LOG] Contagens após filtro: ", counts);  // ← ADICIONE
+                console.log(">>> [LOG] Cenários válidos: " + validCount + " de " + scenarios.length);  // ← ADICIONE
                 
                 var total = validCount > 0 ? validCount : scenarios.length;
                 var results = [];
-                
                 for (var grp in counts) {
                     results.push({ grp: grp, percent: (counts[grp] / total) * 100 });
                 }
-                
                 results.sort(function(a, b) { return b.percent - a.percent; });
-                
                 if (results.length > 0) {
                     var output = "";
                     var limit = Math.min(results.length, 3);
                     for (var j = 0; j < limit; j++) {
                         if (j > 0) output += " | ";
-                        
                         var groupLetter = results[j].grp;
                         var groupStandings = calcStandings(groupLetter);
                         var thirdPlace = groupStandings[2];
                         var teamName = thirdPlace ? thirdPlace.name : groupLetter;
-                        
                         output += teamName + " (" + results[j].percent.toFixed(0) + "%)";
                     }
+                    console.log(">>> [LOG SUCESSO] Retornando probabilidades: " + output);  // ← ADICIONE
                     return output;
+                } else {
+                    console.log(">>> [LOG] Nenhum resultado após filtro regulatório");  // ← ADICIONE
                 }
             }
         }
     } catch (e) {
         console.error(">>> [ERRO CRÍTICO] Falha na displaySlot: " + e.message);
     }
-    
+    console.log(">>> [LOG] Retornando código original: " + code);  // ← ADICIONE
     return code;
 }
   
