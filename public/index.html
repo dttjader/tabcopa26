@@ -1385,14 +1385,16 @@ function slotLabel(code) {
   return code;
 }
   
-  function renderKnockout(){
-  const v=document.getElementById('view-matamata');
-
-  // Contar quantos slots R32 já estão resolvidos
-  const r32Resolved = KO_R32_SLOTS.filter(s =>
-    resolveSlotToName(s.home) !== null && resolveSlotToName(s.away) !== null
-  ).length;
-  const r32Total = KO_R32_SLOTS.length;
+function renderKnockout(){
+    const v=document.getElementById('view-matamata');
+    
+    // ✅ NOVO: Resetar o contador no início de cada renderização
+    slotCallCount = {};
+    
+    // Contar quantos slots R32 já estão resolvidos
+    const r32Resolved = KO_R32_SLOTS.filter(s =>
+        resolveSlotToName(s.home) !== null && resolveSlotToName(s.away) !== null
+    ).length;  const r32Total = KO_R32_SLOTS.length;
   const allResolved = r32Resolved === r32Total;
 
   // Preview do chaveamento R32 com slots e nomes
