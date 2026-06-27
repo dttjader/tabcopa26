@@ -1,4 +1,14 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
+NZL,BEL,NZL01,0,0,0,0,0,5,0
+NZL,BEL,NZL08,0,0,1,0
+NZL,BEL,NZL11,1,0,1,0
+NZL,BEL,BEL01,0,0,0,0,0,1,0
+NZL,BEL,BEL07,1,0,0,0
+NZL,BEL,BEL09,1,1,0,0
+NZL,BEL,BEL10,2,0,0,0
+NZL,BEL,BEL20,0,1,0,0
+NZL,BEL,BEL22,1,0,0,0
+NZL,BEL,BEL23,0,1,0,0
 EGI,IRA,EGI02,0,0,1,0
 EGI,IRA,EGI07,0,1,0,0
 EGI,IRA,EGI17,0,0,1,0
