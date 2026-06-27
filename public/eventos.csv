@@ -1,4 +1,12 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
+PAN,ING,PAN16,0,0,1,0
+PAN,ING,PAN17,0,0,1,0
+PAN,ING,PAN22,0,0,0,0,0,4,0
+PAN,ING,ING01,0,0,0,0,0,2,0
+PAN,ING,ING07,0,1,0,0
+PAN,ING,ING09,1,0,0,0
+PAN,ING,ING10,1,1,0,0
+PAN,ING,ING26,0,0,1,0
 NZL,BEL,NZL01,0,0,0,0,0,5,0
 NZL,BEL,NZL08,0,0,1,0
 NZL,BEL,NZL11,1,0,1,0
