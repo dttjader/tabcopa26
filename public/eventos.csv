@@ -1,4 +1,16 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
+EGI,IRA,EGI02,0,0,1,0
+EGI,IRA,EGI07,0,1,0,0
+EGI,IRA,EGI17,0,0,1,0
+EGI,IRA,EGI21,1,0,1,0
+EGI,IRA,EGI23,0,0,0,0,0,2,1
+EGI,IRA,IRA01,0,0,0,0,0,2,0
+EGI,IRA,IRA04,0,0,1,0
+EGI,IRA,IRA06,0,0,1,0
+EGI,IRA,IRA09,0,0,0,0,0,0,-1
+EGI,IRA,IRA13,0,0,1,0
+EGI,IRA,IRA19,0,0,1,0
+EGI,IRA,IRA23,1,0,0,0
 URU,ESP,URU07,0,0,1,0
 URU,ESP,URU13,0,0,1,0
 URU,ESP,URU14,0,0,0,1
