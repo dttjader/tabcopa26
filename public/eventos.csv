@@ -1,4 +1,14 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
+CRO,GAN,CRO01,0,0,0,0,0,0,0
+CRO,GAN,CRO08,0,1,0,0
+CRO,GAN,CRO10,0,1,0,0
+CRO,GAN,CRO13,1,0,0,0
+CRO,GAN,CRO17,1,0,0,0
+CRO,GAN,CRO14,0,0,1,0
+CRO,GAN,GAN16,0,0,0,0,0,0,0
+CRO,GAN,GAN21,0,0,1,0
+CRO,GAN,GAN23,1,0,0,0
+CRO,GAN,GAN24,0,1,0,0
 PAN,ING,PAN16,0,0,1,0
 PAN,ING,PAN17,0,0,1,0
 PAN,ING,PAN22,0,0,0,0,0,4,0
