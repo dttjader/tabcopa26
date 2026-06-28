@@ -1,4 +1,5 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
+AFS,CAN,CAN07,1,0,0,0
 JOR,ARG,JOR01,0,0,0,0,0,1,0
 JOR,ARG,JOR05,0,0,1,0
 JOR,ARG,JOR07,0,0,1,0
