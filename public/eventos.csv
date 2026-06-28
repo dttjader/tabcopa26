@@ -1,4 +1,15 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
+ALG,AUT,ALG07,2,0,0,0
+ALG,AUT,ALG08,0,2,0,0
+ALG,AUT,ALG16,0,0,0,0,0,0,0
+ALG,AUT,ALG17,1,0,0,0
+ALG,AUT,AUT01,0,0,0,0,0,2,0
+ALG,AUT,AUT07,1,0,1,0
+ALG,AUT,AUT08,0,1,0,0
+ALG,AUT,AUT09,1,0,0,0
+ALG,AUT,AUT11,0,1,0,0
+ALG,AUT,AUT14,0,1,0,0
+ALG,AUT,AUT20,0,1,0,0
 CNG,UZB,CNG01,0,0,0,0,0,0,0
 CNG,UZB,CNG07,0,0,1,0
 CNG,UZB,CNG08,0,0,1,0
