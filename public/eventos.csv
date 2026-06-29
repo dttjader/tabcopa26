@@ -1,5 +1,7 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
 ALE,PAR,ALE01,0,0,0,0,0,0,0
+ALE,PAR,ALE07,1,0,0,0
+ALE,PAR,ALE17,0,1,0,0
 ALE,PAR,PAR12,0,0,0,0,0,0,0
 ALE,PAR,PAR19,1,0,0,0
 ALE,PAR,PAR23,0,1,0,0
