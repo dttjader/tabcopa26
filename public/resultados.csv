@@ -79,7 +79,7 @@ KO_R32_5,2026-07-02,20:00,matamata,r32,Rodada de 32,Portugal 🇵🇹,Croácia �
 KO_R32_6,2026-07-02,16:00,matamata,r32,Rodada de 32,Espanha 🇪🇸,Áustria 🇦🇹,,,,,TBD,
 KO_R32_7,2026-07-01,21:00,matamata,r32,Rodada de 32,EUA 🇺🇸,Bósnia 🇧🇦,,,,,São Francisco,Levi's Stadium
 KO_R32_8,2026-07-01,17:00,matamata,r32,Rodada de 32,Bélgica 🇧🇪,Senegal 🇸🇳,,,,,Seattle,Lumen Field
-KO_R32_9,2026-06-29,14:00,matamata,r32,Rodada de 32,Brasil 🇧🇷,Japão 🇯🇵,,,,,Houston,NRG Stadium
+KO_R32_9,2026-06-29,14:00,matamata,r32,Rodada de 32,Brasil 🇧🇷,Japão 🇯🇵,2,1,,,Houston,NRG Stadium
 KO_R32_10,2026-06-30,14:00,matamata,r32,Rodada de 32,Costa do Marfim 🇨🇮,Noruega 🇳🇴,,,,,Dallas,AT&T Stadium
 KO_R32_11,2026-06-30,22:00,matamata,r32,Rodada de 32,México 🇲🇽,Equador 🇪🇨,,,,,Cidade do México,Estádio Azteca
 KO_R32_12,2026-07-01,13:00,matamata,r32,Rodada de 32,Inglaterra 🇬🇧,RD Congo 🇨🇩,,,,,Atlanta,Mercedes-Benz Stadium
@@ -91,7 +91,7 @@ KO_R16_1,2026-07-04,00:00,matamata,r16,Oitavas de Final,?,?,,,,,TBD,
 KO_R16_2,2026-07-04,00:00,matamata,r16,Oitavas de Final,Canadá 🇨🇦,?,,,,,TBD,
 KO_R16_3,2026-07-05,00:00,matamata,r16,Oitavas de Final,?,?,,,,,TBD,
 KO_R16_4,2026-07-05,00:00,matamata,r16,Oitavas de Final,?,?,,,,,TBD,
-KO_R16_5,2026-07-06,00:00,matamata,r16,Oitavas de Final,?,?,,,,,TBD,
+KO_R16_5,2026-07-06,00:00,matamata,r16,Oitavas de Final,Brasil 🇧🇷,?,,,,,TBD,
 KO_R16_6,2026-07-06,00:00,matamata,r16,Oitavas de Final,?,?,,,,,TBD,
 KO_R16_7,2026-07-07,00:00,matamata,r16,Oitavas de Final,?,?,,,,,TBD,
 KO_R16_8,2026-07-07,00:00,matamata,r16,Oitavas de Final,?,?,,,,,TBD,
