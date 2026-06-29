@@ -2,7 +2,7 @@ mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_c
 BRA,JAP,BRA01,0,0,0,0,0,0,0
 BRA,JAP,BRA05,0,0,1,0
 BRA,JAP,JAP01,0,0,0,0,0,0,0
-BRA,JAP,JAP24,0,0,1,0
+BRA,JAP,JAP24,1,0,1,0
 RSA,CAN,RSA01,0,0,0,0,0,6,0
 RSA,CAN,CAN07,1,0,0,0
 RSA,CAN,CAN16,0,0,0,0,0,1,0
