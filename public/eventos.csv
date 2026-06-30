@@ -1,4 +1,12 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
+CIV,NOR,CIV01,0,0,0,0,0,2,0
+CIV,NOR,CIV15,1,0,0,0
+CIV,NOR,CIV19,0,1,0,0
+CIV,NOR,NOR01,0,0,0,0,0,4,0
+CIV,NOR,NOR06,0,1,0,0
+CIV,NOR,NOR09,1,0,0,0
+CIV,NOR,NOR10,0,1,0,0
+CIV,NOR,NOR20,1,0,1,0
 HOL,MAR,HOL01,0,0,0,0,0,4,0
 HOL,MAR,HOL07,0,0,0,0,0,0,-1
 HOL,MAR,HOL09,0,0,0,0,0,1,0
