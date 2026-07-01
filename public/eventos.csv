@@ -1,6 +1,8 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
 BEL,SEN,BEL01,0,0,0,0,0,0,0
 BEL,SEN,BEL04,0,0,1,0
+BEL,SEN,BEL09,1,0,0,0
+BEL,SEN,BEL15,0,1,0,0
 BEL,SEN,SEN08,0,0,1,0
 BEL,SEN,SEN18,1,0,0,0
 BEL,SEN,SEN19,0,1,0,0
