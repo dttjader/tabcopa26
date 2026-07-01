@@ -78,7 +78,7 @@ KO_R32_4,2026-06-29,22:00,matamata,r32,Rodada de 32,Países Baixos 🇳🇱,Marr
 KO_R32_5,2026-07-02,20:00,matamata,r32,Rodada de 32,Portugal 🇵🇹,Croácia 🇭🇷,,,,,Toronto,BMO Field
 KO_R32_6,2026-07-02,16:00,matamata,r32,Rodada de 32,Espanha 🇪🇸,Áustria 🇦🇹,,,,,Los Angeles,SoFi Stadium
 KO_R32_7,2026-07-01,21:00,matamata,r32,Rodada de 32,EUA 🇺🇸,Bósnia 🇧🇦,,,,,São Francisco,Levi's Stadium
-KO_R32_8,2026-07-01,17:00,matamata,r32,Rodada de 32,Bélgica 🇧🇪,Senegal 🇸🇳,2,2,,,Seattle,Lumen Field
+KO_R32_8,2026-07-01,17:00,matamata,r32,Rodada de 32,Bélgica 🇧🇪,Senegal 🇸🇳,3,2,,,Seattle,Lumen Field
 KO_R32_9,2026-06-29,14:00,matamata,r32,Rodada de 32,Brasil 🇧🇷,Japão 🇯🇵,2,1,,,Houston,NRG Stadium
 KO_R32_10,2026-06-30,14:00,matamata,r32,Rodada de 32,Costa do Marfim 🇨🇮,Noruega 🇳🇴,1,2,,,Dallas,AT&T Stadium
 KO_R32_11,2026-06-30,22:00,matamata,r32,Rodada de 32,México 🇲🇽,Equador 🇪🇨,2,0,,,Cidade do México,Estádio Azteca
@@ -90,7 +90,7 @@ KO_R32_16,2026-07-03,22:30,matamata,r32,Rodada de 32,Colômbia 🇨🇴,Gana �
 KO_R16_1,2026-07-04,18:00,matamata,r16,Oitavas de Final,Paraguai 🇵🇾,França 🇫🇷,,,,,Filadélfia,Lincoln Financial Field
 KO_R16_2,2026-07-04,14:00,matamata,r16,Oitavas de Final,Canadá 🇨🇦,Marrocos 🇲🇦,,,,,Houston,NRG Stadium
 KO_R16_3,2026-07-06,00:00,matamata,r16,Oitavas de Final,?,?,,,,,TBD,
-KO_R16_4,2026-07-06,00:00,matamata,r16,Oitavas de Final,?,?,,,,,TBD,
+KO_R16_4,2026-07-06,00:00,matamata,r16,Oitavas de Final,Bélgica 🇧🇪,?,,,,,TBD,
 KO_R16_5,2026-07-05,17:00,matamata,r16,Oitavas de Final,Brasil 🇧🇷,Noruega 🇳🇴,,,,,Nova York,MetLife Stadium
 KO_R16_6,2026-07-05,21:00,matamata,r16,Oitavas de Final,México 🇲🇽,Inglaterra 🇬🇧,,,,,Cidade do México,Estádio Azteca
 KO_R16_7,2026-07-07,00:00,matamata,r16,Oitavas de Final,?,?,,,,,TBD,
