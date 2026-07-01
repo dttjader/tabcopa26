@@ -1,4 +1,8 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
+ING,CNG,ING01,0,0,0,0,0,0,0
+ING,CNG,CNG01,0,0,0,0,0,0,0
+ING,CNG,CNG09,1,0,0,0
+ING,CNG,CNG22,0,1,0,0
 MEX,EQU,MEX01,0,0,0,0,0,1,0
 MEX,EQU,MEX09,1,0,0,0
 MEX,EQU,MEX16,1,1,0,0
