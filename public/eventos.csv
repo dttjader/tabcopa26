@@ -1,4 +1,11 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
+SUI,ALG,SUI01,0,0,0,0,0,2,0
+SUI,ALG,SUI07,1,0,0,0
+SUI,ALG,SUI09,0,1,0,0
+SUI,ALG,SUI11,1,0,0,0
+SUI,ALG,ALG10,0,0,1,0
+SUI,ALG,ALG14,0,0,1,0
+SUI,ALG,ALG23,0,0,0,0,0,3,0
 POR,CRO,POR01,0,0,0,0,0,5,0
 POR,CRO,POR03,0,0,1,0
 POR,CRO,POR07,1,0,0,0
