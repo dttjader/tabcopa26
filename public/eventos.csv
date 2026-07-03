@@ -1,4 +1,12 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
+POR,CRO,POR01,0,0,0,0,0,5,0
+POR,CRO,POR03,0,0,1,0
+POR,CRO,POR07,1,0,0,0
+POR,CRO,POR09,1,0,0,0
+POR,CRO,POR17,0,1,0,0
+POR,CRO,CRO01,0,0,0,0,0,1,0
+POR,CRO,CRO10,0,0,1,0
+POR,CRO,CRO14,1,0,1,0
 ESP,AUT,ESP12,1,0,0,0
 ESP,AUT,ESP15,0,1,0,0
 ESP,AUT,ESP21,2,0,0,0
