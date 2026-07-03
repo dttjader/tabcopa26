@@ -1,4 +1,11 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
+ESP,AUT,ESP12,1,0,0,0
+ESP,AUT,ESP15,0,1,0,0
+ESP,AUT,ESP21,2,0,0,0
+ESP,AUT,ESP23,0,0,0,0,0,0,0
+ESP,AUT,ESP24,0,2,0,0
+ESP,AUT,AUT01,0,0,0,0,0,7,0
+ESP,AUT,AUT05,0,0,1,0
 EUA,BIH,EUA17,1,0,0,0
 EUA,BIH,EUA20,1,0,0,1
 EUA,BIH,EUA24,0,0,0,0,0,3,0
