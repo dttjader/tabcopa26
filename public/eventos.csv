@@ -1,10 +1,10 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
-PAR,FRA,PAR12,0,0,0,0,0,0,0
+PAR,FRA,PAR12,0,0,0,0,0,4,0
 PAR,FRA,FRA06,0,0,1,0
 PAR,FRA,FRA10,1,0,0,0
 PAR,FRA,FRA11,0,0,1,0
 PAR,FRA,FRA12,0,0,1,0
-PAR,FRA,FRA16,0,0,0,0,0,0,0
+PAR,FRA,FRA16,0,0,0,0,0,1,0
 CAN,MAR,CAN16,0,0,0,0,0,1,0
 CAN,MAR,CAN04,0,0,1,0
 CAN,MAR,CAN09,0,0,1,0
