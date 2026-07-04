@@ -1,5 +1,14 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
-CAN,MAR,MAR08,2,0,0,0
+CAN,MAR,CAN16,0,0,0,0,0,0,0
+CAN,MAR,CAN04,0,0,1,0
+CAN,MAR,CAN09,0,0,1,0
+CAN,MAR,CAN10,0,0,1,0
+CAN,MAR,CAN22,0,0,1,0
+CAN,MAR,MAR01,0,0,0,0,0,0,0
+CAN,MAR,MAR02,0,1,1,0
+CAN,MAR,MAR08,2,0,1,0
+CAN,MAR,MAR23,0,0,1,0
+CAN,MAR,MAR25,0,0,1,0
 COL,GOS,COL06,0,0,1,0
 COL,GAN,COL11,1,0,1,0
 COL,GAN,COL12,0,0,0,0,0,0,0
