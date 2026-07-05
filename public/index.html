@@ -584,7 +584,13 @@ function renderMatchesGrupos(){
   const body=document.getElementById('matches-body');const letters=Object.keys(groupsBase);const shown=activeGroup==='todos'?letters:[activeGroup];
   const filterBtns=['todos',...letters].map(g=>`<button class="filter-btn${activeGroup===g?' on':''}" onclick="setGroup('${g}')">${g==='todos'?'Todos':'Grp '+g}</button>`).join('');
   let html=`<div class="filter-bar">${filterBtns}</div>`;shown.forEach(g=>{html+=`<div class="match-section-title">Grupo ${g}</div><div class="matches-grid" id="mg_${g}"></div>`;});body.innerHTML=html;
-  shown.forEach(g=>{const grid=document.getElementById('mg_'+g);state.groupMatches[g].forEach((m)=>{grid.appendChild(makeMatchCard({label:`Grupo ${g}`,badgeClass:'badge-grupo',badgeText:'GRUPO',home:m.home||'?',away:m.away||'?',hs:m.hs,as:m.as,hpen:null,apen:null,allowPen:false,onSave:(hs,as)=>{m.hs=hs;m.as=as;saveState();renderGroups();renderMatches();toast('✓ Salvo!');},onClear:()=>{m.hs=null;m.as=null;saveState();renderGroups();renderMatches();}}));});});
+  shown.forEach(g=>{const grid=document.getElementById('mg_'+g);state.groupMatches[g].forEach((m)=>{
+    grid.appendChild(makeMatchCard({
+      label:`Grupo ${g}`,badgeClass:'badge-grupo',badgeText:'GRUPO',home:m.home||'?',away:m.away||'?',hs:m.hs,as:m.as,hpen:null,apen:null,allowPen:false,
+      onSave:(hs,as)=>{m.hs=hs;m.as=as;saveState();renderGroups();renderMatches();toast('✓ Salvo!');},
+      onClear:()=>{m.hs=null;m.as=null;saveState();renderGroups();renderMatches();}
+    }));
+  });});
 }
 function renderMatchesRep(){
   const body=document.getElementById('matches-body');let html='';[['europeia','🇪🇺 Repescagem Europeia'],['mundial','🌍 Repescagem Mundial']].forEach(([tipo,title])=>{html+=`<div class="match-section-title">${title}</div><div class="matches-grid" id="rg_${tipo}"></div>`;});body.innerHTML=html;
@@ -602,7 +608,34 @@ async function loadSchedule(){
   if(scheduleLoaded)return;try{const r=await fetch('resultados.csv');if(!r.ok)throw new Error('CSV não encontrado');const text=await r.text();const lines=text.trim().split('\n');const headers=lines[0].split(',').map(h=>h.replace(/\r/g,'').trim());schedule=lines.slice(1).map(line=>{const cols=[];let cur='',inQ=false;for(let ch of line){if(ch==='"')inQ=!inQ;else if(ch===','&&!inQ){cols.push(cur);cur='';}else cur+=ch;}cols.push(cur);const obj={};headers.forEach((h,i)=>{obj[h.trim()]=(cols[i]||'').replace(/\r/g,'').trim();});obj.gols_mandante=obj.gols_mandante!==''?parseInt(obj.gols_mandante):null;obj.gols_visitante=obj.gols_visitante!==''?parseInt(obj.gols_visitante):null;obj.pen_mandante=obj.pen_mandante!==''?parseInt(obj.pen_mandante):null;obj.pen_visitante=obj.pen_visitante!==''?parseInt(obj.pen_visitante):null;return obj;}).filter(o=>o.id);scheduleLoaded=true;applyScheduleToState();}catch(e){scheduleLoaded=true;}
 }
 function applyScheduleToState(){
-  schedule.forEach(row=>{if(row.fase==='grupos'){const g=row.grupo;if(!state.groupMatches[g])return;const idNum=parseInt(row.id.split('_').pop())-1;const m=state.groupMatches[g][idNum];if(!m)return;m.home=row.mandante;m.away=row.visitante;if(row.gols_mandante!==null){m.hs=row.gols_mandante;m.as=row.gols_visitante;}}if(row.fase==='repescagem'){const repId=row.grupo;if(!state.repScores[repId])state.repScores[repId]={};const rep=repDef.find(r=>r.id===repId);if(!rep)return;const p=rep.partidas.find(p=>p.stage===row.etapa);if(p&&row.gols_mandante!==null){state.repScores[repId][p.id]={hs:row.gols_mandante,as:row.gols_visitante,hpen:row.pen_mandante,apen:row.pen_visitante};}}if(row.fase==='matamata'){const roundKey=row.grupo;if(!state.knockout[roundKey])return;const idx=parseInt(row.id.split('_').pop())-1;const m=state.knockout[roundKey][idx];if(!m)return;if(roundKey!=='r32'){if(row.mandante&&row.mandante!=='?')m.home=row.mandante;if(row.visitante&&row.visitante!=='?')m.away=row.visitante;}if(row.gols_mandante!==null){m.hs=row.gols_mandante;m.as=row.gols_visitante;m.hpen=row.pen_mandante;m.apen=row.pen_visitante;}}});syncAllRepToGroups();saveState();
+  schedule.forEach(row=>{
+    if(row.fase==='grupos'){
+      const g=row.grupo;if(!state.groupMatches[g])return;
+      const idNum=parseInt(row.id.split('_').pop())-1;
+      const m=state.groupMatches[g][idNum];if(!m)return;
+      m.home=row.mandante;m.away=row.visitante;
+      if(row.gols_mandante!==null){m.hs=row.gols_mandante;m.as=row.gols_visitante;}
+    }
+    if(row.fase==='repescagem'){
+      const repId=row.grupo;if(!state.repScores[repId])state.repScores[repId]={};
+      const rep=repDef.find(r=>r.id===repId);if(!rep)return;
+      const p=rep.partidas.find(p=>p.stage===row.etapa);
+      if(p&&row.gols_mandante!==null){state.repScores[repId][p.id]={hs:row.gols_mandante,as:row.gols_visitante,hpen:row.pen_mandante,apen:row.pen_visitante};}
+    }
+    if(row.fase==='matamata'){
+      const roundKey=row.grupo;if(!state.knockout[roundKey])return;
+      const idx=parseInt(row.id.split('_').pop())-1;
+      const m=state.knockout[roundKey][idx];if(!m)return;
+      // Correção: Salva nomes do CSV no estado para todas as rodadas (incluindo r32)
+      if(row.mandante && row.mandante !== '?') m.home = row.mandante;
+      if(row.visitante && row.visitante !== '?') m.away = row.visitante;
+      if(row.gols_mandante!==null){
+        m.hs=row.gols_mandante;m.as=row.gols_visitante;
+        m.hpen=row.pen_mandante;m.apen=row.pen_visitante;
+      }
+    }
+  });
+  syncAllRepToGroups();saveState();
 }
 function buildCalendarItems(){return schedule.filter(row=>row.data).map(row=>({id:row.id,date:row.data,time:row.hora_brasilia||'',city:row.cidade||'',estadio:row.estadio||'',home:row.mandante||'?',away:row.visitante||'?',hs:row.gols_mandante,as:row.gols_visitante,hpen:row.pen_mandante,apen:row.pen_visitante,fase:row.fase,badge:({grupos:'badge-grupo',repescagem:'badge-rep',matamata:'badge-ko'})[row.fase]||'badge-grupo',label:({grupos:'Grupo '+row.grupo,repescagem:row.grupo,matamata:row.etapa})[row.fase]||row.fase,})).sort((a,b)=>a.date.localeCompare(b.date)||a.time.localeCompare(b.time));}
 function formatDate(dateStr){const d=new Date(dateStr+'T12:00:00');const days=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'],months=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];return{day:d.getDate(),month:months[d.getMonth()],year:d.getFullYear(),weekday:days[d.getDay()]};}
@@ -641,10 +674,51 @@ function renderTerceiros(){
 }
 
 function renderKnockout(){
-  const v=document.getElementById('view-matamata');let previewHtml=`<div style="margin-bottom:1.5rem"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;flex-wrap:wrap;gap:.5rem"><h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.08em;color:var(--gold)">⚔️ Chaveamento — Rodada de 32</h3></div><div class="slot-legend"><strong>Legenda:</strong><span><strong style="color:var(--gold)">A1</strong> = 1º Grupo A</span><span><strong style="color:var(--gold)">B2</strong> = 2º Grupo B</span><span style="color:var(--green)">Nome em verde = time já definido</span><span style="color:var(--slot-color);font-style:italic">Itálico dourado = aguardando grupos</span></div><div class="r32-preview">`;
-  KO_R32_SLOTS.forEach((slot,i)=>{const homeName=resolveSlotToName(slot.home),awayName=resolveSlotToName(slot.away),homeDisplay=homeName||displaySlot(slot.home),awayDisplay=awayName||displaySlot(slot.away),m=state.knockout.r32[i],hasResult=m&&m.hs!==null;if(i>0&&i%4===0)previewHtml+=`<div style="grid-column:1/-1;display:flex;align-items:center;gap:.6rem;margin:.2rem 0"><div style="flex:1;height:1px;background:rgba(212,160,23,.2)"></div><span style="font-family:'Bebas Neue',sans-serif;font-size:.75rem;letter-spacing:.12em;color:var(--gold);opacity:.7">Bloco ${(i/4)+1}</span><div style="flex:1;height:1px;background:rgba(212,160,23,.2)"></div></div>`;previewHtml+=`<div class="r32-preview-card" style="${hasResult?'border-color:rgba(34,197,94,.3)':''}"><span class="r32-preview-num">${i+1}</span><div class="r32-preview-teams"><span style="display:inline-flex;align-items:center;gap:.3rem;flex-wrap:wrap"><span class="slot-badge">${slot.home}</span><span class="${homeName?'r32-team-name':'r32-team-name is-slot'}">${homeDisplay}</span></span><span class="r32-vs">vs</span><span style="display:inline-flex;align-items:center;gap:.3rem;flex-wrap:wrap"><span class="slot-badge">${slot.away}</span><span class="${awayName?'r32-team-name':'r32-team-name is-slot'}">${awayDisplay}</span></span></div>${hasResult?`<span style="font-family:'Bebas Neue',sans-serif;font-size:.85rem;color:var(--gold2);margin-left:auto">${m.hs}×${m.as}</span>`:''}</div>`;});
-  v.innerHTML=`<div class="readonly-note">👁 Somente leitura — insira resultados na aba Partidas</div>${previewHtml}</div><div class="bracket-outer"><div class="bracket" id="brk"></div></div>`;const brk=document.getElementById('brk');
-  koRounds.forEach(round=>{const col=document.createElement('div');col.className='bracket-round';col.innerHTML=`<div class="round-title">${round.label}</div>`;const wrap=document.createElement('div');wrap.className='bracket-matches';state.knockout[round.key].forEach((m,mi)=>{let hV=m.home,aV=m.away;if(round.key==='r32'){const s=KO_R32_SLOTS[mi];hV=resolveSlotToName(s.home)||displaySlot(s.home);aV=resolveSlotToName(s.away)||displaySlot(s.away);}const w=getWinner({...m,home:hV,away:aV}),hW=w&&w===hV,aW=w&&w===aV,isD=m.hs!==null&&m.as!==null&&m.hs===m.as,el=document.createElement('div');el.className='bracket-match';el.innerHTML=`<div class="bracket-team${hW?' winner':''}${round.key==='r32'&&!resolveSlotToName(KO_R32_SLOTS[mi].home)?' slot-pending':''}"><span>${hV}</span><span style="display:flex;align-items:center;gap:2px"><span class="bracket-score-k">${m.hs!==null?m.hs:''}</span>${isD&&m.hpen!==null?`<span class="bracket-pen">(${m.hpen})</span>`:''}</span></div><div class="bracket-team${aW?' winner':''}${round.key==='r32'&&!resolveSlotToName(KO_R32_SLOTS[mi].away)?' slot-pending':''}"><span>${aV}</span><span style="display:flex;align-items:center;gap:2px"><span class="bracket-score-k">${m.as!==null?m.as:''}</span>${isD&&m.apen!==null?`<span class="bracket-pen">(${m.apen})</span>`:''}</span></div>`;wrap.appendChild(el);});col.appendChild(wrap);brk.appendChild(col);});
+  const v=document.getElementById('view-matamata');
+  let previewHtml=`<div style="margin-bottom:1.5rem"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;flex-wrap:wrap;gap:.5rem"><h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.08em;color:var(--gold)">⚔️ Chaveamento — Rodada de 32</h3></div><div class="slot-legend"><strong>Legenda:</strong><span><strong style="color:var(--gold)">A1</strong> = 1º Grupo A</span><span><strong style="color:var(--gold)">B2</strong> = 2º Grupo B</span><span style="color:var(--green)">Nome em verde = time já definido</span><span style="color:var(--slot-color);font-style:italic">Itálico dourado = aguardando grupos</span></div><div class="r32-preview">`;
+  
+  KO_R32_SLOTS.forEach((slot,i)=>{
+    const m=state.knockout.r32[i];
+    const hRes = resolveSlotToName(slot.home);
+    const aRes = resolveSlotToName(slot.away);
+    
+    // Prioridade: CSV > Classificação > Probabilidades
+    const homeDisplay = (m.home && m.home !== slot.home) ? m.home : (hRes || displaySlot(slot.home));
+    const awayDisplay = (m.away && m.away !== slot.away) ? m.away : (aRes || displaySlot(slot.away));
+    
+    const hIsReal = (m.home && m.home !== slot.home) || hRes;
+    const aIsReal = (m.away && m.away !== slot.away) || aRes;
+    
+    const hasResult=m&&m.hs!==null;
+    if(i>0&&i%4===0) previewHtml+=`<div style="grid-column:1/-1;display:flex;align-items:center;gap:.6rem;margin:.2rem 0"><div style="flex:1;height:1px;background:rgba(212,160,23,.2)"></div><span style="font-family:'Bebas Neue',sans-serif;font-size:.75rem;letter-spacing:.12em;color:var(--gold);opacity:.7">Bloco ${(i/4)+1}</span><div style="flex:1;height:1px;background:rgba(212,160,23,.2)"></div></div>`;
+    previewHtml+=`<div class="r32-preview-card" style="${hasResult?'border-color:rgba(34,197,94,.3)':''}"><span class="r32-preview-num">${i+1}</span><div class="r32-preview-teams"><span style="display:inline-flex;align-items:center;gap:.3rem;flex-wrap:wrap"><span class="slot-badge">${slot.home}</span><span class="${hIsReal?'r32-team-name':'r32-team-name is-slot'}">${homeDisplay}</span></span><span class="r32-vs">vs</span><span style="display:inline-flex;align-items:center;gap:.3rem;flex-wrap:wrap"><span class="slot-badge">${slot.away}</span><span class="${aIsReal?'r32-team-name':'r32-team-name is-slot'}">${awayDisplay}</span></span></div>${hasResult?`<span style="font-family:'Bebas Neue',sans-serif;font-size:.85rem;color:var(--gold2);margin-left:auto">${m.hs}×${m.as}</span>`:''}</div>`;
+  });
+  
+  v.innerHTML=`<div class="readonly-note">👁 Somente leitura — insira resultados na aba Partidas</div>${previewHtml}</div><div class="bracket-outer"><div class="bracket" id="brk"></div></div>`;
+  const brk=document.getElementById('brk');
+  
+  koRounds.forEach(round=>{
+    const col=document.createElement('div');col.className='bracket-round';col.innerHTML=`<div class="round-title">${round.label}</div>`;
+    const wrap=document.createElement('div');wrap.className='bracket-matches';
+    state.knockout[round.key].forEach((m,mi)=>{
+      let hV=m.home, aV=m.away;
+      let hIsReal = true, aIsReal = true;
+      if(round.key==='r32'){
+        const s=KO_R32_SLOTS[mi];
+        const hRes = resolveSlotToName(s.home);
+        const aRes = resolveSlotToName(s.away);
+        hV = (m.home && m.home !== s.home) ? m.home : (hRes || displaySlot(s.home));
+        aV = (m.away && m.away !== s.away) ? m.away : (aRes || displaySlot(s.away));
+        hIsReal = (m.home && m.home !== s.home) || hRes;
+        aIsReal = (m.away && m.away !== s.away) || aRes;
+      }
+      const w=getWinner({...m,home:hV,away:aV}),hW=w&&w===hV,aW=w&&w===aV,isD=m.hs!==null&&m.as!==null&&m.hs===m.as,el=document.createElement('div');
+      el.className='bracket-match';
+      el.innerHTML=`<div class="bracket-team${hW?' winner':''}${!hIsReal?' slot-pending':''}"><span>${hV}</span><span style="display:flex;align-items:center;gap:2px"><span class="bracket-score-k">${m.hs!==null?m.hs:''}</span>${isD&&m.hpen!==null?`<span class="bracket-pen">(${m.hpen})</span>`:''}</span></div><div class="bracket-team${aW?' winner':''}${!aIsReal?' slot-pending':''}"><span>${aV}</span><span style="display:flex;align-items:center;gap:2px"><span class="bracket-score-k">${m.as!==null?m.as:''}</span>${isD&&m.apen!==null?`<span class="bracket-pen">(${m.apen})</span>`:''}</span></div>`;
+      wrap.appendChild(el);
+    });
+    col.appendChild(wrap);brk.appendChild(col);
+  });
 }
 
 function renderRepescagem(){const v=document.getElementById('view-repescagem');v.innerHTML=`<div class="readonly-note">👁 Somente leitura — insira resultados na aba Partidas</div>`;[['europeia','🇪🇺 Repescagem Europeia — 4 vagas'],['mundial','🌍 Repescagem Mundial — 2 vagas']].forEach(([tipo,title])=>{const sec=document.createElement('div');sec.innerHTML=`<div class="match-section-title">${title}</div>`;const grid=document.createElement('div');grid.className='rep-grid';repDef.filter(r=>r.tipo===tipo).forEach(rep=>{const card=document.createElement('div');card.className='rep-card';const winner=getRepFinalWinner(rep);let rows='';rep.partidas.forEach(p=>{let home=p.home,away=p.away;if(p.stage==='FIN'){const t=getRepFinalTeams(rep);home=t.home;away=t.away;}const sc=state.repScores[rep.id]?.[p.id]||{},m={home,away,hs:sc.hs??null,as:sc.as??null,hpen:sc.hpen??null,apen:sc.apen??null},w=getWinner(m),hWin=w&&w===home,aWin=w&&w===away,isDraw=m.hs!==null&&m.as!==null&&m.hs===m.as;rows+=`<div class="rep-match-row"><span class="rep-stage">${p.stage}</span><span class="rep-team" style="font-weight:${hWin?700:400};color:${hWin?'var(--gold2)':'var(--text)'}">${home||'?'}</span><span class="rep-score">${m.hs!==null?m.hs:'–'}</span><span style="color:var(--muted);font-size:.68rem">×</span><span class="rep-score">${m.as!==null?m.as:'–'}</span><span class="rep-team right" style="font-weight:${aWin?700:400};color:${aWin?'var(--gold2)':'var(--text)'}">${away||'?'}</span></div>${isDraw&&(m.hpen!==null||m.apen!==null)?`<div class="rep-match-row" style="background:rgba(167,139,250,.05)"><span class="rep-stage" style="color:var(--pen)">PEN</span><span class="rep-team" style="color:var(--pen);font-weight:${m.hpen>m.apen?700:400}">${home||'?'}</span><span class="rep-score pen">${m.hpen??'–'}</span><span style="color:var(--pen);font-size:.68rem">×</span><span class="rep-score pen">${m.apen??'–'}</span><span class="rep-team right" style="color:var(--pen);font-weight:${m.apen>m.hpen?700:400}">${away||'?'}</span></div>`:''}`;});card.innerHTML=`<div class="rep-card-header"><span class="rep-card-title">${rep.label}</span><span class="rep-group-badge">→ Grupo ${rep.groupLetter}</span></div>${rep.note?`<div class="rep-note">ℹ️ ${rep.note}</div>`:''}${rows}${winner?`<div class="rep-winner-row">✓ Classificado: <strong>${winner}</strong></div>`:`<div class="rep-pending">Aguardando resultados...</div>`}`;grid.appendChild(card);});sec.appendChild(grid);v.appendChild(sec);});}
