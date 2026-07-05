@@ -1,4 +1,5 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
+BRA,NOR,BRA01,0,0,0,0,0,0,0
 BRA,NOR,BRA08,0,0,0,0,0,0,-1
 BRA,NOR,NOR01,0,0,0,0,0,0,1
 PAR,FRA,PAR12,0,0,0,0,0,4,0
