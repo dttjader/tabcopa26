@@ -1,10 +1,10 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
-POR,ESP,POR01,0,0,0,0,0,0,0
+POR,ESP,POR01,0,0,0,0,0,5,0
 POR,ESP,POR10,0,0,1,0
 POR,ESP,POR13,0,0,1,0
 POR,ESP,ESP06,1,0,0,0
 POR,ESP,ESP07,0,1,1,0
-POR,ESP,ESP23,0,0,0,0,0,0,0
+POR,ESP,ESP23,0,0,0,0,0,2,0
 MEX,ING,MEX01,0,0,0,0,0,2,0
 MEX,ING,MEX02,0,0,1,0
 MEX,ING,MEX05,0,0,1,0
