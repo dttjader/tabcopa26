@@ -757,15 +757,15 @@ function renderStats(){
   const {goals,matches,played}=calcGlobalStats(),v=document.getElementById('view-stats');
   
   // Rankings
-  const topGols=[...state.jogadores].filter(j=>j.gols>0).sort((a,b)=>b.gols-a.gols).slice(0,15);
-  const topAssist=[...state.jogadores].filter(j=>j.assistencias>0).sort((a,b)=>b.assistencias-a.assistencias).slice(0,15);
-  const topDefG=[...state.jogadores].filter(j=>j.posicao==='G' && (j.defesas||0)>0).sort((a,b)=>(b.defesas||0)-(a.defesas||0)).slice(0,15);
-  const topPenDefG=[...state.jogadores].filter(j=>j.posicao==='G' && (j.penaltis||0)>0).sort((a,b)=>(b.penaltis||0)-(a.penaltis||0)).slice(0,15);
-  const topAmarelos=[...state.jogadores].filter(j=>j.amarelos>0).sort((a,b)=>b.amarelos-a.amarelos).slice(0,15);
-  const topVermelhos=[...state.jogadores].filter(j=>j.vermelhos>0).sort((a,b)=>b.vermelhos-a.vermelhos).slice(0,15);
-  const topGC=[...state.jogadores].filter(j=>j.golsContra>0).sort((a,b)=>b.golsContra-a.golsContra).slice(0,15);
-  const topPenPerdidos=[...state.jogadores].filter(j=>j.penaltis<0).sort((a,b)=>a.penaltis-b.penaltis).slice(0,15);
-  const topGolsDecisao=[...state.jogadores].filter(j=>j.posicao!=='G' && (j.defesas||0)>0).sort((a,b)=>(b.defesas||0)-(a.defesas||0)).slice(0,15);
+  const topGols=[...state.jogadores].filter(j=>j.gols>0).sort((a,b)=>b.gols-a.gols).slice(0,30);
+  const topAssist=[...state.jogadores].filter(j=>j.assistencias>0).sort((a,b)=>b.assistencias-a.assistencias).slice(0,30);
+  const topDefG=[...state.jogadores].filter(j=>j.posicao==='G' && (j.defesas||0)>0).sort((a,b)=>(b.defesas||0)-(a.defesas||0)).slice(0,20);
+  const topPenDefG=[...state.jogadores].filter(j=>j.posicao==='G' && (j.penaltis||0)>0).sort((a,b)=>(b.penaltis||0)-(a.penaltis||0)).slice(0,20);
+  const topAmarelos=[...state.jogadores].filter(j=>j.amarelos>0).sort((a,b)=>b.amarelos-a.amarelos).slice(0,20);
+  const topVermelhos=[...state.jogadores].filter(j=>j.vermelhos>0).sort((a,b)=>b.vermelhos-a.vermelhos).slice(0,20);
+  const topGC=[...state.jogadores].filter(j=>j.golsContra>0).sort((a,b)=>b.golsContra-a.golsContra).slice(0,20);
+  const topPenPerdidos=[...state.jogadores].filter(j=>j.penaltis<0).sort((a,b)=>a.penaltis-b.penaltis).slice(0,20);
+  const topGolsDecisao=[...state.jogadores].filter(j=>j.posicao!=='G' && (j.defesas||0)>0).sort((a,b)=>(b.defesas||0)-(a.defesas||0)).slice(0,20);
 
   // Totais
   const totalGolsJogadores=state.jogadores.reduce((s,j)=>s+(j.gols||0),0);
