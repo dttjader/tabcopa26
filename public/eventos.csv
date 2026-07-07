@@ -1,4 +1,13 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
+EUA,BEL,EUA08,0,0,1,0
+EUA,BEL,EUA17,1,0,1,0
+EUA,BEL,EUA24,0,0,0,0,0,3,0
+EUA,BEL,BEL01,0,0,0,0,0,1,0
+EUA,BEL,BEL09,1,0,0,0
+EUA,BEL,BEL10,0,1,0,0
+EUA,BEL,BEL17,2,1,0,0
+EUA,BEL,BEL20,1,1,0,0
+EUA,BEL,BEL23,0,1,0,0
 POR,ESP,POR01,0,0,0,0,0,5,0
 POR,ESP,POR10,0,0,1,0
 POR,ESP,POR13,0,0,1,0
