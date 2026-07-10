@@ -1,4 +1,15 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
+ESP,BEL,ESP06,1,0,0,0
+ESP,BEL,ESP08,1,0,0,0
+ESP,BEL,ESP14,0,0,1,0
+ESP,BEL,ESP22,0,0,1,0
+ESP,BEL,ESP23,0,0,0,0,0,1,0
+ESP,BEL,BEL01,0,0,0,0,0,4,0
+ESP,BEL,BEL06,0,0,1,0
+ESP,BEL,BEL07,0,0,1,0
+ESP,BEL,BEL12,0,0,0,0,0,1,0
+ESP,BEL,BEL17,1,0,0,0
+ESP,BEL,BEL21,0,1,0,0
 FRA,MAR,FRA07,1,0,0,0
 FRA,MAR,FRA10,1,1,0,0,0,0,-1
 FRA,MAR,FRA16,0,0,0,0,0,1,0
