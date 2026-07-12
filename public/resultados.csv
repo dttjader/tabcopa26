@@ -97,10 +97,10 @@ KO_R16_7,2026-07-07,13:00,matamata,r16,Oitavas de Final,Argentina 🇦🇷,Egito
 KO_R16_8,2026-07-07,17:00,matamata,r16,Oitavas de Final,Suíça 🇨🇭,Colômbia 🇨🇴,0,0,4,3,Vancouver,BC Place
 KO_QF_1,2026-07-09,17:00,matamata,qf,Quartas de Final,França 🇫🇷,Marrocos 🇲🇦,2,0,,,Boston,Gillette Stadium
 KO_QF_2,2026-07-10,16:00,matamata,qf,Quartas de Final,Espanha 🇪🇸,Bélgica 🇧🇪,2,1,,,Los Angeles,SoFi Stadium
-KO_QF_3,2026-07-11,18:00,matamata,qf,Quartas de Final,Noruega 🇳🇴,Inglaterra 🇬🇧,,,,,Miami,Hard Rock Stadium
+KO_QF_3,2026-07-11,18:00,matamata,qf,Quartas de Final,Noruega 🇳🇴,Inglaterra 🇬🇧,1,2,,,Miami,Hard Rock Stadium
 KO_QF_4,2026-07-11,22:00,matamata,qf,Quartas de Final,Argentina 🇦🇷,Suíça 🇨🇭,,,,,Kansas City,Arrowhead Stadium
 KO_SF_1,2026-07-14,16:00,matamata,sf,Semifinal,França 🇫🇷,Espanha 🇪🇸,,,,,Dallas,AT&T Stadium
-KO_SF_2,2026-07-15,16:00,matamata,sf,Semifinal,?,?,,,,,Atlanta,Mercedes-Benz Stadium
+KO_SF_2,2026-07-15,16:00,matamata,sf,Semifinal,Inglaterra 🇬🇧,?,,,,,Atlanta,Mercedes-Benz Stadium
 KO_3P_1,2026-07-18,18:00,matamata,3p,3º Lugar,?,?,,,,,Miami,Hard Rock Stadium
 KO_FIN_1,2026-07-19,16:00,matamata,final,Final,?,?,,,,,Nova York,MetLife Stadium
 REP_EU1_SF1,2026-03-26,14:00,repescagem,rep_eu_1,SF,Itália 🇮🇹,Irlanda do Norte 🏴,2,0,,,Europa,
