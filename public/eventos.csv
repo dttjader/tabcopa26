@@ -1,4 +1,11 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
+NOR,ING,NOR01,0,0,0,0,0,5,0
+NOR,ING,NOR03,0,0,1,0
+NOR,ING,NOR10,0,1,0,0
+NOR,ING,NOR21,1,0,0,0
+NOR,ING,ING01,0,0,0,0,0,3,0
+NOR,ING,ING10,2,0,0,0
+NOR,ING,ING18,0,1,0,0
 ESP,BEL,ESP06,1,0,0,0
 ESP,BEL,ESP08,1,0,0,0
 ESP,BEL,ESP14,0,0,1,0
