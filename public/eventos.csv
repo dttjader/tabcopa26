@@ -1,4 +1,15 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
+ARG,SUI,ARG09,1,0,0,0
+ARG,SUI,ARG10,0,1,0,0
+ARG,SUI,ARG16,0,0,1,0
+ARG,SUI,ARG20,1,0,0,0
+ARG,SUI,ARG21,0,1,1,0
+ARG,SUI,ARG22,1,0,1,0
+ARG,SUI,ARG23,0,0,0,0,0,4,0
+ARG,SUI,SUI01,0,0,0,0,0,4,0
+ARG,SUI,SUI07,0,0,1,1
+ARG,SUI,SUI11,1,0,0,0
+ARG,SUI,SUI13,0,1,0,0
 NOR,ING,NOR01,0,0,0,0,0,5,0
 NOR,ING,NOR03,0,0,1,0
 NOR,ING,NOR10,0,1,0,0
