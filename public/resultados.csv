@@ -99,10 +99,10 @@ KO_QF_1,2026-07-09,17:00,matamata,qf,Quartas de Final,França 🇫🇷,Marrocos 
 KO_QF_2,2026-07-10,16:00,matamata,qf,Quartas de Final,Espanha 🇪🇸,Bélgica 🇧🇪,2,1,,,Los Angeles,SoFi Stadium
 KO_QF_3,2026-07-11,18:00,matamata,qf,Quartas de Final,Noruega 🇳🇴,Inglaterra 🇬🇧,1,2,,,Miami,Hard Rock Stadium
 KO_QF_4,2026-07-11,22:00,matamata,qf,Quartas de Final,Argentina 🇦🇷,Suíça 🇨🇭,3,1,,,Kansas City,Arrowhead Stadium
-KO_SF_1,2026-07-14,16:00,matamata,sf,Semifinal,França 🇫🇷,Espanha 🇪🇸,,,,,Dallas,AT&T Stadium
+KO_SF_1,2026-07-14,16:00,matamata,sf,Semifinal,França 🇫🇷,Espanha 🇪🇸,0,2,,,Dallas,AT&T Stadium
 KO_SF_2,2026-07-15,16:00,matamata,sf,Semifinal,Inglaterra 🇬🇧,Argentina 🇦🇷,,,,,Atlanta,Mercedes-Benz Stadium
-KO_3P_1,2026-07-18,18:00,matamata,3p,3º Lugar,?,?,,,,,Miami,Hard Rock Stadium
-KO_FIN_1,2026-07-19,16:00,matamata,final,Final,?,?,,,,,Nova York,MetLife Stadium
+KO_3P_1,2026-07-18,18:00,matamata,3p,3º Lugar,França 🇫🇷,?,,,,,Miami,Hard Rock Stadium
+KO_FIN_1,2026-07-19,16:00,matamata,final,Final,Espanha 🇪🇸,?,,,,,Nova York,MetLife Stadium
 REP_EU1_SF1,2026-03-26,14:00,repescagem,rep_eu_1,SF,Itália 🇮🇹,Irlanda do Norte 🏴,2,0,,,Europa,
 REP_EU1_SF2,2026-03-26,17:00,repescagem,rep_eu_1,SF,País de Gales 🏴,Bósnia 🇧🇦,1,1,2,4,Europa,
 REP_EU1_FIN,2026-03-31,17:00,repescagem,rep_eu_1,FIN,Itália 🇮🇹,Bósnia 🇧🇦,1,1,1,4,Europa,
