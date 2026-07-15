@@ -1,5 +1,5 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
-ING,ARG,ING01,0,0,0,0,0,0,0
+ING,ARG,ING01,0,0,0,0,0,3,0
 ING,ARG,ING08,0,0,1,0
 ING,ARG,ING17,0,1,0,0
 ING,ARG,ING18,1,0,0,0
@@ -7,7 +7,7 @@ ING,ARG,ARG06,0,0,1,0
 ING,ARG,ARG10,0,2,0,0
 ING,ARG,ARG13,0,0,1,0
 ING,ARG,ARG22,1,0,0,0
-ING,ARG,ARG23,0,0,0,0,0,0,0
+ING,ARG,ARG23,0,0,0,0,0,1,0
 ING,ARG,ARG24,1,0,0,0
 FRA,ESP,FRA10,0,0,1,0
 FRA,ESP,FRA14,0,0,1,0
