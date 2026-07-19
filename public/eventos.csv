@@ -1,4 +1,9 @@
 mandante_code,visitante_code,jogador_id,gols,assistencias,amarelo,vermelho,gol_contra,defesas,penaltis
+ESP,ARG,ESP23,0,0,0,0,0,0,0
+ESP,ARG,ARG05,0,0,1,0
+ESP,ARG,ARG06,0,0,1,0
+ESP,ARG,ARG23,0,0,0,0,0,0,0
+ESP,ARG,ARG24,0,0,1,0
 FRA,ING,FRA04,0,1,0,0
 FRA,ING,FRA07,1,0,0,0
 FRA,ING,FRA10,2,1,0,0
